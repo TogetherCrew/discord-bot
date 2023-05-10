@@ -5,8 +5,7 @@
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
-    "airbnb-typescript",
-    "prettier/@typescript-eslint"
+    "airbnb-typescript"
   ],
   "overrides": [],
   "parser": "@typescript-eslint/parser",
