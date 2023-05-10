@@ -1,6 +1,5 @@
 # env vars
-src/config/dev.env
-src/config/test.env
+src/config/*.env
 
 # compiled output
 /lib
