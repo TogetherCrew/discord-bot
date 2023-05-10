@@ -2,7 +2,12 @@
   "env": {
     "ES2017": true
   },
-  "extends": ["airbnb-typescript", "prettier", "prettier/@typescript-eslint"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "airbnb-typescript",
+    "prettier/@typescript-eslint"
+  ],
   "overrides": [],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -10,7 +15,7 @@
     "sourceType": "module",
     "project": "./tsconfig.json"
   },
-  "plugins": ["@typescript-eslint", "prettier"],
+  "plugins": ["@typescript-eslint"],
   "rules": {
     "prettier/prettier": "error"
   }
