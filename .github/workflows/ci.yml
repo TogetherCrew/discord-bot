@@ -19,16 +19,16 @@ jobs:
           node-version: ${{ matrix.node }}
         env:
           NODE_ENV: 'test'
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_PORT: ${{ secrets.DB_PORT }}
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_NAME: ${{ secrets.DB_NAME }}
+          DB_HOST: none
+          DB_PORT: 27017
+          DB_USER: none
+          DB_PASSWORD: none
+          DB_NAME: RnDAO
           DISCORD_CLIENT_ID: ${{ secrets.DISCORD_CLIENT_ID }}
           DISCORD_CLIENT_SECRET: ${{ secrets.DISCORD_CLIENT_SECRET }}
           DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
-          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
-          SENTRY_ENV: ${{ secrets.SENTRY_ENV }}
+          SENTRY_DSN: none
+          SENTRY_ENV: none
       - name: Create mongoDB Docker container
         run: sudo docker run -d -p 27017:27017 mongo:latest
       - name: Add data to userColl collection
