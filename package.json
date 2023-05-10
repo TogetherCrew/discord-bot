@@ -7,7 +7,7 @@
     "build": "tsc",
     "start": "node ./lib/index.js",
     "copy-files": "copyfiles -u 1 src/**/*.yml lib",
-    "dev": "env-cmd -f ./src/config/dev.env nodemon ./src/index.ts",
+    "dev": "env-cmd -f ./src/config/local.env nodemon ./src/index.ts",
     "test": "env-cmd -f ./src/config/test.env jest --detectOpenHandles"
   },
   "repository": {
@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/Behzad-rabiei/tc-discordBot#readme",
   "dependencies": {
+    "@sentry/node": "^7.51.2",
     "babel-jest": "^29.5.0",
     "discord.js": "^14.11.0",
     "joi": "^17.9.2",
