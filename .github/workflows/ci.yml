@@ -29,6 +29,8 @@ jobs:
           DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
           SENTRY_DSN: none
           SENTRY_ENV: none
+      - name: Install MongoDB tools
+        run: sudo apt-get install -y mongodb-clients
       - name: Create mongoDB Docker container
         run: sudo docker run -d -p 27017:27017 mongo:latest
       - name: Add data to userColl collection
