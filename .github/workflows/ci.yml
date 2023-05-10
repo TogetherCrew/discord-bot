@@ -28,7 +28,7 @@ jobs:
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
           SENTRY_ENV: ${{ secrets.SENTRY_ENV }}
       - run: npm install
-      - run: npm run test
+      - run: jest --ci --detectOpenHandles
       - run: npm run lint
       - run: npm run format
       - run: npm run build
