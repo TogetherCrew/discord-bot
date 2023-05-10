@@ -9,6 +9,7 @@
     "copy-files": "copyfiles -u 1 src/**/*.yml lib",
     "dev": "env-cmd -f ./src/config/local.env nodemon ./src/index.ts",
     "test": "env-cmd -f ./src/config/test.env jest --detectOpenHandles",
+    "test:ci": "jest --ci --detectOpenHandles",
     "lint": "eslint '**/*.ts'",
     "lint-fix": "eslint --fix '**/*.ts'",
     "format": "prettier --write 'src/**/*.ts'"
