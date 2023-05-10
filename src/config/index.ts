@@ -19,12 +19,11 @@ const { value: envVars, error } = envVarsSchema.prefs({ errors: { label: 'key' }
 if (error) {
     throw new Error(`Config validation error: ${error.message}`);
 }
-
 export default {
     env: envVars.NODE_ENV,
     mongoose: {
-        serverURL: envVars.NODE_ENV === 'local' || envVars.NODE_ENV === 'test' ? `mongodb://127.0.0.1:${envVars.DB_PORT}/${envVars.DB_NAME}-${envVars.NODE_ENV}` : `mongodb://${envVars.DB_USER}:${envVars.DB_PASSWORD}@${envVars.DB_HOST}:${envVars.DB_PORT}/${envVars.DB_NAME}`,
-        botURL: envVars.NODE_ENV === 'local' || envVars.NODE_ENV === 'test' ? `mongodb://127.0.0.1:${envVars.DB_PORT}` : `mongodb://${envVars.DB_USER}:${envVars.DB_PASSWORD}@${envVars.DB_HOST}:${envVars.DB_PORT}`,
+        serverURL: envVars.NODE_ENV === 'local' || envVars.NODE_ENV === 'test' ? `mongodb://127.0.0.1:27017/RnDAO-${envVars.NODE_ENV}` : `mongodb://${envVars.DB_USER}:${envVars.DB_PASSWORD}@${envVars.DB_HOST}:${envVars.DB_PORT}/${envVars.DB_NAME}`,
+        botURL: envVars.NODE_ENV === 'local' || envVars.NODE_ENV === 'test' ? `mongodb://127.0.0.1:27017` : `mongodb://${envVars.DB_USER}:${envVars.DB_PASSWORD}@${envVars.DB_HOST}:${envVars.DB_PORT}`,
     },
     discord: {
         clientId: envVars.DISCROD_CLIENT_ID,
