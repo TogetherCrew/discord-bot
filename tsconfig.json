@@ -1,33 +1,26 @@
 {
-    "compilerOptions": {
-        "module": "commonjs",
-        "declaration": true,
-        "removeComments": true,
-        "emitDecoratorMetadata": true,
-        "experimentalDecorators": true,
-        "target": "ES2017",
-        "sourceMap": true,
-        "outDir": "./lib",
-        "baseUrl": "./",
-        "incremental": true,
-        "strict": true,
-        "noImplicitAny": true,
-        "skipLibCheck": true,
-        "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true
-    },
-    "include": [
-        "src/**/*",
-        "__tests__/**/*"
-    ],
-    "ts-node": {
-        "transpileOnly": true,
-        "files": true
-    },
-    "exclude": [
-        "./coverage",
-        "./lib",
-        "__tests__",
-        "jest.config.js"
-    ],
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "target": "ES2017",
+    "sourceMap": true,
+    "outDir": "./lib",
+    "baseUrl": "./",
+    "incremental": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "include": ["src/**/*", "__tests__/**/*"],
+  "eslintIntegration": true,
+  "ts-node": {
+    "transpileOnly": true,
+    "files": true
+  },
+  "exclude": ["./coverage", "./lib", "__tests__", "jest.config.js"]
 }
