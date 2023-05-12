@@ -1,0 +1,61 @@
+name: tc-discordBot
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        platform: [ubuntu-latest]
+        node: ['18.x']
+    name: test/node ${{ matrix.node }}/${{ matrix.platform }}
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node }}
+        env:
+          NODE_ENV: 'test'
+          DB_HOST: none
+          DB_PORT: 27017
+          DB_USER: none
+          DB_PASSWORD: none
+          DB_NAME: RnDAO
+          DISCORD_CLIENT_ID: ${{ secrets.DISCORD_CLIENT_ID }}
+          DISCORD_CLIENT_SECRET: ${{ secrets.DISCORD_CLIENT_SECRET }}
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+          SENTRY_DSN: none
+          SENTRY_ENV: none
+      - name: Install MongoDB tools
+        run: sudo apt-get install -y mongodb-clients
+      - name: Create mongoDB Docker container
+        run: sudo docker run -d -p 27017:27017 mongo:latest
+      - name: Add data to userColl collection
+        run: mongoimport --collection=userColl --db=appDB --file=userColl.json
+      - name: Add data to appData Collection
+        run: mongoimport --collection=appData --db=appDB --file=appData.json
+      - run: npm install
+      - run: npm run test:ci
+      - run: npm run lint
+      - run: npm run format
+      - run: npm run build
+
+  coverage:
+    needs: [test]
+    name: coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '18'
+      - run: npm install
+      - run: npm run build
+      - uses: paambaati/codeclimate-action@v3.2.0
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+        with:
+          coverageCommand: npm run coverage
