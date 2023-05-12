@@ -14,10 +14,14 @@ jobs:
     runs-on: ${{ matrix.platform }}
     services:
       mongodb:
-        image: mongo:5.4.0
+        image: mongo
+        options: >-
+          --health-cmd mongo
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
         ports:
-        - 27017:27017
-    env:
+          - 27017:27017
       NODE_ENV: test
       DB_HOST: X
       DB_PORT: 27017
