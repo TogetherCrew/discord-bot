@@ -3,6 +3,18 @@ name: tc-discordBot
 on:
   push:
   pull_request:
+env:
+  NODE_ENV: test
+  DB_HOST: X
+  DB_PORT: 27017
+  DB_USER: X
+  DB_PASSWORD: X
+  DB_NAME: RnDAO
+  DISCROD_CLIENT_ID: X
+  DISCORD_CLIENT_SECRET: X
+  DISCORD_BOT_TOKEN: X
+  SENTRY_DSN: X
+  SENTRY_ENV: X
 
 jobs:
   test:
@@ -22,24 +34,13 @@ jobs:
           --health-retries 5
         ports:
           - 27017:27017
-      NODE_ENV: test
-      DB_HOST: X
-      DB_PORT: 27017
-      DB_USER: X
-      DB_PASSWORD: X
-      DB_NAME: RnDAO
-      DISCROD_CLIENT_ID: X
-      DISCORD_CLIENT_SECRET: X
-      DISCORD_BOT_TOKEN: X
-      SENTRY_DSN: X
-      SENTRY_ENV: X
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node }}
       - run: npm install
-      # - run: npm run test:ci
+      - run: npm run test:ci
       - run: npm run lint
       - run: npm run format
       - run: npm run build
