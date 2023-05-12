@@ -1,28 +1,29 @@
-name: tc-discordBot CI
+name: tc-discordBot
 
 on:
   push:
   pull_request:
+env:
+  NODE_ENV: test
+  DB_HOST: X
+  DB_PORT: 27017
+  DB_USER: X
+  DB_PASSWORD: X
+  DB_NAME: RnDAO
+  DISCROD_CLIENT_ID: X
+  DISCORD_CLIENT_SECRET: X
+  DISCORD_BOT_TOKEN: X
+  SENTRY_DSN: X
+  SENTRY_ENV: X
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  test:
     strategy:
       matrix:
-        node-version: [18.x]
-    steps:
-      - uses: actions/checkout@v3
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      - run: npm install
-      - run: npm run test:ci
-      - run: npm run lint
-      - run: npm run format
-      - run: npm run build
-    # name: test/node ${{ matrix.node }}/${{ matrix.platform }}
-    # runs-on: ${{ matrix.platform }}
+        platform: [ubuntu-latest]
+        node: ['18.x']
+    name: test/node ${{ matrix.node }}/${{ matrix.platform }}
+    runs-on: ${{ matrix.platform }}
     # services:
     #   mongodb:
     #     image: mongo
@@ -33,16 +34,16 @@ jobs:
     #       --health-retries 5
     #     ports:
     #       - 27017:27017
-    # steps:
-    #   - uses: actions/checkout@v2
-    #   - uses: actions/setup-node@v2
-    #     with:
-    #       node-version: ${{ matrix.node }}
-    #   - run: npm install
-    #   - run: npm run test:ci
-    #   - run: npm run lint
-    #   - run: npm run format
-    #   - run: npm run build
+    steps:
+      - uses: actions/checkout@v3
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+      - run: npm install
+      # - run: npm run test:ci
+      - run: npm run lint
+      - run: npm run format
+      - run: npm run build
 
   # coverage:
   #   needs: [test]
