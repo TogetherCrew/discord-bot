@@ -1,4 +1,4 @@
-name: tc-discordBot
+name: tc-discordBot CI
 
 on:
   push:
