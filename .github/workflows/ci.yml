@@ -3,18 +3,6 @@ name: tc-discordBot
 on:
   push:
   pull_request:
-env:
-  NODE_ENV: test
-  DB_HOST: X
-  DB_PORT: 27017
-  DB_USER: X
-  DB_PASSWORD: X
-  DB_NAME: RnDAO
-  DISCROD_CLIENT_ID: X
-  DISCORD_CLIENT_SECRET: X
-  DISCORD_BOT_TOKEN: X
-  SENTRY_DSN: X
-  SENTRY_ENV: X
 
 jobs:
   test:
@@ -24,16 +12,6 @@ jobs:
         node: ['18.x']
     name: test/node ${{ matrix.node }}/${{ matrix.platform }}
     runs-on: ${{ matrix.platform }}
-    # services:
-    #   mongodb:
-    #     image: mongo
-    #     options: >-
-    #       --health-cmd mongo
-    #       --health-interval 10s
-    #       --health-timeout 5s
-    #       --health-retries 5
-    #     ports:
-    #       - 27017:27017
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
