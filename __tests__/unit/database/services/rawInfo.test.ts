@@ -6,7 +6,7 @@ import {
   rawInfo2,
   rawInfo3,
 } from '../../../fixtures/rawInfo.fixture';
-import { rawInfoService } from '../../database/services';
+import { rawInfoService } from '../../../../src/database/services';
 import config from '../../../../src/config';
 
 setupTestDB();
@@ -136,7 +136,7 @@ describe('rawInfo service', () => {
         rawInfo2,
         rawInfo3,
       ]);
-      const result = await rawInfoService.updateRawInfos(
+      const result = await rawInfoService.updateManyRawInfo(
         connection,
         { content: rawInfo1.content },
         patchPayload
@@ -153,7 +153,7 @@ describe('rawInfo service', () => {
     });
 
     test('should return 0 when no rawInfos match the filter criteria', async () => {
-      const result = await rawInfoService.updateRawInfos(
+      const result = await rawInfoService.updateManyRawInfo(
         connection,
         { content: rawInfo3.content },
         patchPayload
@@ -186,14 +186,14 @@ describe('rawInfo service', () => {
         rawInfo2,
         rawInfo3,
       ]);
-      const result = await rawInfoService.deleteRawInfos(connection, {
+      const result = await rawInfoService.deleteManyRawInfo(connection, {
         content: rawInfo1.content,
       });
       expect(result).toEqual(2);
     });
 
     test('should return 0 when no rawInfo matches the filter criteria', async () => {
-      const result = await rawInfoService.deleteRawInfos(connection, {
+      const result = await rawInfoService.deleteManyRawInfo(connection, {
         content: rawInfo1.content,
       });
       expect(result).toEqual(0);
