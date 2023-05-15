@@ -1,7 +1,7 @@
-import { Client, Events, GatewayIntentBits } from 'discord.js'
-import { connectDB } from './database'
-import config from './config'
-import * as Sentry from '@sentry/node'
+import { Client, GatewayIntentBits } from 'discord.js';
+import config from './config';
+import * as Sentry from '@sentry/node';
+import loadEvents from './functions/loadEvents';
 
 Sentry.init({
   dsn: config.sentry.dsn,
@@ -10,10 +10,6 @@ Sentry.init({
 })
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] })
+loadEvents(client);
 
-client.once(Events.ClientReady, async (c) => {
-  console.log(`Ready! Logged in as ${c.user.tag}`)
-  await connectDB()
-})
-
-client.login(config.discord.botToken)
+client.login(config.discord.botToken);
