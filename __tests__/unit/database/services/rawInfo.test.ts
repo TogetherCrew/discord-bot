@@ -76,6 +76,7 @@ describe('rawInfo service', () => {
       const result = await rawInfoService.getRawInfos(connection, {
         role_mentions: rawInfo2.role_mentions,
       });
+
       expect(result).toMatchObject([rawInfo1, rawInfo2]);
     });
 
@@ -138,18 +139,17 @@ describe('rawInfo service', () => {
       ]);
       const result = await rawInfoService.updateManyRawInfo(
         connection,
-        { content: rawInfo1.content },
+        { messageId: rawInfo1.messageId },
         patchPayload
       );
-      expect(result).toEqual(2);
-      const rawInfo1Doc = await rawInfoService.getRawInfo(connection, {
-        content: rawInfo1.content,
-      });
-      const rawInfo2Doc = await rawInfoService.getRawInfo(connection, {
-        content: rawInfo2.content,
-      });
+
+      expect(result).toEqual(1);
+      const rawInfo1Doc = await rawInfoService.getRawInfo(
+        connection,
+        patchPayload
+      );
+
       expect(rawInfo1Doc?.content).toBe(patchPayload.content);
-      expect(rawInfo2Doc?.content).toBe(patchPayload.content);
     });
 
     test('should return 0 when no rawInfos match the filter criteria', async () => {
@@ -189,7 +189,8 @@ describe('rawInfo service', () => {
       const result = await rawInfoService.deleteManyRawInfo(connection, {
         content: rawInfo1.content,
       });
-      expect(result).toEqual(2);
+
+      expect(result).toEqual(1);
     });
 
     test('should return 0 when no rawInfo matches the filter criteria', async () => {

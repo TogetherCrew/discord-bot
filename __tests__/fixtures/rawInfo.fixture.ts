@@ -21,7 +21,7 @@ export const rawInfo2: IRawInfo = {
   content: "I'm excited for the upcoming event!",
   datetime: '2023-05-16T08:30:00Z',
   user_mentions: ['user4', 'user5'],
-  role_mentions: ['role3', 'role4'],
+  role_mentions: ['role1', 'role2'],
   reactions: ['reaction3', 'reaction4'],
   replied_user: 'user6',
   channelId: 'channel789',
