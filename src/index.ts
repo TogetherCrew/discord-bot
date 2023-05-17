@@ -9,7 +9,9 @@ Sentry.init({
   tracesSampleRate: 1.0,
 })
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds] })
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers] })
 loadEvents(client);
 
-client.login(config.discord.botToken);
+
+
+client.login(config.discord.botToken)

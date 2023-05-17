@@ -14,9 +14,11 @@ export default async function loadEvents(client: Client) {
             const filePath: string = path.join(eventsPath, file);
             const event = (await import(filePath)).default;
             if (event.once) {
+                console.log(event)
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 client.once(event.name, (...args: any[]) => event.execute(...args));
             } else {
+                console.log(event)
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 client.on(event.name, (...args: any[]) => event.execute(...args));
             }
