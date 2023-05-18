@@ -67,9 +67,9 @@ describe('guildMember service', () => {
 
     describe('updateGuildMember', () => {
         const updateBody: IGuildMemberUpdateBody = {
-            nick: 'NewNick',
+            username: 'userName',
             avatar: 'new-avatar.png',
-            roles: ['role3', 'role4']
+            roles: ['role1Id', 'role21Id']
         };
         test('should update an existing guild member that match the filter criteria', async () => {
             await guildMemberService.createGuildMember(connection, guildMember1);

@@ -10,9 +10,9 @@
     "dev": "env-cmd -f ./src/config/local.env nodemon ./src/index.ts",
     "test": "env-cmd -f ./src/config/test.env jest --detectOpenHandles",
     "test:ci": "jest --ci --detectOpenHandles",
-    "lint": "eslint '**/*.ts'",
-    "lint-fix": "eslint --fix '**/*.ts'",
-    "format": "prettier --write 'src/**/*.ts'"
+    "lint": "eslint **/*.ts",
+    "lint-fix": "eslint --fix **/*.ts",
+    "format": "prettier --write src/**/*.ts"
   },
   "repository": {
     "type": "git",
@@ -33,7 +33,7 @@
     "mongodb": "^5.4.0",
     "mongoose": "^6.11.1",
     "node-fetch": "^2.6.7",
-    "tc_dbcomm": "^1.1.6"
+    "tc_dbcomm": "^1.2.2"
   },
   "devDependencies": {
     "@types/jest": "^29.5.1",
