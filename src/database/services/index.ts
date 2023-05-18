@@ -1,3 +1,4 @@
-import guildMemberService from './guildMember.service'
+import guildMemberService from './guildMember.service';
+import rawInfoService from './rawInfo.service';
 
-export { guildMemberService }
+export { guildMemberService, rawInfoService };
