@@ -1,5 +1,3 @@
-import guildMemberService from './guildMember.service';
+import guildMemberService from './guildMember.service'
 
-export {
-    guildMemberService
-}
+export { guildMemberService }

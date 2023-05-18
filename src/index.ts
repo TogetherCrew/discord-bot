@@ -1,7 +1,7 @@
-import { Client, GatewayIntentBits } from 'discord.js';
-import config from './config';
-import * as Sentry from '@sentry/node';
-import loadEvents from './functions/loadEvents';
+import { Client, GatewayIntentBits } from 'discord.js'
+import config from './config'
+import * as Sentry from '@sentry/node'
+import loadEvents from './functions/loadEvents'
 
 Sentry.init({
   dsn: config.sentry.dsn,
@@ -9,9 +9,9 @@ Sentry.init({
   tracesSampleRate: 1.0,
 })
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers] })
-loadEvents(client);
-
-
+const client = new Client({
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers],
+})
+loadEvents(client)
 
 client.login(config.discord.botToken)

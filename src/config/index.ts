@@ -36,7 +36,7 @@ export default {
       envVars.NODE_ENV === 'local' || envVars.NODE_ENV === 'test'
         ? `mongodb://127.0.0.1:27017/RnDAO-${envVars.NODE_ENV}`
         : `mongodb://${envVars.DB_USER}:${envVars.DB_PASSWORD}@${envVars.DB_HOST}:${envVars.DB_PORT}/${envVars.DB_NAME}`,
-    botURL:
+    dbURL:
       envVars.NODE_ENV === 'local' || envVars.NODE_ENV === 'test'
         ? `mongodb://127.0.0.1:27017`
         : `mongodb://${envVars.DB_USER}:${envVars.DB_PASSWORD}@${envVars.DB_HOST}:${envVars.DB_PORT}`,
