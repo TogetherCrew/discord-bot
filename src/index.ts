@@ -2,6 +2,7 @@ import { Client, GatewayIntentBits } from 'discord.js'
 import config from './config'
 import * as Sentry from '@sentry/node'
 import loadEvents from './functions/loadEvents'
+import fetchMessages from './functions/fetchChannelMessages'
 
 Sentry.init({
   dsn: config.sentry.dsn,
@@ -10,8 +11,16 @@ Sentry.init({
 })
 
 const client = new Client({
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers],
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildMessages],
 })
-loadEvents(client)
 
-client.login(config.discord.botToken)
+
+
+async function app() {
+  await loadEvents(client)
+  await client.login(config.discord.botToken)
+  fetchMessages(client, '1109052576978173982', new Date())
+}
+
+
+app()
