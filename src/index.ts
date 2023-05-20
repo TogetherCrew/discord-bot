@@ -19,7 +19,7 @@ const client = new Client({
 async function app() {
   await loadEvents(client)
   await client.login(config.discord.botToken)
-  fetchMessages(client, '1109421233436635198', new Date())
+  fetchMessages(client, '1105752303820083221', new Date('2023-05-15'))
 }
 
 

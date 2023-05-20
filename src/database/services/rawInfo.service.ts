@@ -1,3 +1,4 @@
+import { Snowflake } from 'discord.js';
 import { Connection } from 'mongoose';
 import { IRawInfo } from 'tc_dbcomm';
 
@@ -157,6 +158,23 @@ async function deleteManyRawInfo(
   }
 }
 
+/**
+ * Retrieves the newest rawInfo object from the database for the specified channel.
+ * @param {Connection} connection - Mongoose connection object for the database.
+ * @param {Snowflake} channelId - The ID of the channel to retrieve the newest rawInfo object from.
+ * @returns {Promise<IRawInfo | null>} - A promise that resolves to the newest rawInfo object for the channel, or null if not found.
+ */
+async function getNewestRawInfoByChannel(
+  connection: Connection,
+  channelId: Snowflake
+): Promise<IRawInfo | null> {
+  try {
+    return await connection.models.RawInfo.findOne({ channelId, thread: null }).sort({ datetime: -1 });
+  } catch (error) {
+    throw new Error('Failed to retrieve rawInfo');
+  }
+}
+
 export default {
   createRawInfo,
   createRawInfos,
@@ -166,4 +184,5 @@ export default {
   deleteManyRawInfo,
   getRawInfo,
   getRawInfos,
+  getNewestRawInfoByChannel
 };

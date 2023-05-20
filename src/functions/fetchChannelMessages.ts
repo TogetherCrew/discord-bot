@@ -1,112 +1,109 @@
-import { Client, TextChannel, Message, MessageReaction, User } from 'discord.js';
+import { Client, TextChannel } from 'discord.js';
 import { PermissionsBitField } from 'discord.js'
+import { databaseService } from 'tc_dbcomm'
+import { rawInfoService } from '../database/services'
 
-async function reactions(message: Message) {
-    const reactions = message.reactions.cache;
+import config from '../config'
 
-    // Fetch and iterate over each reaction to print users who reacted
-    reactions.forEach(async (reaction) => {
-        console.log(`Reaction: ${reaction.emoji.name}`);
-        console.log(`Users who reacted:`);
-        const users = await reaction.users.fetch();
-        users.forEach((user) => {
-            console.log(`- ${user.id}`);
-            // You can access other properties of the user as needed, e.g., user.id, user.avatarURL(), etc.
-        });
-    })
-}
 
 export default async function fetchChannelMessages(client: Client, channelId: string, period: Date) {
     try {
         const guild = await client.guilds.fetch('980858613587382322');
         const channel = await guild.channels.fetch(channelId) as TextChannel;
+        const connection = databaseService.connectionFactory(
+            '980858613587382322',
+            config.mongoose.dbURL
+        )
 
-        if (!client.user) {
-            throw new Error();
+        const rawInfo = await rawInfoService.getNewestRawInfoByChannel(connection, channelId);
+        console.log(period)
+        if (!rawInfo) {
+            let lastMessageId = 'null';
+            const fetchLimit = 10;
+            let fetchedMessages = await channel.messages.fetch({ limit: fetchLimit });
+            let shouldFetch = true;
+            while (shouldFetch) {
+                console.log(fetchedMessages.map((msg) => { return { content: msg.content, createdAt: msg.createdAt } }));
+                console.log('*******************');
+
+                const lastMessage = fetchedMessages.last();
+                if (!lastMessage || lastMessage.createdAt < period) {
+                    // need to filter
+                    shouldFetch = false;
+
+                }
+                else {
+                    lastMessageId = lastMessage.id;
+                }
+                fetchedMessages = await channel.messages.fetch({ limit: fetchLimit, before: lastMessageId });
+            }
         }
-        const botMember = await guild.members.fetch(client.user.id);
-        const botPermissions = channel.permissionsFor(botMember);
-        const canReadMessageHistoryAndViewChannel = botPermissions.has([PermissionsBitField.Flags.ReadMessageHistory, PermissionsBitField.Flags.ViewChannel]);
-        console.log(canReadMessageHistoryAndViewChannel)
-        const messages = await channel.messages.fetch({ limit: 100 });
 
-        for (const message of messages) {
-            console.log((message.reactions.cache));
-            const mentionedUsers = message.mentions.users;
-            const mentionedRoles = message.mentions.roles;
 
-            mentionedRoles.forEach((role) => {
-                console.log(`Mentioned role: ${role.id}`);
-                // You can access other properties of the role as needed, e.g., role.id, role.hexColor, etc.
-            });
-            mentionedUsers.forEach((user) => {
-                console.log(`Mentioned user: ${user.id}`);
-                // You can access other properties of the user as needed, e.g., user.id, user.avatarURL(), etc.
-            });
 
-            // await reactions(message);
-            // Get all reactions on the message
-            const reactions = message.reactions.cache;
 
-            // Iterate over each reaction
-            reactions.forEach((reaction: MessageReaction) => {
-                // Get the emoji
-                const emoji = reaction.emoji;
 
-                // Get all users who reacted with this emoji
-                reaction.users.fetch().then((users: Map<string, User>) => {
-                    // Iterate over each user
-                    users.forEach((user: User) => {
-                        // Extract the user ID and the emoji
-                        const userId = user.id;
-                        const emojiName = emoji.name;
 
-                        // Do whatever you want with the user ID and emoji
-                        console.log(`User ID: ${userId}, Emoji: ${emojiName}`);
-                    });
-                });
-            });
-            console.log('*******************')
-        }
-        // messages.forEach(async (message) => {
-        //     // console.log((message.reactions.cache));
+        // if (!client.user) {
+        //     throw new Error();
+        // }
+        // const botMember = await guild.members.fetch(client.user.id);
+        // const botPermissions = channel.permissionsFor(botMember);
+        // const canReadMessageHistoryAndViewChannel = botPermissions.has([PermissionsBitField.Flags.ReadMessageHistory, PermissionsBitField.Flags.ViewChannel]);
+        // console.log(canReadMessageHistoryAndViewChannel)
+        // const messages = await channel.messages.fetch({ limit: 100 });
+        // // Convert messages to an array
+        // // Convert messages to an array
+        // const messagesArray = [...messages.values()];
+
+        // // For each message
+        // for (const message of messagesArray) {
         //     const mentionedUsers = message.mentions.users;
         //     const mentionedRoles = message.mentions.roles;
 
-        //     mentionedRoles.forEach((role) => {
-        //         console.log(`Mentioned role: ${role.id}`);
-        //         // You can access other properties of the role as needed, e.g., role.id, role.hexColor, etc.
-        //     });
-        //     mentionedUsers.forEach((user) => {
-        //         console.log(`Mentioned user: ${user.id}`);
-        //         // You can access other properties of the user as needed, e.g., user.id, user.avatarURL(), etc.
-        //     });
+        //     console.log(`type: ${message.type}`)
+        //     console.log(`author: ${message.author.id}`)
+        //     console.log(`content: ${message.content}`)
+        //     console.log(`createdDate: ${message.createdAt}`)
+        //     console.log(`message Id: ${message.id}`)
+        //     console.log(`role mentions: ${mentionedRoles.map((role) => role.id)}`)
+        //     console.log(`user mentions: ${mentionedUsers.map((user) => user.id)}`)
+        //     if (message.type === 19) {
+        //         console.log(`replied user: ${message.mentions.repliedUser?.id}`);
+        //     } else {
+        //         console.log(`replied user: ${null}`);
+        //     }
 
-        //     // await reactions(message);
-        //     // Get all reactions on the message
+
         //     const reactions = message.reactions.cache;
-
-        //     // Iterate over each reaction
-        //     reactions.forEach((reaction: MessageReaction) => {
-        //         // Get the emoji
+        //     const reactionsArray = [...reactions.values()];
+        //     const reactionsArr: any = [];
+        //     for (const reaction of reactionsArray) {
         //         const emoji = reaction.emoji;
 
-        //         // Get all users who reacted with this emoji
-        //         reaction.users.fetch().then((users: Map<string, User>) => {
-        //             // Iterate over each user
-        //             users.forEach((user: User) => {
-        //                 // Extract the user ID and the emoji
-        //                 const userId = user.id;
-        //                 const emojiName = emoji.name;
+        //         const users = await reaction.users.fetch();
 
-        //                 // Do whatever you want with the user ID and emoji
-        //                 console.log(`User ID: ${userId}, Emoji: ${emojiName}`);
-        //             });
+        //         users.forEach((user) => {
+        //             const userId = user.id;
+        //             const emojiName = emoji.name;
+        //             reactionsArr.push({ userId, emojiName })
         //         });
-        //     });
-        //     console.log('*******************')
-        // });
+        //     }
+        //     console.log(`reactions: ${reactionsArr}`)
 
+        //     console.log(`channel Id: ${message.channelId}`)
+        //     console.log(`channel name: ${message.channel.name}`)
+        //     if (message.thread) {
+        //         console.log(`thread Id: ${message.thread?.id}`)
+        //         console.log(`thread name: ${message.thread?.name}`)
+        //     } else {
+        //         console.log(`thread Id: ${null}`)
+        //         console.log(`thread name: ${null}`)
+        //     }
+
+        //     console.log('*******************');
+
+        // }   
     } catch (err) {
         console.log(err)
     }
