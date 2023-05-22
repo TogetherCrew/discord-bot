@@ -27,12 +27,14 @@
   "dependencies": {
     "@sentry/node": "^7.51.2",
     "babel-jest": "^29.5.0",
+    "bullmq": "^3.13.4",
     "discord.js": "^14.11.0",
     "joi": "^17.9.2",
     "moment": "^2.29.4",
     "mongodb": "^5.4.0",
     "mongoose": "^6.11.1",
     "node-fetch": "^2.6.7",
+    "redis": "^4.6.6",
     "tc_dbcomm": "^1.2.2"
   },
   "devDependencies": {

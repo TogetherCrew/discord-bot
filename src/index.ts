@@ -1,17 +1,68 @@
-import { Client, GatewayIntentBits } from 'discord.js'
-import config from './config'
-import * as Sentry from '@sentry/node'
-import loadEvents from './functions/loadEvents'
+import { Client, GatewayIntentBits } from 'discord.js';
+import config from './config';
+import * as Sentry from '@sentry/node';
+import loadEvents from './functions/loadEvents';
+import { Queue, Worker, Job } from 'bullmq';
 
 Sentry.init({
   dsn: config.sentry.dsn,
   environment: config.sentry.env,
   tracesSampleRate: 1.0,
-})
+});
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers],
-})
-loadEvents(client)
+});
+loadEvents(client);
 
-client.login(config.discord.botToken)
+client.login(config.discord.botToken);
+
+// Define your function to extract messages
+async function extractMessagesDaily() {
+  try {
+    // Log success
+    console.log('Message extraction completed successfully.');
+  } catch (error) {
+    // Log the error if extraction fails
+    console.error('An error occurred during message extraction:', error);
+  }
+}
+
+// Create a queue instance with the Redis connection
+const queue = new Queue('discordExtractQueue', {
+  connection: {
+    host: 'localhost',
+    port: 6379,
+  },
+});
+queue.add('extractMessagesDaily', {}, {
+  repeat: {
+    cron: '0 12 * * *', // Run once a day at 12 PM
+  },
+  jobId: 'extractJob', // Optional: Provide a unique ID for the job
+  attempts: 3, // Number of times to retry the job if it fails
+  backoff: {
+    type: 'exponential',
+    delay: 1000, // Initial delay between retries in milliseconds
+  },
+} as never);
+
+// Create a worker to process the job
+const worker = new Worker(
+  'discordExtractQueue',
+  async (job: Job<any, any, string> | undefined) => {
+    if (job) {
+      // Call the extractMessagesDaily function
+      await extractMessagesDaily();
+    }
+  }
+);
+
+// Listen for completed and failed events to log the job status
+worker.on('completed', (job) => {
+  console.log(`Job ${job?.id} completed successfully.`);
+});
+
+worker.on('failed', (job, error) => {
+  console.error(`Job ${job?.id} failed with error:`, error);
+});
