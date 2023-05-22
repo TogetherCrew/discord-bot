@@ -34,6 +34,17 @@ describe('rawInfo service', () => {
       const result = await rawInfoService.createRawInfo(connection, rawInfo1);
       expect(result).toBeDefined();
       expect(result.messageId).toEqual(rawInfo1.messageId);
+
+      const rawInfoDoc1 = await rawInfoService.getRawInfo(connection, {
+        channelId: rawInfo1.channelId,
+      });
+
+      expect(rawInfoDoc1).toBeDefined();
+      expect(rawInfoDoc1).toMatchObject({
+        id: rawInfo1._id.toHexString(),
+        author: rawInfo1.author,
+        messageId: rawInfo1.messageId,
+      });
     });
   });
 
@@ -45,6 +56,33 @@ describe('rawInfo service', () => {
         rawInfo3,
       ]);
       expect(result).toMatchObject([rawInfo1, rawInfo2, rawInfo3]);
+
+      const rawInfoDoc1 = await rawInfoService.getRawInfo(connection, {
+        channelId: rawInfo1.channelId,
+      });
+      const rawInfoDoc2 = await rawInfoService.getRawInfo(connection, {
+        channelId: rawInfo2.channelId,
+      });
+      const rawInfoDoc3 = await rawInfoService.getRawInfo(connection, {
+        channelId: rawInfo3.channelId,
+      });
+
+      expect([rawInfoDoc1, rawInfoDoc2, rawInfoDoc3]).toBeDefined();
+      expect(rawInfoDoc1).toMatchObject({
+        id: rawInfo1._id.toHexString(),
+        author: rawInfo1.author,
+        messageId: rawInfo1.messageId,
+      });
+      expect(rawInfoDoc2).toMatchObject({
+        id: rawInfo2._id.toHexString(),
+        author: rawInfo2.author,
+        messageId: rawInfo2.messageId,
+      });
+      expect(rawInfoDoc3).toMatchObject({
+        id: rawInfo3._id.toHexString(),
+        author: rawInfo3.author,
+        messageId: rawInfo3.messageId,
+      });
     });
   });
 
@@ -94,69 +132,92 @@ describe('rawInfo service', () => {
   });
 
   describe('updateRawInfo', () => {
-    const patchPayload: IRawInfo = {
-      channelId: 'channel1',
-      messageId: 'message123',
-      threadId: 'thread456',
-      content: 'new content',
+    const updateBody: IRawInfo = {
+      channelId: 'channel1up',
+      messageId: 'test update',
+      threadId: 'thread46',
+      content: 'update content',
     };
 
     test('should update an existing rawInfo that matches the filter criteria', async () => {
       await rawInfoService.createRawInfo(connection, rawInfo1);
+
       const result = await rawInfoService.updateRawInfo(
         connection,
-
         { messageId: rawInfo1.messageId },
-        patchPayload
+        updateBody
       );
 
-      expect(result).toMatchObject(patchPayload);
+      expect(result).toMatchObject(updateBody);
+
+      const updatedRawInfoDoc = await rawInfoService.getRawInfo(connection, {
+        channelId: updateBody.channelId,
+      });
+
+      expect(updatedRawInfoDoc).toBeDefined();
+      expect(updatedRawInfoDoc).toMatchObject({
+        channelId: updateBody.channelId,
+        messageId: updateBody.messageId,
+        threadId: updateBody.threadId,
+        content: updateBody.content,
+      });
     });
 
     test('should return null when no rawInfo matches the filter criteria', async () => {
       const result = await rawInfoService.updateRawInfo(
         connection,
         { messageId: rawInfo1.messageId },
-        patchPayload
+        updateBody
       );
       expect(result).toBeNull();
     });
   });
 
   describe('updateRawInfos', () => {
-    const patchPayload: IRawInfo = {
-      channelId: 'channel1',
-      messageId: 'message123',
-      threadId: 'thread456',
-      content: 'new content',
+    const updateBody: IRawInfo = {
+      channelId: 'channel1up',
+      messageId: 'test update',
+      threadId: 'thread46',
+      content: 'update content1',
     };
 
     test('should update rawInfos that match the filter criteria', async () => {
-      await rawInfoService.createRawInfos(connection, [
-        rawInfo1,
-        rawInfo2,
-        rawInfo3,
-      ]);
+      await rawInfoService.createRawInfos(connection, [rawInfo1, rawInfo2]);
       const result = await rawInfoService.updateManyRawInfo(
         connection,
-        { messageId: rawInfo1.messageId },
-        patchPayload
+        { role_mentions: rawInfo1.role_mentions },
+        updateBody
       );
 
-      expect(result).toEqual(1);
+      expect(result).toEqual(2);
       const rawInfo1Doc = await rawInfoService.getRawInfo(
         connection,
-        patchPayload
+        updateBody
+      );
+      const rawInfo2Doc = await rawInfoService.getRawInfo(
+        connection,
+        updateBody
       );
 
-      expect(rawInfo1Doc?.content).toBe(patchPayload.content);
+      expect(rawInfo1Doc).toMatchObject({
+        channelId: updateBody.channelId,
+        messageId: updateBody.messageId,
+        threadId: updateBody.threadId,
+        content: updateBody.content,
+      });
+      expect(rawInfo2Doc).toMatchObject({
+        channelId: updateBody.channelId,
+        messageId: updateBody.messageId,
+        threadId: updateBody.threadId,
+        content: updateBody.content,
+      });
     });
 
     test('should return 0 when no rawInfos match the filter criteria', async () => {
       const result = await rawInfoService.updateManyRawInfo(
         connection,
         { content: rawInfo3.content },
-        patchPayload
+        updateBody
       );
       expect(result).toEqual(0);
     });

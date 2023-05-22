@@ -104,7 +104,7 @@ describe('guildService', () => {
         updateBody
       );
 
-      expect(result).toBeNull(0);
+      expect(result).toBe(0);
     });
   });
 });
