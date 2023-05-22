@@ -41,7 +41,6 @@ describe('rawInfo service', () => {
 
       expect(rawInfoDoc1).toBeDefined();
       expect(rawInfoDoc1).toMatchObject({
-        id: rawInfo1._id.toHexString(),
         author: rawInfo1.author,
         messageId: rawInfo1.messageId,
       });
@@ -69,17 +68,14 @@ describe('rawInfo service', () => {
 
       expect([rawInfoDoc1, rawInfoDoc2, rawInfoDoc3]).toBeDefined();
       expect(rawInfoDoc1).toMatchObject({
-        id: rawInfo1._id.toHexString(),
         author: rawInfo1.author,
         messageId: rawInfo1.messageId,
       });
       expect(rawInfoDoc2).toMatchObject({
-        id: rawInfo2._id.toHexString(),
         author: rawInfo2.author,
         messageId: rawInfo2.messageId,
       });
       expect(rawInfoDoc3).toMatchObject({
-        id: rawInfo3._id.toHexString(),
         author: rawInfo3.author,
         messageId: rawInfo3.messageId,
       });

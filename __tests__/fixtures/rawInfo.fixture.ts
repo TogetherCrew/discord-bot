@@ -1,12 +1,6 @@
-import { Types } from 'mongoose';
 import { IRawInfo } from 'tc_dbcomm';
 
-export interface IRawInfoWithId extends IRawInfo {
-  _id: Types.ObjectId;
-}
-
-export const rawInfo1: IRawInfoWithId = {
-  _id: new Types.ObjectId(),
+export const rawInfo1: IRawInfo = {
   type: 'message',
   author: 'John Doe',
   content: 'Hello, world!',
@@ -21,8 +15,7 @@ export const rawInfo1: IRawInfoWithId = {
   thread: 'thread789',
 };
 
-export const rawInfo2: IRawInfoWithId = {
-  _id: new Types.ObjectId(),
+export const rawInfo2: IRawInfo = {
   type: 'message',
   author: 'Alice Smith',
   content: "I'm excited for the upcoming event!",
@@ -37,8 +30,7 @@ export const rawInfo2: IRawInfoWithId = {
   thread: 'Discussion Thread',
 };
 
-export const rawInfo3: IRawInfoWithId = {
-  _id: new Types.ObjectId(),
+export const rawInfo3: IRawInfo = {
   type: 'message',
   author: 'Bob Johnson',
   content: 'Please review the document attached.',

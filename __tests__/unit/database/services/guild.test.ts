@@ -48,7 +48,7 @@ describe('guildService', () => {
       ],
       isDisconnected: false,
     };
-    test('should retrieve an existing guild that matches the filter criteria', async () => {
+    test('should update an existing guild that matches the filter criteria', async () => {
       await insertManyGuilds([guild1]);
       const result = await guildService.updateGuild(
         { guildId: guild1.guildId },
@@ -89,7 +89,7 @@ describe('guildService', () => {
       ],
       isDisconnected: false,
     };
-    test('should retrieve an existing guild that matches the filter criteria', async () => {
+    test('should update an existing guilds that matches the filter criteria', async () => {
       await insertManyGuilds([guild1, guild2]);
       const result = await guildService.updateManyGuilds(
         { user: guild1.user },
