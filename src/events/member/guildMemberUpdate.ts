@@ -1,7 +1,7 @@
-import { Events, GuildMember } from 'discord.js'
-import { guildMemberService } from '../../database/services'
-import { databaseService } from 'tc_dbcomm'
-import config from '../../config'
+import { Events, GuildMember } from 'discord.js';
+import { guildMemberService } from '../../database/services';
+import { databaseService } from 'tc_dbcomm';
+import config from '../../config';
 
 export default {
   name: Events.GuildMemberUpdate,
@@ -11,7 +11,7 @@ export default {
       const connection = databaseService.connectionFactory(
         oldMember.guild.id,
         config.mongoose.dbURL
-      )
+      );
       const guildMember = await guildMemberService.updateGuildMember(
         connection,
         { discordId: oldMember.user.id },
@@ -22,7 +22,7 @@ export default {
           roles: newMember.roles.cache.map((role) => role.id),
           discriminator: newMember.user.discriminator,
         }
-      )
+      );
       if (!guildMember) {
         guildMemberService.createGuildMember(connection, {
           discordId: newMember.user.id,
@@ -32,11 +32,11 @@ export default {
           roles: newMember.roles.cache.map((role) => role.id),
           isBot: newMember.user.bot,
           discriminator: newMember.user.discriminator,
-        })
+        });
       }
     } catch (err) {
       // TODO: improve error handling
-      console.log(err)
+      console.log(err);
     }
   },
-}
+};

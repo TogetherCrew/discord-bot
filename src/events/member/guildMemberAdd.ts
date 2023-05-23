@@ -1,7 +1,7 @@
-import { Events, GuildMember } from 'discord.js'
-import { guildMemberService } from '../../database/services'
-import { databaseService } from 'tc_dbcomm'
-import config from '../../config'
+import { Events, GuildMember } from 'discord.js';
+import { guildMemberService } from '../../database/services';
+import { databaseService } from 'tc_dbcomm';
+import config from '../../config';
 
 export default {
   name: Events.GuildMemberAdd,
@@ -11,7 +11,7 @@ export default {
       const connection = databaseService.connectionFactory(
         member.guild.id,
         config.mongoose.dbURL
-      )
+      );
       guildMemberService.createGuildMember(connection, {
         discordId: member.user.id,
         username: member.user.username,
@@ -20,10 +20,10 @@ export default {
         roles: member.roles.cache.map((role) => role.id),
         isBot: member.user.bot,
         discriminator: member.user.discriminator,
-      })
+      });
     } catch (err) {
       // TODO: improve error handling
-      console.log(err)
+      console.log(err);
     }
   },
-}
+};

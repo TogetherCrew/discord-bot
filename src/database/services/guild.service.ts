@@ -1,4 +1,4 @@
-import { Guild, IGuild, IGuildUpdateBody } from 'tc_dbcomm'
+import { Guild, IGuild, IGuildUpdateBody } from 'tc_dbcomm';
 
 /**
  * get guild by query
@@ -6,7 +6,7 @@ import { Guild, IGuild, IGuildUpdateBody } from 'tc_dbcomm'
  * @returns {Promise<IGuild | null>}
  */
 async function getGuild(filter: object): Promise<IGuild | null> {
-  return Guild.findOne(filter)
+  return Guild.findOne(filter);
 }
 
 /**
@@ -16,9 +16,9 @@ async function getGuild(filter: object): Promise<IGuild | null> {
  */
 async function getGuilds(filter: object): Promise<IGuild[]> {
   try {
-    return await Guild.find(filter)
+    return await Guild.find(filter);
   } catch (error) {
-    throw new Error('Failed to get guilds.')
+    throw new Error('Failed to get guilds.');
   }
 }
 
@@ -33,14 +33,14 @@ async function updateGuild(
   UpdateBody: IGuildUpdateBody
 ): Promise<IGuild | null> {
   try {
-    const guild = await Guild.findOne(filter)
+    const guild = await Guild.findOne(filter);
     if (!guild) {
-      return null
+      return null;
     }
-    Object.assign(guild, UpdateBody)
-    return await guild.save()
+    Object.assign(guild, UpdateBody);
+    return await guild.save();
   } catch (error) {
-    throw new Error('Failed to update guild.')
+    throw new Error('Failed to update guild.');
   }
 }
 
@@ -55,11 +55,11 @@ async function updateManyGuilds(
   UpdateBody: IGuildUpdateBody
 ): Promise<number> {
   try {
-    const updateResult = await Guild.updateMany(filter, UpdateBody)
-    const modifiedCount = updateResult.modifiedCount
-    return modifiedCount
+    const updateResult = await Guild.updateMany(filter, UpdateBody);
+    const modifiedCount = updateResult.modifiedCount;
+    return modifiedCount;
   } catch (error) {
-    throw new Error('Failed to update guilds.')
+    throw new Error('Failed to update guilds.');
   }
 }
 
@@ -68,4 +68,4 @@ export default {
   getGuilds,
   updateGuild,
   updateManyGuilds,
-}
+};

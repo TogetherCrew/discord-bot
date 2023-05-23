@@ -1,4 +1,4 @@
-import Joi from 'joi'
+import Joi from 'joi';
 
 const envVarsSchema = Joi.object()
   .keys({
@@ -20,14 +20,14 @@ const envVarsSchema = Joi.object()
       .valid('production', 'development', 'local', 'test')
       .required(),
   })
-  .unknown()
+  .unknown();
 
 const { value: envVars, error } = envVarsSchema
   .prefs({ errors: { label: 'key' } })
-  .validate(process.env)
+  .validate(process.env);
 
 if (error) {
-  throw new Error(`Config validation error: ${error.message}`)
+  throw new Error(`Config validation error: ${error.message}`);
 }
 export default {
   env: envVars.NODE_ENV,
@@ -50,4 +50,4 @@ export default {
     dsn: envVars.SENTRY_DSN,
     env: envVars.SENTRY_ENV,
   },
-}
+};

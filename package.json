@@ -33,7 +33,7 @@
     "mongodb": "^5.4.0",
     "mongoose": "^6.11.1",
     "node-fetch": "^2.6.7",
-    "tc_dbcomm": "^1.2.2"
+    "tc_dbcomm": "^2.2.8"
   },
   "devDependencies": {
     "@types/jest": "^29.5.1",
