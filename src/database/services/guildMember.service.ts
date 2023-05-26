@@ -14,7 +14,6 @@ async function createGuildMember(
   try {
     return await connection.models.GuildMember.create(guildMember);
   } catch (error) {
-    console.log(error);
     throw new Error('Failed to create guild member');
   }
 }

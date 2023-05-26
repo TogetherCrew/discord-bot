@@ -1,6 +1,5 @@
-import { Snowflake } from 'discord.js';
 import { Connection } from 'mongoose';
-import { IRawInfo } from 'tc_dbcomm';
+import { IRawInfo, IRawInfoUpdateBody } from 'tc_dbcomm';
 
 /**
  * Create a rawInfo entry in the database.
@@ -35,6 +34,8 @@ async function createRawInfos(
       rawInfos.map((rawInfo) => rawInfo)
     );
   } catch (error) {
+    console.log(error);
+
     throw new Error('Failed to create rawInfos');
   }
 }
@@ -83,7 +84,7 @@ async function getRawInfos(
 async function updateRawInfo(
   connection: Connection,
   filter: object,
-  UpdateBody: IRawInfo
+  UpdateBody: IRawInfoUpdateBody
 ): Promise<IRawInfo | null> {
   try {
     const rawInfo = await connection.models.RawInfo.findOne(filter);
@@ -107,7 +108,7 @@ async function updateRawInfo(
 async function updateManyRawInfo(
   connection: Connection,
   filter: object,
-  UpdateBody: IRawInfo
+  UpdateBody: IRawInfoUpdateBody
 ): Promise<number> {
   try {
     const updateResult = await connection.models.RawInfo.updateMany(
@@ -159,44 +160,39 @@ async function deleteManyRawInfo(
 }
 
 /**
- * Retrieves the newest rawInfo object from the database for the specified channel.
+ * Retrieves the oldest rawInfo object from the database.
  * @param {Connection} connection - Mongoose connection object for the database.
- * @param {Snowflake} channelId - The ID of the channel to retrieve the newest rawInfo object from.
- * @returns {Promise<IRawInfo | null>} - A promise that resolves to the newest rawInfo object for the channel, or null if not found.
+ * @param {object} filter - An object specifying the filter criteria to match the desired rawInfo entry.
+ * @returns {Promise<IRawInfo | null>} - A promise that resolves to the oldest rawInfo object for the channel, or null if not found.
  */
-async function getNewestRawInfoByChannel(
+async function getNewestRawInfo(
   connection: Connection,
-  channelId: Snowflake
+  filter: object,
 ): Promise<IRawInfo | null> {
   try {
-    return await connection.models.RawInfo.findOne({
-      channelId,
-      threadId: null,
-    }).sort({ createdDate: -1 });
+    return await connection.models.RawInfo.findOne(filter).sort({ createdDate: -1 });
   } catch (error) {
     throw new Error('Failed to retrieve rawInfo');
   }
 }
 
 /**
- * Retrieves the oldest rawInfo object from the database for the specified channel.
+ * Retrieves the oldest rawInfo object from the database.
  * @param {Connection} connection - Mongoose connection object for the database.
- * @param {Snowflake} channelId - The ID of the channel to retrieve the oldest rawInfo object from.
+ * @param {object} filter - An object specifying the filter criteria to match the desired rawInfo entry.
  * @returns {Promise<IRawInfo | null>} - A promise that resolves to the oldest rawInfo object for the channel, or null if not found.
  */
-async function getOldestRawInfoByChannel(
+async function getOldestRawInfo(
   connection: Connection,
-  channelId: Snowflake
+  filter: object,
 ): Promise<IRawInfo | null> {
   try {
-    return await connection.models.RawInfo.findOne({
-      channelId,
-      threadId: null,
-    }).sort({ createdDate: 1 });
+    return await connection.models.RawInfo.findOne(filter).sort({ createdDate: 1 });
   } catch (error) {
     throw new Error('Failed to retrieve rawInfo');
   }
 }
+
 
 export default {
   createRawInfo,
@@ -207,6 +203,6 @@ export default {
   deleteManyRawInfo,
   getRawInfo,
   getRawInfos,
-  getNewestRawInfoByChannel,
-  getOldestRawInfoByChannel
+  getNewestRawInfo,
+  getOldestRawInfo
 };

@@ -1,5 +1,5 @@
 import mongoose, { Connection } from 'mongoose';
-import { IRawInfo, rawInfoSchema } from 'tc_dbcomm';
+import { IRawInfo, IRawInfoUpdateBody, rawInfoSchema } from 'tc_dbcomm';
 import setupTestDB from '../../../utils/setupTestDB';
 import {
   rawInfo1,
@@ -94,11 +94,9 @@ describe('rawInfo service', () => {
   });
 
   describe('updateRawInfo', () => {
-    const patchPayload: IRawInfo = {
+    const updateBody: IRawInfoUpdateBody = {
       channelId: 'channel1',
-      messageId: 'message123',
       threadId: 'thread456',
-      content: 'new content',
     };
 
     test('should update an existing rawInfo that matches the filter criteria', async () => {
@@ -107,28 +105,26 @@ describe('rawInfo service', () => {
         connection,
 
         { messageId: rawInfo1.messageId },
-        patchPayload
+        updateBody
       );
 
-      expect(result).toMatchObject(patchPayload);
+      expect(result).toMatchObject(updateBody);
     });
 
     test('should return null when no rawInfo matches the filter criteria', async () => {
       const result = await rawInfoService.updateRawInfo(
         connection,
         { messageId: rawInfo1.messageId },
-        patchPayload
+        updateBody
       );
       expect(result).toBeNull();
     });
   });
 
   describe('updateRawInfos', () => {
-    const patchPayload: IRawInfo = {
+    const updateBody: IRawInfoUpdateBody = {
       channelId: 'channel1',
-      messageId: 'message123',
       threadId: 'thread456',
-      content: 'new content',
     };
 
     test('should update rawInfos that match the filter criteria', async () => {
@@ -140,23 +136,23 @@ describe('rawInfo service', () => {
       const result = await rawInfoService.updateManyRawInfo(
         connection,
         { messageId: rawInfo1.messageId },
-        patchPayload
+        updateBody
       );
 
       expect(result).toEqual(1);
       const rawInfo1Doc = await rawInfoService.getRawInfo(
         connection,
-        patchPayload
+        updateBody
       );
 
-      expect(rawInfo1Doc?.content).toBe(patchPayload.content);
+      expect(rawInfo1Doc?.content).toBe(updateBody.content);
     });
 
     test('should return 0 when no rawInfos match the filter criteria', async () => {
       const result = await rawInfoService.updateManyRawInfo(
         connection,
         { content: rawInfo3.content },
-        patchPayload
+        updateBody
       );
       expect(result).toEqual(0);
     });
