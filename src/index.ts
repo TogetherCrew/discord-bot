@@ -2,6 +2,7 @@ import { Client, GatewayIntentBits } from 'discord.js';
 import config from './config';
 import * as Sentry from '@sentry/node';
 import loadEvents from './functions/loadEvents';
+import guildExtraction from './functions/guildExtraction';
 import { Queue, Worker, Job } from 'bullmq';
 
 Sentry.init({
@@ -11,11 +12,14 @@ Sentry.init({
 });
 
 const client = new Client({
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers],
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildMessages],
 });
-loadEvents(client);
 
-client.login(config.discord.botToken);
+async function app() {
+  await loadEvents(client);
+  await client.login(config.discord.botToken);
+  guildExtraction(client, '980858613587382322');
+}
 
 // Define your function to extract messages
 async function extractMessagesDaily() {
@@ -48,21 +52,21 @@ queue.add('extractMessagesDaily', {}, {
 } as never);
 
 // Create a worker to process the job
-const worker = new Worker(
-  'discordExtractQueue',
-  async (job: Job<any, any, string> | undefined) => {
-    if (job) {
-      // Call the extractMessagesDaily function
-      await extractMessagesDaily();
-    }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const worker = new Worker('discordExtractQueue', async (job: Job<any, any, string> | undefined) => {
+  if (job) {
+    // Call the extractMessagesDaily function
+    await extractMessagesDaily();
   }
-);
+});
 
 // Listen for completed and failed events to log the job status
-worker.on('completed', (job) => {
+worker.on('completed', job => {
   console.log(`Job ${job?.id} completed successfully.`);
 });
 
 worker.on('failed', (job, error) => {
   console.error(`Job ${job?.id} failed with error:`, error);
 });
+
+app();

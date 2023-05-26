@@ -1,5 +1,5 @@
 import { Connection } from 'mongoose';
-import { IRawInfo } from 'tc_dbcomm';
+import { IRawInfo, IRawInfoUpdateBody } from 'tc_dbcomm';
 
 /**
  * Create a rawInfo entry in the database.
@@ -7,10 +7,7 @@ import { IRawInfo } from 'tc_dbcomm';
  * @param {IRawInfo} rawInfo - The rawInfo object to be created.
  * @returns {Promise<IRawInfo>} - A promise that resolves to the created rawInfo object.
  */
-async function createRawInfo(
-  connection: Connection,
-  rawInfo: IRawInfo
-): Promise<IRawInfo> {
+async function createRawInfo(connection: Connection, rawInfo: IRawInfo): Promise<IRawInfo> {
   try {
     return await connection.models.RawInfo.create(rawInfo);
   } catch (error) {
@@ -25,15 +22,12 @@ async function createRawInfo(
  * @param {IRawInfo[]} rawInfos - An array of rawInfo objects to be created.
  * @returns {Promise<IRawInfo[]>} - A promise that resolves to an array of the created rawInfo objects.
  */
-async function createRawInfos(
-  connection: Connection,
-  rawInfos: IRawInfo[]
-): Promise<IRawInfo[]> {
+async function createRawInfos(connection: Connection, rawInfos: IRawInfo[]): Promise<IRawInfo[]> {
   try {
-    return await connection.models.RawInfo.insertMany(
-      rawInfos.map((rawInfo) => rawInfo)
-    );
+    return await connection.models.RawInfo.insertMany(rawInfos.map(rawInfo => rawInfo));
   } catch (error) {
+    console.log(error);
+
     throw new Error('Failed to create rawInfos');
   }
 }
@@ -44,10 +38,7 @@ async function createRawInfos(
  * @param {object} filter - An object specifying the filter criteria to match the desired rawInfo entry.
  * @returns {Promise<IRawInfo | null>} - A promise that resolves to the matching rawInfo object or null if not found.
  */
-async function getRawInfo(
-  connection: Connection,
-  filter: object
-): Promise<IRawInfo | null> {
+async function getRawInfo(connection: Connection, filter: object): Promise<IRawInfo | null> {
   try {
     return await connection.models.RawInfo.findOne(filter);
   } catch (error) {
@@ -61,10 +52,7 @@ async function getRawInfo(
  * @param {object} filter - An object specifying the filter criteria to match the desired rawInfo entries.
  * @returns {Promise<IRawInfo[]>} - A promise that resolves to an array of the matching rawInfo objects.
  */
-async function getRawInfos(
-  connection: Connection,
-  filter: object
-): Promise<IRawInfo[]> {
+async function getRawInfos(connection: Connection, filter: object): Promise<IRawInfo[]> {
   try {
     return await connection.models.RawInfo.find(filter);
   } catch (error) {
@@ -82,7 +70,7 @@ async function getRawInfos(
 async function updateRawInfo(
   connection: Connection,
   filter: object,
-  UpdateBody: IRawInfo
+  UpdateBody: IRawInfoUpdateBody
 ): Promise<IRawInfo | null> {
   try {
     const rawInfo = await connection.models.RawInfo.findOne(filter);
@@ -106,13 +94,12 @@ async function updateRawInfo(
 async function updateManyRawInfo(
   connection: Connection,
   filter: object,
-  UpdateBody: IRawInfo
+  UpdateBody: IRawInfoUpdateBody
 ): Promise<number> {
   try {
-    const updateResult = await connection.models.RawInfo.updateMany(
-      filter,
-      UpdateBody
-    );
+    console.log(filter)
+    const updateResult = await connection.models.RawInfo.updateMany(filter, UpdateBody);
+    console.log(updateResult)
     return updateResult.modifiedCount || 0;
   } catch (error) {
     throw new Error('Failed to update rawInfos');
@@ -126,10 +113,7 @@ async function updateManyRawInfo(
  * @returns {Promise<boolean>} - A promise that resolves to true if the rawInfo entry was successfully deleted, or false otherwise.
  * @throws {Error} - If there is an error while deleting the rawInfo entry.
  */
-async function deleteRawInfo(
-  connection: Connection,
-  filter: object
-): Promise<boolean> {
+async function deleteRawInfo(connection: Connection, filter: object): Promise<boolean> {
   try {
     const deleteResult = await connection.models.RawInfo.deleteOne(filter);
     return deleteResult.deletedCount === 1;
@@ -145,15 +129,40 @@ async function deleteRawInfo(
  * @returns {Promise<number>} - A promise that resolves to the number of deleted rawInfo entries.
  * @throws {Error} - If there is an error while deleting the rawInfo entries.
  */
-async function deleteManyRawInfo(
-  connection: Connection,
-  filter: object
-): Promise<number> {
+async function deleteManyRawInfo(connection: Connection, filter: object): Promise<number> {
   try {
     const deleteResult = await connection.models.RawInfo.deleteMany(filter);
     return deleteResult.deletedCount;
   } catch (error) {
     throw new Error('Failed to delete rawInfos');
+  }
+}
+
+/**
+ * Retrieves the oldest rawInfo object from the database.
+ * @param {Connection} connection - Mongoose connection object for the database.
+ * @param {object} filter - An object specifying the filter criteria to match the desired rawInfo entry.
+ * @returns {Promise<IRawInfo | null>} - A promise that resolves to the oldest rawInfo object for the channel, or null if not found.
+ */
+async function getNewestRawInfo(connection: Connection, filter: object): Promise<IRawInfo | null> {
+  try {
+    return await connection.models.RawInfo.findOne(filter).sort({ createdDate: -1 });
+  } catch (error) {
+    throw new Error('Failed to retrieve rawInfo');
+  }
+}
+
+/**
+ * Retrieves the oldest rawInfo object from the database.
+ * @param {Connection} connection - Mongoose connection object for the database.
+ * @param {object} filter - An object specifying the filter criteria to match the desired rawInfo entry.
+ * @returns {Promise<IRawInfo | null>} - A promise that resolves to the oldest rawInfo object for the channel, or null if not found.
+ */
+async function getOldestRawInfo(connection: Connection, filter: object): Promise<IRawInfo | null> {
+  try {
+    return await connection.models.RawInfo.findOne(filter).sort({ createdDate: 1 });
+  } catch (error) {
+    throw new Error('Failed to retrieve rawInfo');
   }
 }
 
@@ -166,4 +175,6 @@ export default {
   deleteManyRawInfo,
   getRawInfo,
   getRawInfos,
+  getNewestRawInfo,
+  getOldestRawInfo,
 };

@@ -1,10 +1,10 @@
 import { IRawInfo } from 'tc_dbcomm';
 
 export const rawInfo1: IRawInfo = {
-  type: 'message',
+  type: 0,
   author: 'John Doe',
   content: 'Hello, world!',
-  datetime: '2023-05-15T12:00:00Z',
+  createdDate: new Date(),
   user_mentions: ['user1', 'user2'],
   role_mentions: ['role1', 'role2'],
   reactions: ['reaction1', 'reaction2'],
@@ -12,14 +12,15 @@ export const rawInfo1: IRawInfo = {
   channelId: 'channel1',
   messageId: 'message123',
   threadId: 'thread456',
-  thread: 'thread789',
+  threadName: 'thread789',
+  channelName: 'c1'
 };
 
 export const rawInfo2: IRawInfo = {
-  type: 'message',
+  type: 1,
   author: 'Alice Smith',
   content: "I'm excited for the upcoming event!",
-  datetime: '2023-05-16T08:30:00Z',
+  createdDate: new Date(),
   user_mentions: ['user4', 'user5'],
   role_mentions: ['role1', 'role2'],
   reactions: ['reaction3', 'reaction4'],
@@ -27,14 +28,15 @@ export const rawInfo2: IRawInfo = {
   channelId: 'channel789',
   messageId: 'message012',
   threadId: 'thread345',
-  thread: 'Discussion Thread',
+  threadName: 'Discussion Thread',
+  channelName: 'c2'
 };
 
 export const rawInfo3: IRawInfo = {
-  type: 'message',
+  type: 2,
   author: 'Bob Johnson',
   content: 'Please review the document attached.',
-  datetime: '2023-05-17T15:45:00Z',
+  createdDate: new Date(),
   user_mentions: ['user7', 'user8'],
   role_mentions: ['role5', 'role6'],
   reactions: ['reaction5', 'reaction6'],
@@ -42,5 +44,6 @@ export const rawInfo3: IRawInfo = {
   channelId: 'channel987',
   messageId: 'message654',
   threadId: 'thread321',
-  thread: 'Important Announcement',
+  threadName: 'Important Announcement',
+  channelName: 'c3'
 };

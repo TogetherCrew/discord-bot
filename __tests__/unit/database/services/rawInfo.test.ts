@@ -1,5 +1,5 @@
 import mongoose, { Connection } from 'mongoose';
-import { IRawInfo, rawInfoSchema } from 'tc_dbcomm';
+import { IRawInfo, IRawInfoUpdateBody, rawInfoSchema } from 'tc_dbcomm';
 import setupTestDB from '../../../utils/setupTestDB';
 import {
   rawInfo1,
@@ -128,11 +128,9 @@ describe('rawInfo service', () => {
   });
 
   describe('updateRawInfo', () => {
-    const updateBody: IRawInfo = {
-      channelId: 'channel1up',
-      messageId: 'test update',
-      threadId: 'thread46',
-      content: 'update content',
+    const updateBody: IRawInfoUpdateBody = {
+      channelId: 'channel1',
+      threadId: 'thread456',
     };
 
     test('should update an existing rawInfo that matches the filter criteria', async () => {
@@ -153,9 +151,7 @@ describe('rawInfo service', () => {
       expect(updatedRawInfoDoc).toBeDefined();
       expect(updatedRawInfoDoc).toMatchObject({
         channelId: updateBody.channelId,
-        messageId: updateBody.messageId,
         threadId: updateBody.threadId,
-        content: updateBody.content,
       });
     });
 
@@ -170,11 +166,9 @@ describe('rawInfo service', () => {
   });
 
   describe('updateRawInfos', () => {
-    const updateBody: IRawInfo = {
-      channelId: 'channel1up',
-      messageId: 'test update',
-      threadId: 'thread46',
-      content: 'update content1',
+    const updateBody: IRawInfoUpdateBody = {
+      channelId: 'channel1',
+      threadId: 'thread100000',
     };
 
     test('should update rawInfos that match the filter criteria', async () => {
@@ -197,15 +191,11 @@ describe('rawInfo service', () => {
 
       expect(rawInfo1Doc).toMatchObject({
         channelId: updateBody.channelId,
-        messageId: updateBody.messageId,
         threadId: updateBody.threadId,
-        content: updateBody.content,
       });
       expect(rawInfo2Doc).toMatchObject({
         channelId: updateBody.channelId,
-        messageId: updateBody.messageId,
         threadId: updateBody.threadId,
-        content: updateBody.content,
       });
     });
 
