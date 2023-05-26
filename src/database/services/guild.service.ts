@@ -28,10 +28,7 @@ async function getGuilds(filter: object): Promise<IGuild[]> {
  * @param {IGuildUpdateBody} UpdateBody - Updated information for the guild entry.
  * @returns {Promise<object|null>} - A promise that resolves to the updated guild entry, or null if not found.
  */
-async function updateGuild(
-  filter: object,
-  UpdateBody: IGuildUpdateBody
-): Promise<IGuild | null> {
+async function updateGuild(filter: object, UpdateBody: IGuildUpdateBody): Promise<IGuild | null> {
   try {
     const guild = await Guild.findOne(filter);
     if (!guild) {
@@ -50,10 +47,7 @@ async function updateGuild(
  * @param {IGuildUpdateBody} UpdateBody - Updated information for the guild entry.
  * @returns {Promise<number>} - A promise that resolves to the number of guild entries updated.
  */
-async function updateManyGuilds(
-  filter: object,
-  UpdateBody: IGuildUpdateBody
-): Promise<number> {
+async function updateManyGuilds(filter: object, UpdateBody: IGuildUpdateBody): Promise<number> {
   try {
     const updateResult = await Guild.updateMany(filter, UpdateBody);
     const modifiedCount = updateResult.modifiedCount;

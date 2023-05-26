@@ -8,9 +8,7 @@ export default async function loadEvents(client: Client) {
 
   for (const folder of eventFolders) {
     const eventsPath: string = path.join(foldersPath, folder);
-    const eventFiles: string[] = (await readdir(eventsPath)).filter((file) =>
-      file.endsWith('.ts')
-    );
+    const eventFiles: string[] = (await readdir(eventsPath)).filter(file => file.endsWith('.ts'));
     for (const file of eventFiles) {
       const filePath: string = path.join(eventsPath, file);
       const event = (await import(filePath)).default;

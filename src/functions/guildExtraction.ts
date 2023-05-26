@@ -4,24 +4,22 @@ import { guildService } from '../database/services';
 import config from '../config';
 import fetchChannelMessages from './fetchMessages';
 
-
 export default async function guildExtraction(client: Client, guildId: Snowflake) {
-    try {
-        const connection = databaseService.connectionFactory(guildId, config.mongoose.dbURL);
-        const guild = await client.guilds.fetch(guildId);
-        const guildDoc = await guildService.getGuild({ guildId });
-        if (guildDoc && guildDoc.selectedChannels && guildDoc.period) {
-            await guildService.updateGuild({ guildId }, { isInProgress: true });
-            const selectedChannelsIds = guildDoc.selectedChannels.map(selectedChannel => selectedChannel.channelId);
-            for (const channelId of selectedChannelsIds) {
-                const channel = (await guild.channels.fetch(channelId)) as TextChannel;
-                fetchChannelMessages(connection, channel, guildDoc?.period,)
-            }
-        }
-
-    } catch (err) {
-        console.log(err);
+  try {
+    const connection = databaseService.connectionFactory(guildId, config.mongoose.dbURL);
+    const guild = await client.guilds.fetch(guildId);
+    const guildDoc = await guildService.getGuild({ guildId });
+    if (guildDoc && guildDoc.selectedChannels && guildDoc.period) {
+      await guildService.updateGuild({ guildId }, { isInProgress: true });
+      const selectedChannelsIds = guildDoc.selectedChannels.map(selectedChannel => selectedChannel.channelId);
+      for (const channelId of selectedChannelsIds) {
+        const channel = (await guild.channels.fetch(channelId)) as TextChannel;
+        fetchChannelMessages(connection, channel, guildDoc?.period);
+      }
     }
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 // GUILD : 980858613587382322
@@ -47,4 +45,3 @@ export default async function guildExtraction(client: Client, guildId: Snowflake
 // Channel name: do-not-spam-here, ID: 1109369850276610048
 // Channel name: do-not-spam, ID: 1109421233436635198
 // Channel name: test1, ID: 1110556724844310568
-

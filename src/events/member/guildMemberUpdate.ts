@@ -8,10 +8,7 @@ export default {
   once: false,
   async execute(oldMember: GuildMember, newMember: GuildMember) {
     try {
-      const connection = databaseService.connectionFactory(
-        oldMember.guild.id,
-        config.mongoose.dbURL
-      );
+      const connection = databaseService.connectionFactory(oldMember.guild.id, config.mongoose.dbURL);
       const guildMember = await guildMemberService.updateGuildMember(
         connection,
         { discordId: oldMember.user.id },
@@ -19,7 +16,7 @@ export default {
           username: newMember.user.username,
           avatar: newMember.user.avatar,
           joinedAt: newMember.joinedAt,
-          roles: newMember.roles.cache.map((role) => role.id),
+          roles: newMember.roles.cache.map(role => role.id),
           discriminator: newMember.user.discriminator,
         }
       );
@@ -29,7 +26,7 @@ export default {
           username: newMember.user.username,
           avatar: newMember.user.avatar,
           joinedAt: newMember.joinedAt,
-          roles: newMember.roles.cache.map((role) => role.id),
+          roles: newMember.roles.cache.map(role => role.id),
           isBot: newMember.user.bot,
           discriminator: newMember.user.discriminator,
         });

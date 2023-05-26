@@ -8,16 +8,13 @@ export default {
   once: false,
   execute(member: GuildMember) {
     try {
-      const connection = databaseService.connectionFactory(
-        member.guild.id,
-        config.mongoose.dbURL
-      );
+      const connection = databaseService.connectionFactory(member.guild.id, config.mongoose.dbURL);
       guildMemberService.createGuildMember(connection, {
         discordId: member.user.id,
         username: member.user.username,
         avatar: member.user.avatar,
         joinedAt: member.joinedAt,
-        roles: member.roles.cache.map((role) => role.id),
+        roles: member.roles.cache.map(role => role.id),
         isBot: member.user.bot,
         discriminator: member.user.discriminator,
       });

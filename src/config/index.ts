@@ -2,29 +2,21 @@ import Joi from 'joi';
 
 const envVarsSchema = Joi.object()
   .keys({
-    NODE_ENV: Joi.string()
-      .valid('production', 'development', 'local', 'test')
-      .required(),
+    NODE_ENV: Joi.string().valid('production', 'development', 'local', 'test').required(),
     DB_HOST: Joi.string().required().description('Mongo DB url'),
     DB_PORT: Joi.string().required().description('Mongo DB port'),
     DB_USER: Joi.string().required().description('Mongo DB username'),
     DB_PASSWORD: Joi.string().required().description('Mongo DB password'),
     DB_NAME: Joi.string().required().description('Mongo DB name'),
     DISCROD_CLIENT_ID: Joi.string().required().description('Discord clinet id'),
-    DISCORD_CLIENT_SECRET: Joi.string()
-      .required()
-      .description('Discord clinet secret'),
+    DISCORD_CLIENT_SECRET: Joi.string().required().description('Discord clinet secret'),
     DISCORD_BOT_TOKEN: Joi.string().required().description('Discord bot token'),
     SENTRY_DSN: Joi.string().required().description('Sentry DSN'),
-    SENTRY_ENV: Joi.string()
-      .valid('production', 'development', 'local', 'test')
-      .required(),
+    SENTRY_ENV: Joi.string().valid('production', 'development', 'local', 'test').required(),
   })
   .unknown();
 
-const { value: envVars, error } = envVarsSchema
-  .prefs({ errors: { label: 'key' } })
-  .validate(process.env);
+const { value: envVars, error } = envVarsSchema.prefs({ errors: { label: 'key' } }).validate(process.env);
 
 if (error) {
   throw new Error(`Config validation error: ${error.message}`);
