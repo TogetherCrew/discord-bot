@@ -16,7 +16,12 @@ interface FetchOptions {
   after?: Snowflake;
 }
 
-async function getReactions(message: Message) {
+/**
+ * Fetches reaction details from a message.
+ * @param {Message} message - The message object from which reactions are to be fetched.
+ * @returns {Promise<string[]>} - A promise that resolves to an array of strings where each string is a comma-separated list of user IDs who reacted followed by the reaction emoji.
+ */
+async function getReactions(message: Message): Promise<string[]> {
   try {
     const reactions = message.reactions.cache;
     const reactionsArray = [...reactions.values()];
@@ -37,6 +42,12 @@ async function getReactions(message: Message) {
   }
 }
 
+/**
+ * Extracts necessary data from a given message.
+ * @param {Message} message - The message object from which data is to be extracted.
+ * @param {threadInfo} threadInfo - An optional thread info object containing details about the thread the message is part of.
+ * @returns {Promise<IRawInfo>} - A promise that resolves to an object of type IRawInfo containing the extracted data.
+ */
 async function getNeedDataFromMessage(message: Message, threadInfo?: threadInfo): Promise<IRawInfo> {
   if (threadInfo) {
     return {
@@ -71,8 +82,18 @@ async function getNeedDataFromMessage(message: Message, threadInfo?: threadInfo)
       threadName: null,
     };
   }
+
 }
 
+
+/**
+ * Iterates over a list of messages and pushes extracted data from each message to an array.
+ * @param {Connection} connection - Mongoose connection object for the database.
+ * @param {IRawInfo[]} arr - The array to which extracted data will be pushed.
+ * @param {Message[]} messagesArray - An array of messages from which data is to be extracted.
+ * @param {threadInfo} threadInfo - An optional thread info object containing details about the thread the messages are part of.
+ * @returns {Promise<IRawInfo[]>} - A promise that resolves to the updated array containing the extracted data.
+ */
 async function pushMessagesToArray(
   connection: Connection,
   arr: IRawInfo[],
@@ -92,6 +113,15 @@ async function pushMessagesToArray(
   return arr;
 }
 
+/**
+ * Fetches a list of messages from a specified channel and stores their extracted data.
+ * @param {Connection} connection - Mongoose connection object for the database.
+ * @param {TextChannel | ThreadChannel} channel - The channel from which messages are to be fetched.
+ * @param {IRawInfo} rawInfo - An optional raw info object used for message fetching options.
+ * @param {Date} period - A date object specifying the oldest date for the messages to be fetched.
+ * @param {'before' | 'after'} fetchDirection - The direction of message fetching: 'before' fetches older messages and 'after' fetches newer messages.
+ * @throws Will throw an error if an issue is encountered during processing.
+ */
 async function fetchMessages(
   connection: Connection,
   channel: TextChannel | ThreadChannel,
@@ -115,22 +145,22 @@ async function fetchMessages(
       }
       channel instanceof ThreadChannel
         ? await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()], {
-            threadId: channel.id,
-            threadName: channel.name,
-            channelId: channel.parent?.id,
-            channelName: channel.parent?.name,
-          })
+          threadId: channel.id,
+          threadName: channel.name,
+          channelId: channel.parent?.id,
+          channelName: channel.parent?.name,
+        })
         : await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()]);
       break;
     }
 
     channel instanceof ThreadChannel
       ? await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()], {
-          threadId: channel.id,
-          threadName: channel.name,
-          channelId: channel.parent?.id,
-          channelName: channel.parent?.name,
-        })
+        threadId: channel.id,
+        threadName: channel.name,
+        channelId: channel.parent?.id,
+        channelName: channel.parent?.name,
+      })
       : await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()]);
     options[fetchDirection] = boundaryMessage.id;
     fetchedMessages = await channel.messages.fetch(options);
@@ -138,6 +168,13 @@ async function fetchMessages(
   await rawInfoService.createRawInfos(connection, messagesToStore);
 }
 
+/**
+ * Fetches messages from a specified channel and its threads and stores their extracted data.
+ * @param {Connection} connection - Mongoose connection object for the database.
+ * @param {TextChannel} channel - The channel from which messages are to be fetched.
+ * @param {Date} period - A date object specifying the oldest date for the messages to be fetched.
+ * @throws Will throw an error if an issue is encountered during processing.
+ */
 export default async function fetchChannelMessages(connection: Connection, channel: TextChannel, period: Date) {
   const oldestChannelRawInfo = await rawInfoService.getOldestRawInfo(connection, {
     channelId: channel?.id,

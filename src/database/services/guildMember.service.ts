@@ -23,7 +23,7 @@ async function createGuildMember(connection: Connection, guildMember: IGuildMemb
  */
 async function createGuildMembers(connection: Connection, guildMembers: IGuildMember[]): Promise<IGuildMember[]> {
   try {
-    return await connection.models.GuildMember.insertMany(guildMembers.map(guildMember => guildMember));
+    return await connection.models.GuildMember.insertMany(guildMembers, { ordered: false });
   } catch (error) {
     throw new Error('Failed to create guild members');
   }

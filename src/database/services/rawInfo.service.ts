@@ -24,7 +24,7 @@ async function createRawInfo(connection: Connection, rawInfo: IRawInfo): Promise
  */
 async function createRawInfos(connection: Connection, rawInfos: IRawInfo[]): Promise<IRawInfo[]> {
   try {
-    return await connection.models.RawInfo.insertMany(rawInfos.map(rawInfo => rawInfo));
+    return await connection.models.RawInfo.insertMany(rawInfos, { ordered: false });
   } catch (error) {
     console.log(error);
 
