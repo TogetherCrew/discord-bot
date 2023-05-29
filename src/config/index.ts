@@ -13,6 +13,8 @@ const envVarsSchema = Joi.object()
     DISCORD_BOT_TOKEN: Joi.string().required().description('Discord bot token'),
     SENTRY_DSN: Joi.string().required().description('Sentry DSN'),
     SENTRY_ENV: Joi.string().valid('production', 'development', 'local', 'test').required(),
+    REDIS_HOST: Joi.string().required().description('Reids host'),
+    REDIS_PORT: Joi.string().required().description('Reids port'),
   })
   .unknown();
 
@@ -32,6 +34,10 @@ export default {
       envVars.NODE_ENV === 'local' || envVars.NODE_ENV === 'test'
         ? `mongodb://127.0.0.1:27017`
         : `mongodb://${envVars.DB_USER}:${envVars.DB_PASSWORD}@${envVars.DB_HOST}:${envVars.DB_PORT}`,
+  },
+  redis: {
+    host: envVars.REDIS_HOST,
+    port: envVars.REDIS_PORT
   },
   discord: {
     clientId: envVars.DISCROD_CLIENT_ID,
