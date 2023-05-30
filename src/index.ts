@@ -3,8 +3,7 @@ import config from './config';
 import * as Sentry from '@sentry/node';
 import loadEvents from './functions/loadEvents';
 import guildExtraction from './functions/guildExtraction';
-import { Queue, Worker, Job } from 'bullmq';
-import { Guild, databaseService } from 'tc_dbcomm';
+import { databaseService } from 'tc_dbcomm';
 import RabbitMQ, { MBConnection, Queue as RabbitMQQueue } from '@togethercrew.dev/tc-messagebroker';
 import './rabbitmqEvents' // we need this import statement here to initialize RabbitMQ events
 
