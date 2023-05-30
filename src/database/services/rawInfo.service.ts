@@ -97,9 +97,7 @@ async function updateManyRawInfo(
   UpdateBody: IRawInfoUpdateBody
 ): Promise<number> {
   try {
-    console.log(filter)
     const updateResult = await connection.models.RawInfo.updateMany(filter, UpdateBody);
-    console.log(updateResult)
     return updateResult.modifiedCount || 0;
   } catch (error) {
     throw new Error('Failed to update rawInfos');

@@ -2,9 +2,9 @@ import { Client, GatewayIntentBits } from 'discord.js';
 import config from './config';
 import * as Sentry from '@sentry/node';
 import loadEvents from './functions/loadEvents';
-import guildExtraction from './functions/guildExtraction';
+import cronJob from './functions/cronJon';
 import { Queue, Worker, Job } from 'bullmq';
-import { Guild, databaseService } from 'tc_dbcomm';
+
 
 Sentry.init({
   dsn: config.sentry.dsn,
@@ -19,37 +19,25 @@ const client = new Client({
 async function app() {
   await loadEvents(client);
   await client.login(config.discord.botToken);
-  const connection = databaseService.connectionFactory('980858613587382322', config.mongoose.dbURL);
-
-  guildExtraction(connection, client, '980858613587382322');
 }
 
-// // Define your function to extract messages
-async function extractMessagesDaily() {
-  try {
-    // Log success
-    console.log('Message extraction completed successfully.');
-  } catch (error) {
-    // Log the error if extraction fails
-    console.error('An error occurred during message extraction:', error);
-  }
-}
-
+app();
 
 
 // Create a queue instance with the Redis connection
-const queue = new Queue('discordExtractQueue', {
+const queue = new Queue('cronJobQueue', {
   connection: {
     host: config.redis.host,
     port: config.redis.port,
   }
 });
-queue.add('extractMessagesDaily', {}, {
+queue.add('cronJob', {}, {
   repeat: {
     // cron: '0 12 * * *', // Run once a day at 12 PM
-    cron: '*/10 * * * * *' // Run once a day at 12 PM
+    // cron: '*/10 * * * * *' // Run once a day at 12 PM
+    cron: '0 * * * * *' // Run every minute
   },
-  jobId: 'extractJob', // Optional: Provide a unique ID for the job
+  jobId: 'cronJob', // Optional: Provide a unique ID for the job
   attempts: 3, // Number of times to retry the job if it fails
   backoff: {
     type: 'exponential',
@@ -59,10 +47,10 @@ queue.add('extractMessagesDaily', {}, {
 
 // Create a worker to process the job
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const worker = new Worker('discordExtractQueue', async (job: Job<any, any, string> | undefined) => {
+const worker = new Worker('cronJobQueue', async (job: Job<any, any, string> | undefined) => {
   if (job) {
     // Call the extractMessagesDaily function
-    await extractMessagesDaily();
+    await cronJob(client);
   }
 });
 
@@ -75,4 +63,3 @@ worker.on('failed', (job, error) => {
   console.error(`Job ${job?.id} failed with error:`, error);
 });
 
-// app();
