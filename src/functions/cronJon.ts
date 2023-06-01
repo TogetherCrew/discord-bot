@@ -14,7 +14,6 @@ async function createAndStartCronJobSaga(guildId: Snowflake) {
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     await saga.start(() => { })
-    return saga
 }
 
 /**

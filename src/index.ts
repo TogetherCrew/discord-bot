@@ -67,11 +67,7 @@ const queue = new Queue('cronJobQueue', {
 });
 queue.add('cronJob', {}, {
   repeat: {
-    // cron: '0 12 * * *', // Run once a day at 12 PM
-    // cron: '*/10 * * * * *' // Run once a day at 12 PM
-    cron: '0 * * * * *' // Run every minute
-    // cron: '*/10 * * * * *'    // Run every minute
-
+    cron: '0 12 * * *', // Run once a day at 12 PM
   },
   jobId: 'cronJob', // Optional: Provide a unique ID for the job
   attempts: 3, // Number of times to retry the job if it fails
@@ -92,6 +88,7 @@ const worker = new Worker('cronJobQueue', async (job: Job<any, any, string> | un
   connection: {
     host: config.redis.host,
     port: config.redis.port,
+    password: config.redis.password
   }
 });
 

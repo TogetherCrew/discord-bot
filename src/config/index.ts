@@ -19,6 +19,8 @@ const envVarsSchema = Joi.object()
     SENTRY_ENV: Joi.string().valid('production', 'development', 'local', 'test').required(),
     REDIS_HOST: Joi.string().required().description('Reids host'),
     REDIS_PORT: Joi.string().required().description('Reids port'),
+    REDIS_PASSWORD: Joi.string().required().description('Reids password').allow(''),
+
   })
   .unknown();
 
@@ -41,7 +43,8 @@ export default {
   },
   redis: {
     host: envVars.REDIS_HOST,
-    port: envVars.REDIS_PORT
+    port: envVars.REDIS_PORT,
+    password: envVars.REDIS_PASSWORD
   },
   rabbitMQ: {
     url: `amqp://${envVars.RABBIT_USER}:${envVars.RABBIT_PASSWORD}@${envVars.RABBIT_HOST}:${envVars.RABBIT_PORT}`,
