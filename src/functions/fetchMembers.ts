@@ -1,6 +1,6 @@
 import { GuildMember, Client, Snowflake } from 'discord.js';
 import { Connection } from 'mongoose';
-import { IGuildMember } from 'tc_dbcomm';
+import { IGuildMember } from '@togethercrew.dev/db';
 import { guildMemberService, guildService } from '../database/services';
 
 /**

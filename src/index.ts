@@ -8,7 +8,7 @@ import RabbitMQ, { Event, MBConnection, Queue as RabbitMQQueue } from '@together
 // import './rabbitmqEvents' // we need this import statement here to initialize RabbitMQ events
 import { connectDB } from './database';
 import fetchMembers from './functions/fetchMembers';
-import { databaseService } from 'tc_dbcomm';
+import { databaseService } from '@togethercrew.dev/db';
 import guildExtraction from './functions/guildExtraction';
 
 Sentry.init({

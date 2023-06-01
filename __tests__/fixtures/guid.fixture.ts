@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import { Guild } from 'tc_dbcomm';
+import { Guild } from '@togethercrew.dev/db';
 
 export const guild1 = {
   guildId: '123456789',

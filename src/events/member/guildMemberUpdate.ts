@@ -1,6 +1,6 @@
 import { Events, GuildMember } from 'discord.js';
 import { guildMemberService } from '../../database/services';
-import { databaseService } from 'tc_dbcomm';
+import { databaseService } from '@togethercrew.dev/db';
 import config from '../../config';
 
 export default {

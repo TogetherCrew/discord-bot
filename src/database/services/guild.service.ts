@@ -1,4 +1,4 @@
-import { Guild, IGuild, IGuildUpdateBody } from 'tc_dbcomm';
+import { Guild, IGuild, IGuildUpdateBody } from '@togethercrew.dev/db';
 
 /**
  * get guild by query

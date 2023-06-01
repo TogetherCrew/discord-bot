@@ -1,5 +1,5 @@
 import mongoose, { Connection } from 'mongoose';
-import { IRawInfo, IRawInfoUpdateBody, rawInfoSchema } from 'tc_dbcomm';
+import { IRawInfo, IRawInfoUpdateBody, rawInfoSchema } from '@togethercrew.dev/db';
 import setupTestDB from '../../../utils/setupTestDB';
 import {
   rawInfo1,
