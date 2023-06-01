@@ -4,8 +4,12 @@ import * as Sentry from '@sentry/node';
 import loadEvents from './functions/loadEvents';
 import cronJob from './functions/cronJon';
 import { Queue, Worker, Job } from 'bullmq';
-import RabbitMQ, { MBConnection, Queue as RabbitMQQueue } from '@togethercrew.dev/tc-messagebroker';
-import './rabbitmqEvents' // we need this import statement here to initialize RabbitMQ events
+import RabbitMQ, { Event, MBConnection, Queue as RabbitMQQueue } from '@togethercrew.dev/tc-messagebroker';
+// import './rabbitmqEvents' // we need this import statement here to initialize RabbitMQ events
+import { connectDB } from './database';
+import fetchMembers from './functions/fetchMembers';
+import { databaseService } from 'tc_dbcomm';
+import guildExtraction from './functions/guildExtraction';
 
 Sentry.init({
   dsn: config.sentry.dsn,
@@ -17,17 +21,42 @@ const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildPresences],
 });
 
-MBConnection.connect(config.mongoose.dbURL)
-RabbitMQ.connect(config.rabbitMQ.url, RabbitMQQueue.DISCORD_BOT).then(() => {
-  console.log("Connected to RabbitMQ!")
-})
 async function app() {
   await loadEvents(client);
   await client.login(config.discord.botToken);
+  await connectDB();
+  await MBConnection.connect(config.mongoose.dbURL)
+  RabbitMQ.connect(config.rabbitMQ.url, RabbitMQQueue.DISCORD_BOT).then(() => {
+    console.log("Connected to RabbitMQ!")
+  })
 }
 
 app();
 
+
+// *****************************RABBITMQ
+RabbitMQ.onEvent(Event.DISCORD_BOT.FETCH, async (msg) => {
+  if (!msg) return;
+
+  const { content } = msg
+  const saga = await MBConnection.models.Saga.findOne({ sagaId: content.uuid })
+  const guildId = saga.data.get("guildId");
+  const isGuildCreated = saga.data.get("created");
+  const connection = await databaseService.connectionFactory(saga.data.get("guildId"), config.mongoose.dbURL);
+
+  if (isGuildCreated === 'true') {
+    await fetchMembers(connection, client, guildId)
+  }
+  else {
+    await guildExtraction(connection, client, guildId)
+  }
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  await saga.next(() => { })
+})
+
+
+
+// *****************************BULLMQ
 
 // Create a queue instance with the Redis connection
 const queue = new Queue('cronJobQueue', {
@@ -41,6 +70,8 @@ queue.add('cronJob', {}, {
     // cron: '0 12 * * *', // Run once a day at 12 PM
     // cron: '*/10 * * * * *' // Run once a day at 12 PM
     cron: '0 * * * * *' // Run every minute
+    // cron: '*/10 * * * * *'    // Run every minute
+
   },
   jobId: 'cronJob', // Optional: Provide a unique ID for the job
   attempts: 3, // Number of times to retry the job if it fails
@@ -56,6 +87,11 @@ const worker = new Worker('cronJobQueue', async (job: Job<any, any, string> | un
   if (job) {
     // Call the extractMessagesDaily function
     await cronJob(client);
+  }
+}, {
+  connection: {
+    host: config.redis.host,
+    port: config.redis.port,
   }
 });
 

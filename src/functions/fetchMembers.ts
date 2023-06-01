@@ -1,7 +1,7 @@
-import { GuildMember, Guild } from 'discord.js';
+import { GuildMember, Client, Snowflake } from 'discord.js';
 import { Connection } from 'mongoose';
 import { IGuildMember } from 'tc_dbcomm';
-import { guildMemberService } from '../database/services';
+import { guildMemberService, guildService } from '../database/services';
 
 /**
 * Extracts necessary data from a given guild member.
@@ -40,20 +40,25 @@ function pushMembersToArray(
 
 
 /**
- * Fetches guild members from a specified guild
+ * Extracts information from a given guild.
  * @param {Connection} connection - Mongoose connection object for the database.
- * @param {Guild} guild - The guild from which guild members are to be fetched.
- * @throws Will throw an error if an issue is encountered during processing.
+ * @param {Client} client - The discord.js client object used to fetch the guild.
+ * @param {Snowflake} guildId - The identifier of the guild to extract information from.
  */
-export default async function fetchGuildMembers(connection: Connection, guild: Guild) {
+export default async function fetchGuildMembers(connection: Connection, client: Client, guildId: Snowflake) {
     try {
+        if (!client.guilds.cache.has(guildId)) {
+            await guildService.updateGuild({ guildId }, { isDisconnected: false })
+            return
+        }
+        const guild = await client.guilds.fetch(guildId);
         const membersToStore: IGuildMember[] = [];
         const fetchMembers = await guild.members.fetch();
         pushMembersToArray(membersToStore, [...fetchMembers.values()])
         await guildMemberService.createGuildMembers(connection, membersToStore);
 
     } catch (err) {
-        console.error(`Failed to fetch members of guild ${guild.id}`, err);
+        console.error(`Failed to fetch members of guild ${guildId}`, err);
         throw err;
     }
 }

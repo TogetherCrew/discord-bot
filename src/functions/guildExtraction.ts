@@ -1,7 +1,6 @@
 import { Client, TextChannel, Snowflake } from 'discord.js';
 import { guildService } from '../database/services';
 import fetchChannelMessages from './fetchMessages';
-import fetchGuildMembers from './fetchMembers';
 import { Connection } from 'mongoose';
 
 /**
@@ -19,7 +18,6 @@ export default async function guildExtraction(connection: Connection, client: Cl
     const guild = await client.guilds.fetch(guildId);
     const guildDoc = await guildService.getGuild({ guildId });
     if (guildDoc && guildDoc.selectedChannels && guildDoc.period) {
-      await fetchGuildMembers(connection, guild);
       await guildService.updateGuild({ guildId }, { isInProgress: true });
       const selectedChannelsIds = guildDoc.selectedChannels.map(selectedChannel => selectedChannel.channelId);
       for (const channelId of selectedChannelsIds) {
