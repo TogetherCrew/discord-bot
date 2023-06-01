@@ -1,5 +1,5 @@
 import { Connection } from 'mongoose';
-import { IGuildMember, IGuildMemberUpdateBody } from 'tc_dbcomm';
+import { IGuildMember, IGuildMemberUpdateBody } from '@togethercrew.dev/db';
 
 /**
  * Create a guild member in the database.

@@ -1,4 +1,4 @@
-import { Guild, IGuildUpdateBody } from 'tc_dbcomm';
+import { Guild, IGuildUpdateBody } from '@togethercrew.dev/db';
 import { guildService } from '../../../../src/database/services';
 import {
   insertManyGuilds,

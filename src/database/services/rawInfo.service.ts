@@ -1,5 +1,5 @@
 import { Connection } from 'mongoose';
-import { IRawInfo, IRawInfoUpdateBody } from 'tc_dbcomm';
+import { IRawInfo, IRawInfoUpdateBody } from '@togethercrew.dev/db';
 
 /**
  * Create a rawInfo entry in the database.

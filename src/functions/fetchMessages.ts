@@ -1,5 +1,5 @@
 import { Message, TextChannel, Collection, User, Role, ThreadChannel, Snowflake } from 'discord.js';
-import { IRawInfo } from 'tc_dbcomm';
+import { IRawInfo } from '@togethercrew.dev/db';
 import { rawInfoService } from '../database/services';
 import { Connection } from 'mongoose';
 

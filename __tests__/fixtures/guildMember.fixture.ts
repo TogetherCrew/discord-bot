@@ -1,4 +1,4 @@
-import { IGuildMember } from 'tc_dbcomm';
+import { IGuildMember } from '@togethercrew.dev/db';
 
 export const guildMember1: IGuildMember = {
     discordId: '123456789',
