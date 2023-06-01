@@ -63,6 +63,7 @@ const queue = new Queue('cronJobQueue', {
   connection: {
     host: config.redis.host,
     port: config.redis.port,
+    password: config.redis.password
   }
 });
 queue.add('cronJob', {}, {
