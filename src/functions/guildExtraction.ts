@@ -1,15 +1,23 @@
 import { Client, TextChannel, Snowflake } from 'discord.js';
 import { guildService } from '../database/services';
 import fetchChannelMessages from './fetchMessages';
-import fetchGuildMembers from './fetchMembers';
 import { Connection } from 'mongoose';
 
+/**
+ * Extracts information from a given guild.
+ * @param {Connection} connection - Mongoose connection object for the database.
+ * @param {Client} client - The discord.js client object used to fetch the guild.
+ * @param {Snowflake} guildId - The identifier of the guild to extract information from.
+ */
 export default async function guildExtraction(connection: Connection, client: Client, guildId: Snowflake) {
   try {
+    if (!client.guilds.cache.has(guildId)) {
+      await guildService.updateGuild({ guildId }, { isDisconnected: false })
+      return
+    }
     const guild = await client.guilds.fetch(guildId);
     const guildDoc = await guildService.getGuild({ guildId });
     if (guildDoc && guildDoc.selectedChannels && guildDoc.period) {
-      await fetchGuildMembers(connection, guild);
       await guildService.updateGuild({ guildId }, { isInProgress: true });
       const selectedChannelsIds = guildDoc.selectedChannels.map(selectedChannel => selectedChannel.channelId);
       for (const channelId of selectedChannelsIds) {
@@ -21,6 +29,7 @@ export default async function guildExtraction(connection: Connection, client: Cl
     console.log(err);
   }
 }
+
 
 // GUILD : 980858613587382322
 // Channel name: Text Channels, ID: 980858613587382323

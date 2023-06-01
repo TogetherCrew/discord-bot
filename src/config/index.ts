@@ -17,6 +17,10 @@ const envVarsSchema = Joi.object()
     DISCORD_BOT_TOKEN: Joi.string().required().description('Discord bot token'),
     SENTRY_DSN: Joi.string().required().description('Sentry DSN'),
     SENTRY_ENV: Joi.string().valid('production', 'development', 'local', 'test').required(),
+    REDIS_HOST: Joi.string().required().description('Reids host'),
+    REDIS_PORT: Joi.string().required().description('Reids port'),
+    REDIS_PASSWORD: Joi.string().required().description('Reids password').allow(''),
+
   })
   .unknown();
 
@@ -36,6 +40,11 @@ export default {
       envVars.NODE_ENV === 'local' || envVars.NODE_ENV === 'test'
         ? `mongodb://127.0.0.1:27017`
         : `mongodb://${envVars.DB_USER}:${envVars.DB_PASSWORD}@${envVars.DB_HOST}:${envVars.DB_PORT}`,
+  },
+  redis: {
+    host: envVars.REDIS_HOST,
+    port: envVars.REDIS_PORT,
+    password: envVars.REDIS_PASSWORD
   },
   rabbitMQ: {
     url: `amqp://${envVars.RABBIT_USER}:${envVars.RABBIT_PASSWORD}@${envVars.RABBIT_HOST}:${envVars.RABBIT_PORT}`,
