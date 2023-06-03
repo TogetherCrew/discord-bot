@@ -176,6 +176,7 @@ async function fetchMessages(
  * @throws Will throw an error if an issue is encountered during processing.
  */
 export default async function fetchChannelMessages(connection: Connection, channel: TextChannel, period: Date) {
+  console.log(`Start fetching messages for channel: ${channel}`)
   const oldestChannelRawInfo = await rawInfoService.getOldestRawInfo(connection, {
     channelId: channel?.id,
     threadId: null,
@@ -219,4 +220,5 @@ export default async function fetchChannelMessages(connection: Connection, chann
       await fetchMessages(connection, thread, undefined, period, 'before');
     }
   }
+  console.log(`Finished fetching messages for channel: ${channel}`)
 }
