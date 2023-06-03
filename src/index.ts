@@ -33,9 +33,10 @@ async function app() {
 
 app();
 
+const partial = (func: any, ...args: any) => (...rest: any) => func(...args, ...rest)
 
-// *****************************RABBITMQ
-RabbitMQ.onEvent(Event.DISCORD_BOT.FETCH, async (msg) => {
+const fetchMethod = async (msg: any) => {
+  console.log(`Starting fetchMethod with: ${msg}`)
   if (!msg) return;
 
   const { content } = msg
@@ -50,8 +51,20 @@ RabbitMQ.onEvent(Event.DISCORD_BOT.FETCH, async (msg) => {
   else {
     await guildExtraction(connection, client, guildId)
   }
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  await saga.next(() => { })
+  console.log(`Finished fetchMethod.`)
+}
+
+// *****************************RABBITMQ
+RabbitMQ.onEvent(Event.DISCORD_BOT.FETCH, async (msg) => {
+  console.log(`Received ${Event.DISCORD_BOT.FETCH} event with msg: ${msg}`)
+  if (!msg) return
+
+  const { content } = msg
+  const saga = await MBConnection.models.Saga.findOne({ sagaId: content.uuid })
+
+  const fn = partial(fetchMethod, msg)
+  await saga.next(fn)
+  console.log(`Finished ${Event.DISCORD_BOT.FETCH} event with msg: ${msg}`)
 })
 
 
