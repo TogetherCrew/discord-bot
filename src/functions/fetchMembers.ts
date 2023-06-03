@@ -46,6 +46,7 @@ function pushMembersToArray(
  * @param {Snowflake} guildId - The identifier of the guild to extract information from.
  */
 export default async function fetchGuildMembers(connection: Connection, client: Client, guildId: Snowflake) {
+    console.log(`Fetching members for guild: ${guildId}`)
     try {
         if (!client.guilds.cache.has(guildId)) {
             await guildService.updateGuild({ guildId }, { isDisconnected: false })
@@ -61,4 +62,5 @@ export default async function fetchGuildMembers(connection: Connection, client: 
         console.error(`Failed to fetch members of guild ${guildId}`, err);
         throw err;
     }
+    console.log(`Completed fetching members for guild: ${guildId}`)
 }

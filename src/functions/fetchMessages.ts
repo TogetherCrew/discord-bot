@@ -129,6 +129,7 @@ async function fetchMessages(
   period: Date,
   fetchDirection: 'before' | 'after' = 'before'
 ) {
+  console.log(`Fetching messages for ${channel.id} for period: ${period}`)
   const messagesToStore: IRawInfo[] = [];
   const options: FetchOptions = { limit: 10 };
   if (rawInfo) {
@@ -166,6 +167,7 @@ async function fetchMessages(
     fetchedMessages = await channel.messages.fetch(options);
   }
   await rawInfoService.createRawInfos(connection, messagesToStore);
+  console.log(`Finished fetching messages for ${channel.id} for period: ${period}`)
 }
 
 /**
@@ -176,6 +178,7 @@ async function fetchMessages(
  * @throws Will throw an error if an issue is encountered during processing.
  */
 export default async function fetchChannelMessages(connection: Connection, channel: TextChannel, period: Date) {
+  console.log(`Fetching channel messages for channel: ${channel.id}`)
   const oldestChannelRawInfo = await rawInfoService.getOldestRawInfo(connection, {
     channelId: channel?.id,
     threadId: null,
@@ -219,4 +222,5 @@ export default async function fetchChannelMessages(connection: Connection, chann
       await fetchMessages(connection, thread, undefined, period, 'before');
     }
   }
+  console.log(`Finished fetching channel messages for channel: ${channel.id}`)
 }
