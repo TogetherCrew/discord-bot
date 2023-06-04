@@ -11,6 +11,7 @@ async function createGuildMember(connection: Connection, guildMember: IGuildMemb
   try {
     return await connection.models.GuildMember.create(guildMember);
   } catch (error) {
+    console.log(error)
     throw new Error('Failed to create guild member');
   }
 }
@@ -25,6 +26,7 @@ async function createGuildMembers(connection: Connection, guildMembers: IGuildMe
   try {
     return await connection.models.GuildMember.insertMany(guildMembers, { ordered: false });
   } catch (error) {
+    console.log(error)
     throw new Error('Failed to create guild members');
   }
 }
@@ -39,6 +41,7 @@ async function getGuildMember(connection: Connection, filter: object): Promise<I
   try {
     return await connection.models.GuildMember.findOne(filter);
   } catch (error) {
+    console.log(error)
     throw new Error('Failed to retrieve guild member');
   }
 }
@@ -53,6 +56,7 @@ async function getGuildMembers(connection: Connection, filter: object): Promise<
   try {
     return await connection.models.GuildMember.find(filter);
   } catch (error) {
+    console.log(error)
     throw new Error('Failed to retrieve guild members');
   }
 }
@@ -77,6 +81,8 @@ async function updateGuildMember(
     Object.assign(guildMember, UpdateBody);
     return await guildMember.save();
   } catch (error) {
+    console.log(error)
+
     throw new Error('Failed to update guild member');
   }
 }
@@ -113,6 +119,8 @@ async function deleteGuildMember(connection: Connection, filter: object): Promis
     const deleteResult = await connection.models.GuildMember.deleteOne(filter);
     return deleteResult.deletedCount === 1;
   } catch (error) {
+    console.log(error)
+
     throw new Error('Failed to delete guild member');
   }
 }
@@ -129,6 +137,8 @@ async function deleteGuildMembers(connection: Connection, filter: object): Promi
     const deleteResult = await connection.models.GuildMember.deleteMany(filter);
     return deleteResult.deletedCount;
   } catch (error) {
+    console.log(error)
+
     throw new Error('Failed to delete guild members');
   }
 }

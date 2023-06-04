@@ -60,7 +60,6 @@ export default async function fetchGuildMembers(connection: Connection, client: 
 
     } catch (err) {
         console.error(`Failed to fetch members of guild ${guildId}`, err);
-        throw err;
     }
     console.log(`Completed fetching members for guild: ${guildId}`)
 }
