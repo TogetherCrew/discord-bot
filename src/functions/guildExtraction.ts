@@ -21,7 +21,7 @@ export default async function guildExtraction(connection: Connection, client: Cl
     if (guildDoc && guildDoc.selectedChannels && guildDoc.period) {
       await guildService.updateGuild({ guildId }, { isInProgress: true });
       const selectedChannelsIds = guildDoc.selectedChannels.map(selectedChannel => selectedChannel.channelId);
-      for (const channelId of selectedChannelsIds) {
+      for await (const channelId of selectedChannelsIds) {
         const channel = (await guild.channels.fetch(channelId)) as TextChannel;
         await fetchChannelMessages(connection, channel, guildDoc?.period);
       }
