@@ -23,7 +23,7 @@ export default async function guildExtraction(connection: Connection, client: Cl
       const selectedChannelsIds = guildDoc.selectedChannels.map(selectedChannel => selectedChannel.channelId);
       for (const channelId of selectedChannelsIds) {
         const channel = (await guild.channels.fetch(channelId)) as TextChannel;
-        fetchChannelMessages(connection, channel, guildDoc?.period);
+        await fetchChannelMessages(connection, channel, guildDoc?.period);
       }
     }
     console.log(`Finished extracting info for guild: ${guildId}`)
