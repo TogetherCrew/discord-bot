@@ -23,6 +23,9 @@ export default async function guildExtraction(connection: Connection, client: Cl
       const selectedChannelsIds = guildDoc.selectedChannels.map(selectedChannel => selectedChannel.channelId);
       for (const channelId of selectedChannelsIds) {
         const channel = (await guild.channels.fetch(channelId)) as TextChannel;
+        if (channel.type !== 0) {
+          continue;
+        }
         await fetchChannelMessages(connection, channel, guildDoc?.period);
       }
     }
@@ -57,23 +60,3 @@ export default async function guildExtraction(connection: Connection, client: Cl
 // Channel name: do-not-spam-here, ID: 1109369850276610048
 // Channel name: do-not-spam, ID: 1109421233436635198
 // Channel name: test1, ID: 1110556724844310568
-
-
-
-// {
-//   "period": "2023-01-23T06:38:05.157Z",
-//   "selectedChannels": [
-//     {
-//       "channelId": "1109369850276610048",
-//       "channelName": "do-not-spam-here"
-//     },
-//     {
-//       "channelId": "1110556724844310568",
-//       "channelName": "test1"
-//     },
-//     {
-//       "channelId": "1109052576978173982",
-//       "channelName": "c4"
-//     }
-//   ]
-// }

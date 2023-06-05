@@ -18,7 +18,8 @@ async function getGuilds(filter: object): Promise<IGuild[]> {
   try {
     return await Guild.find(filter);
   } catch (error) {
-    throw new Error('Failed to get guilds.');
+    console.log('Failed to retrieve guilds', error);
+    return [];
   }
 }
 
@@ -37,7 +38,8 @@ async function updateGuild(filter: object, UpdateBody: IGuildUpdateBody): Promis
     Object.assign(guild, UpdateBody);
     return await guild.save();
   } catch (error) {
-    throw new Error('Failed to update guild.');
+    console.log('Failed to update guild', error);
+    return null;
   }
 }
 
@@ -53,7 +55,8 @@ async function updateManyGuilds(filter: object, UpdateBody: IGuildUpdateBody): P
     const modifiedCount = updateResult.modifiedCount;
     return modifiedCount;
   } catch (error) {
-    throw new Error('Failed to update guilds.');
+    console.log('Failed to update guilds', error);
+    return 0;
   }
 }
 

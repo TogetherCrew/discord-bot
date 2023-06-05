@@ -31,7 +31,7 @@ export default async function cronJob(client: Client) {
             console.log(`Cron JOB is Done ${guilds[i].guildId}:${guilds[i].name}`)
         }
     } catch (err) {
-        console.log(err);
+        console.log('Cron job failed', err)
     }
 }
 
