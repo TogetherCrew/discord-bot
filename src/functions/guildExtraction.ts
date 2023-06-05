@@ -10,6 +10,7 @@ import { Connection } from 'mongoose';
  * @param {Snowflake} guildId - The identifier of the guild to extract information from.
  */
 export default async function guildExtraction(connection: Connection, client: Client, guildId: Snowflake) {
+  console.log(`Extracting info for guild: ${guildId}`)
   try {
     console.log(`Starting the extraction of guildId: ${guildId}`)
     if (!client.guilds.cache.has(guildId)) {
@@ -21,12 +22,12 @@ export default async function guildExtraction(connection: Connection, client: Cl
     if (guildDoc && guildDoc.selectedChannels && guildDoc.period) {
       await guildService.updateGuild({ guildId }, { isInProgress: true });
       const selectedChannelsIds = guildDoc.selectedChannels.map(selectedChannel => selectedChannel.channelId);
-      for (const channelId of selectedChannelsIds) {
+      for await (const channelId of selectedChannelsIds) {
         const channel = (await guild.channels.fetch(channelId)) as TextChannel;
-        fetchChannelMessages(connection, channel, guildDoc?.period);
+        await fetchChannelMessages(connection, channel, guildDoc?.period);
       }
     }
-    console.log(`Finished the extraction of guildId: ${guildId}`)
+    console.log(`Finished extracting info for guild: ${guildId}`)
   } catch (err) {
     console.log(err);
   }

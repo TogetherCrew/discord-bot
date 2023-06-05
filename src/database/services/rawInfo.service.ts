@@ -1,5 +1,5 @@
 import { Connection } from 'mongoose';
-import { IRawInfo, IRawInfoUpdateBody } from 'tc_dbcomm';
+import { IRawInfo, IRawInfoUpdateBody } from '@togethercrew.dev/db';
 
 /**
  * Create a rawInfo entry in the database.
@@ -42,6 +42,7 @@ async function getRawInfo(connection: Connection, filter: object): Promise<IRawI
   try {
     return await connection.models.RawInfo.findOne(filter);
   } catch (error) {
+    console.log(error)
     throw new Error('Failed to retrieve rawInfo');
   }
 }
@@ -56,6 +57,7 @@ async function getRawInfos(connection: Connection, filter: object): Promise<IRaw
   try {
     return await connection.models.RawInfo.find(filter);
   } catch (error) {
+    console.log(error)
     throw new Error('Failed to retrieve rawInfos');
   }
 }
@@ -80,6 +82,7 @@ async function updateRawInfo(
     Object.assign(rawInfo, UpdateBody);
     return await rawInfo.save();
   } catch (error) {
+    console.log(error)
     throw new Error('Failed to update rawInfo');
   }
 }
@@ -100,6 +103,7 @@ async function updateManyRawInfo(
     const updateResult = await connection.models.RawInfo.updateMany(filter, UpdateBody);
     return updateResult.modifiedCount || 0;
   } catch (error) {
+    console.log(error)
     throw new Error('Failed to update rawInfos');
   }
 }
@@ -132,6 +136,7 @@ async function deleteManyRawInfo(connection: Connection, filter: object): Promis
     const deleteResult = await connection.models.RawInfo.deleteMany(filter);
     return deleteResult.deletedCount;
   } catch (error) {
+    console.log(error)
     throw new Error('Failed to delete rawInfos');
   }
 }
@@ -146,6 +151,7 @@ async function getNewestRawInfo(connection: Connection, filter: object): Promise
   try {
     return await connection.models.RawInfo.findOne(filter).sort({ createdDate: -1 });
   } catch (error) {
+    console.log(error)
     throw new Error('Failed to retrieve rawInfo');
   }
 }
@@ -160,6 +166,7 @@ async function getOldestRawInfo(connection: Connection, filter: object): Promise
   try {
     return await connection.models.RawInfo.findOne(filter).sort({ createdDate: 1 });
   } catch (error) {
+    console.log(error)
     throw new Error('Failed to retrieve rawInfo');
   }
 }

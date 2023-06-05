@@ -1,6 +1,6 @@
 import { Client, Snowflake } from 'discord.js';
 import { guildService } from '../database/services';
-import { databaseService } from 'tc_dbcomm';
+import { databaseService } from '@togethercrew.dev/db';
 import { ChoreographyDict, MBConnection, Status } from "@togethercrew.dev/tc-messagebroker"
 import config from '../config';
 import guildExtraction from './guildExtraction'

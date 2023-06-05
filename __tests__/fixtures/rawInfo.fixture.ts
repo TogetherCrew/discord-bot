@@ -1,4 +1,4 @@
-import { IRawInfo } from 'tc_dbcomm';
+import { IRawInfo } from '@togethercrew.dev/db';
 
 export const rawInfo1: IRawInfo = {
   type: 0,

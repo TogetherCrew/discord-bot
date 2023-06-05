@@ -1,5 +1,5 @@
 import { Message, TextChannel, Collection, User, Role, ThreadChannel, Snowflake } from 'discord.js';
-import { IRawInfo } from 'tc_dbcomm';
+import { IRawInfo } from '@togethercrew.dev/db';
 import { rawInfoService } from '../database/services';
 import { Connection } from 'mongoose';
 
@@ -129,20 +129,33 @@ async function fetchMessages(
   period: Date,
   fetchDirection: 'before' | 'after' = 'before'
 ) {
-  const messagesToStore: IRawInfo[] = [];
-  const options: FetchOptions = { limit: 10 };
-  if (rawInfo) {
-    options[fetchDirection] = rawInfo.messageId;
-  }
-  let fetchedMessages = await channel.messages.fetch(options);
+  try {
+    console.log(`Fetching messages for ${channel.id} for period: ${period}`)
+    const messagesToStore: IRawInfo[] = [];
+    const options: FetchOptions = { limit: 10 };
+    if (rawInfo) {
+      options[fetchDirection] = rawInfo.messageId;
+    }
+    let fetchedMessages = await channel.messages.fetch(options);
 
-  while (fetchedMessages.size > 0) {
-    const boundaryMessage = fetchDirection === 'before' ? fetchedMessages.last() : fetchedMessages.first();
+    while (fetchedMessages.size > 0) {
+      const boundaryMessage = fetchDirection === 'before' ? fetchedMessages.last() : fetchedMessages.first();
 
-    if (!boundaryMessage || (period && boundaryMessage.createdAt < period)) {
-      if (period) {
-        fetchedMessages = fetchedMessages.filter(msg => msg.createdAt > period);
+      if (!boundaryMessage || (period && boundaryMessage.createdAt < period)) {
+        if (period) {
+          fetchedMessages = fetchedMessages.filter(msg => msg.createdAt > period);
+        }
+        channel instanceof ThreadChannel
+          ? await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()], {
+            threadId: channel.id,
+            threadName: channel.name,
+            channelId: channel.parent?.id,
+            channelName: channel.parent?.name,
+          })
+          : await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()]);
+        break;
       }
+
       channel instanceof ThreadChannel
         ? await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()], {
           threadId: channel.id,
@@ -151,21 +164,15 @@ async function fetchMessages(
           channelName: channel.parent?.name,
         })
         : await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()]);
-      break;
+      options[fetchDirection] = boundaryMessage.id;
+      fetchedMessages = await channel.messages.fetch(options);
     }
-
-    channel instanceof ThreadChannel
-      ? await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()], {
-        threadId: channel.id,
-        threadName: channel.name,
-        channelId: channel.parent?.id,
-        channelName: channel.parent?.name,
-      })
-      : await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()]);
-    options[fetchDirection] = boundaryMessage.id;
-    fetchedMessages = await channel.messages.fetch(options);
+    await rawInfoService.createRawInfos(connection, messagesToStore);
+    console.log(`Finished fetching messages for ${channel.id} for period: ${period}`)
+  } catch (err) {
+    console.log(`Failed to fetchMessages of channle: ${channel.id} `, err)
   }
-  await rawInfoService.createRawInfos(connection, messagesToStore);
+
 }
 
 /**
@@ -176,49 +183,53 @@ async function fetchMessages(
  * @throws Will throw an error if an issue is encountered during processing.
  */
 export default async function fetchChannelMessages(connection: Connection, channel: TextChannel, period: Date) {
-  console.log(`Start fetching messages for channel: ${channel}`)
-  const oldestChannelRawInfo = await rawInfoService.getOldestRawInfo(connection, {
-    channelId: channel?.id,
-    threadId: null,
-  });
-  const newestChannelRawInfo = await rawInfoService.getNewestRawInfo(connection, {
-    channelId: channel?.id,
-    threadId: null,
-  });
-  if (oldestChannelRawInfo && oldestChannelRawInfo.createdDate > period) {
-    await fetchMessages(connection, channel, oldestChannelRawInfo, period, 'before');
-  }
-  if (newestChannelRawInfo) {
-    await fetchMessages(connection, channel, newestChannelRawInfo, period, 'after');
-  }
-
-  if (!newestChannelRawInfo && !oldestChannelRawInfo) {
-    await fetchMessages(connection, channel, undefined, period, 'before');
-  }
-
-  const threads = channel.threads.cache.values();
-
-  for (const thread of threads) {
-    const oldestThreadRawInfo = await rawInfoService.getOldestRawInfo(connection, {
+  try {
+    console.log(`Fetching channel messages for channel: ${channel.id}`)
+    const oldestChannelRawInfo = await rawInfoService.getOldestRawInfo(connection, {
       channelId: channel?.id,
-      threadId: thread.id,
+      threadId: null,
     });
-    const newestThreadRawInfo = await rawInfoService.getNewestRawInfo(connection, {
+    const newestChannelRawInfo = await rawInfoService.getNewestRawInfo(connection, {
       channelId: channel?.id,
-      threadId: thread.id,
+      threadId: null,
     });
-
-    if (oldestThreadRawInfo && oldestThreadRawInfo.createdDate > period) {
-      await fetchMessages(connection, thread, oldestThreadRawInfo, period, 'before');
+    if (oldestChannelRawInfo && oldestChannelRawInfo.createdDate > period) {
+      await fetchMessages(connection, channel, oldestChannelRawInfo, period, 'before');
+    }
+    if (newestChannelRawInfo) {
+      await fetchMessages(connection, channel, newestChannelRawInfo, period, 'after');
     }
 
-    if (newestThreadRawInfo) {
-      await fetchMessages(connection, thread, newestThreadRawInfo, period, 'after');
+    if (!newestChannelRawInfo && !oldestChannelRawInfo) {
+      await fetchMessages(connection, channel, undefined, period, 'before');
     }
 
-    if (!newestThreadRawInfo && !oldestThreadRawInfo) {
-      await fetchMessages(connection, thread, undefined, period, 'before');
+    const threads = channel.threads.cache.values();
+
+    for (const thread of threads) {
+      const oldestThreadRawInfo = await rawInfoService.getOldestRawInfo(connection, {
+        channelId: channel?.id,
+        threadId: thread.id,
+      });
+      const newestThreadRawInfo = await rawInfoService.getNewestRawInfo(connection, {
+        channelId: channel?.id,
+        threadId: thread.id,
+      });
+
+      if (oldestThreadRawInfo && oldestThreadRawInfo.createdDate > period) {
+        await fetchMessages(connection, thread, oldestThreadRawInfo, period, 'before');
+      }
+
+      if (newestThreadRawInfo) {
+        await fetchMessages(connection, thread, newestThreadRawInfo, period, 'after');
+      }
+
+      if (!newestThreadRawInfo && !oldestThreadRawInfo) {
+        await fetchMessages(connection, thread, undefined, period, 'before');
+      }
     }
+    console.log(`Finished fetching channel messages for channel: ${channel.id}`)
+  } catch (err) {
+    console.log(`Failed to fetchChannelMessages of channle: ${channel.id} `, err)
   }
-  console.log(`Finished fetching messages for channel: ${channel}`)
 }

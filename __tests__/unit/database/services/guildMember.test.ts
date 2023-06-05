@@ -3,7 +3,7 @@ import {
   IGuildMember,
   guildMemberSchema,
   IGuildMemberUpdateBody,
-} from 'tc_dbcomm';
+} from '@togethercrew.dev/db';
 import setupTestDB from '../../../utils/setupTestDB';
 import {
   guildMember1,
