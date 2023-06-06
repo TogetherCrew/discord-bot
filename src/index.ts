@@ -79,9 +79,10 @@ async function app() {
   queue.add('cronJob', {}, {
     repeat: {
       cron: '0 12 * * *', // Run once a day at 12 PM
+      // cron: '* * * * *', // Run every minute
     },
     jobId: 'cronJob', // Optional: Provide a unique ID for the job
-    attempts: 3, // Number of times to retry the job if it fails
+    attempts: 1, // Number of times to retry the job if it fails
     backoff: {
       type: 'exponential',
       delay: 1000, // Initial delay between retries in milliseconds
@@ -111,9 +112,7 @@ async function app() {
   worker.on('failed', (job, error) => {
     console.error(`Job ${job?.id} failed with error:`, error);
   });
-
 }
-
 app();
 
 

@@ -24,12 +24,14 @@ export default async function cronJob(client: Client) {
     try {
         const guilds = await guildService.getGuilds({ isDisconnected: false });
         for (let i = 0; i < guilds.length; i++) {
+            console.log(`Cron JOB is running for ${guilds[i].guildId}:${guilds[i].name}`)
             const connection = databaseService.connectionFactory(guilds[i].guildId, config.mongoose.dbURL);
             await guildExtraction(connection, client, guilds[i].guildId)
             await createAndStartCronJobSaga(guilds[i].guildId)
+            console.log(`Cron JOB is Done ${guilds[i].guildId}:${guilds[i].name}`)
         }
     } catch (err) {
-        console.log(err);
+        console.log('Cron job failed', err)
     }
 }
 

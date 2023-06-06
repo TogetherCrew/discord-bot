@@ -130,7 +130,7 @@ async function fetchMessages(
   fetchDirection: 'before' | 'after' = 'before'
 ) {
   try {
-    console.log(`Fetching messages for ${channel.id} for period: ${period}`)
+    console.log(`fetch msgs is running for ${channel.name}: ${channel.id}`)
     const messagesToStore: IRawInfo[] = [];
     const options: FetchOptions = { limit: 10 };
     if (rawInfo) {
@@ -168,7 +168,7 @@ async function fetchMessages(
       fetchedMessages = await channel.messages.fetch(options);
     }
     await rawInfoService.createRawInfos(connection, messagesToStore);
-    console.log(`Finished fetching messages for ${channel.id} for period: ${period}`)
+    console.log(`fetch msgs is done for ${channel.name}: ${channel.id}`)
   } catch (err) {
     console.log(`Failed to fetchMessages of channle: ${channel.id} `, err)
   }
@@ -184,7 +184,7 @@ async function fetchMessages(
  */
 export default async function fetchChannelMessages(connection: Connection, channel: TextChannel, period: Date) {
   try {
-    console.log(`Fetching channel messages for channel: ${channel.id}`)
+    console.log(`fetch channel messages is running for ${channel.name}: ${channel.id} : ${channel.type}`)
     const oldestChannelRawInfo = await rawInfoService.getOldestRawInfo(connection, {
       channelId: channel?.id,
       threadId: null,
@@ -228,7 +228,8 @@ export default async function fetchChannelMessages(connection: Connection, chann
         await fetchMessages(connection, thread, undefined, period, 'before');
       }
     }
-    console.log(`Finished fetching channel messages for channel: ${channel.id}`)
+    console.log(`fetch channel messages is done for ${channel.name}: ${channel.id} : ${channel.type}`)
+    console.log('###################################')
   } catch (err) {
     console.log(`Failed to fetchChannelMessages of channle: ${channel.id} `, err)
   }
