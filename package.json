@@ -12,7 +12,8 @@
     "test:ci": "jest --ci --detectOpenHandles",
     "lint": "eslint **/*.ts",
     "lint-fix": "eslint --fix **/*.ts",
-    "format": "prettier --write src/**/*.ts"
+    "format": "prettier --write src/**/*.ts",
+    "extract": "env-cmd -f ./src/config/local.env nodemon ./src/extract.ts"
   },
   "repository": {
     "type": "git",

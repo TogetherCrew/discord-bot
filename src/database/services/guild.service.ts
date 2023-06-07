@@ -1,4 +1,5 @@
-import { Guild, IGuild, IGuildUpdateBody } from '@togethercrew.dev/db';
+import { Guild, IDiscordGuild, IGuild, IGuildUpdateBody } from '@togethercrew.dev/db';
+import { Snowflake } from 'discord.js';
 
 /**
  * get guild by query
@@ -60,9 +61,19 @@ async function updateManyGuilds(filter: object, UpdateBody: IGuildUpdateBody): P
   }
 }
 
+async function createGuild(data: IDiscordGuild, discordId: Snowflake) {
+  return Guild.create({
+      guildId: data.id,
+      user: discordId,
+      name: data.name,
+      icon: data.icon
+  });
+}
+
 export default {
   getGuild,
   getGuilds,
   updateGuild,
   updateManyGuilds,
+  createGuild,
 };
