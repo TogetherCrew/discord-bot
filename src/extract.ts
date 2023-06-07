@@ -2,8 +2,10 @@ import { IDiscordGuild, databaseService } from "@togethercrew.dev/db";
 import config from "./config";
 import guildExtraction from "./functions/guildExtraction";
 import { Client, GatewayIntentBits } from "discord.js";
-import { guildService } from "./database/services";
+import { guildService as _guildService } from "./database/services";
 import { connectDB } from "./database";
+import guildService from "./services/guild.service";
+import { channel } from "diagnostics_channel";
 
 const guildId = process.argv[2]
 
@@ -21,13 +23,19 @@ const main = async () => {
 
   await client.login(config.discord.botToken);
   await connectDB();
-  
-  try {
-    await guildService.createGuild({ id: guildId, name: "unknown", icon: "unknown" } as IDiscordGuild, "0000")
-    console.log("Created guild", guildId)
-  } catch (e) {
-    console.log("Guild exists:", guildId)
+
+
+  let _guild = await _guildService.getGuild({ guildId })
+
+  if (!_guild) {
+    _guild = await _guildService.createGuild({ id: guildId, name: "unknown", icon: "unknown" } as IDiscordGuild, "0000")
   }
+
+  const channels = await guildService.getGuildChannels(_guild.guildId)
+  const selectedChannels = channels.map(((channel: { id: any; name: any; }) => ({ channelId: channel.id, channelName: channel.name })))
+  // console.log(selectedChannels)
+  const period = new Date("2022-05-01T00:00:00.000+00:00")
+  _guild = await _guildService.updateGuild({ guildId }, { selectedChannels, period })
   
   const connection = await databaseService.connectionFactory(guildId, config.mongoose.dbURL);
 
