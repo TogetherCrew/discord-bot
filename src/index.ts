@@ -80,6 +80,7 @@ async function app() {
     repeat: {
       cron: '0 12 * * *', // Run once a day at 12 PM
       // cron: '* * * * *', // Run every minute
+      // every: 10000
     },
     jobId: 'cronJob', // Optional: Provide a unique ID for the job
     attempts: 1, // Number of times to retry the job if it fails
