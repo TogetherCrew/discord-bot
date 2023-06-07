@@ -6,14 +6,14 @@ import config from '../config';
 import guildExtraction from './guildExtraction'
 
 async function createAndStartCronJobSaga(guildId: Snowflake) {
+    console.log("[createAndStartCronJobSaga]")
     const saga = await MBConnection.models.Saga.create({
         status: Status.NOT_STARTED,
         data: { guildId },
         choreography: ChoreographyDict.DISCORD_SCHEDULED_JOB
     })
-
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    await saga.start(() => { })
+    console.log("[SAGA] ", saga)
+    await saga.start()
 }
 
 /**
