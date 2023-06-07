@@ -8,11 +8,11 @@
 
 ## script
 
-Prerequisite:
+Prerequisites:
 - You must be running docker
 - Your guild must have the bot installed
 
 1. Open a terminal
-2. `docker compose up -d`
+2. `docker compose -f docker-compose.dev.yml up -d`
 3. `npm i`
 4. `npm run extract <guildId>`
