@@ -29,11 +29,11 @@ const fetchMethod = async (msg: any) => {
 
   const { content } = msg
   const saga = await MBConnection.models.Saga.findOne({ sagaId: content.uuid })
-  const guildId = saga.data.get("guildId");
-  const isGuildCreated = saga.data.get("created");
-  const connection = await databaseService.connectionFactory(saga.data.get("guildId"), config.mongoose.dbURL);
+  const guildId = saga.data["guildId"];
+  const isGuildCreated = saga.data["created"];
+  const connection = await databaseService.connectionFactory(guildId, config.mongoose.dbURL);
 
-  if (isGuildCreated === 'true') {
+  if (isGuildCreated) {
     await fetchMembers(connection, client, guildId)
   }
   else {
