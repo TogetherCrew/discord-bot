@@ -12,8 +12,7 @@ async function createAndStartCronJobSaga(guildId: Snowflake) {
         choreography: ChoreographyDict.DISCORD_SCHEDULED_JOB
     })
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    await saga.start(() => { })
+    await saga.start()
 }
 
 /**
