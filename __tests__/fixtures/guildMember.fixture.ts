@@ -1,4 +1,5 @@
 import { IGuildMember } from '@togethercrew.dev/db';
+import { Connection } from 'mongoose';
 
 export const guildMember1: IGuildMember = {
     discordId: '123456789',
@@ -28,4 +29,8 @@ export const guildMember3: IGuildMember = {
     discriminator: '3',
     isBot: false,
     avatar: 'a3'
+};
+
+export const insertGuildMembers = async function <Type>(guildMembers: Array<Type>, connection: Connection) {
+    await connection.models.GuildMember.insertMany(guildMembers.map((guildMember) => (guildMember)));
 };
