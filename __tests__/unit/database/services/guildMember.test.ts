@@ -39,7 +39,7 @@ describe('guildMember service', () => {
         guildMember1
       );
       expect(result).toBeDefined();
-      expect(result.discordId).toEqual(guildMember1.discordId);
+      expect(result?.discordId).toEqual(guildMember1.discordId);
 
       const guildMemberDoc1 = await guildMemberService.getGuildMember(
         connection,
