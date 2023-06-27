@@ -1,4 +1,5 @@
 import { IRawInfo } from '@togethercrew.dev/db';
+import { Connection } from 'mongoose';
 
 export const rawInfo1: IRawInfo = {
   type: 0,
@@ -46,4 +47,8 @@ export const rawInfo3: IRawInfo = {
   threadId: 'thread321',
   threadName: 'Important Announcement',
   channelName: 'c3'
+};
+
+export const insertRawInfos = async function <Type>(rawInfos: Array<Type>, connection: Connection) {
+  await connection.models.RawInfo.insertMany(rawInfos.map((rawInfo) => (rawInfo)));
 };
