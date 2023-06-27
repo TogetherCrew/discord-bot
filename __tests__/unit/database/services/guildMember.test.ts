@@ -9,7 +9,6 @@ import {
   guildMember1,
   guildMember2,
   guildMember3,
-  insertGuildMembers
 } from '../../../fixtures/guildMember.fixture';
 import { guildMemberService } from '../../../../src/database/services';
 import config from '../../../../src/config';
@@ -88,24 +87,28 @@ describe('guildMember service', () => {
 
   describe('getGuildMember', () => {
     test('should retrieve an existing guild member that match the filter criteria', async () => {
-      await insertGuildMembers([guildMember1], connection);
+      await guildMemberService.createGuildMember(connection, guildMember1);
       const result = await guildMemberService.getGuildMember(connection, {
         discordId: guildMember1.discordId,
       });
       expect(result).toMatchObject(guildMember1);
     });
     test('should return null when no guild members match the filter criteria', async () => {
-      await insertGuildMembers([guildMember1], connection);
+      await guildMemberService.createGuildMember(connection, guildMember1);
       const result = await guildMemberService.getGuildMember(connection, {
-        discordId: guildMember1.discordId,
+        discordId: guildMember2.discordId,
       });
-      expect(result).toMatchObject(guildMember1);
+      expect(result).toBe(null);
     });
   });
 
   describe('getGuildMembers', () => {
     test('should retrieve guild members that match the filter criteria', async () => {
-      await insertGuildMembers([guildMember1, guildMember2, guildMember3], connection);
+      await guildMemberService.createGuildMembers(connection, [
+        guildMember1,
+        guildMember2,
+        guildMember3,
+      ]);
       const result = await guildMemberService.getGuildMembers(connection, {
         roles: guildMember2.roles,
       });
@@ -113,7 +116,11 @@ describe('guildMember service', () => {
     });
 
     test('should return an empty array when no guild members match the filter criteria', async () => {
-      await insertGuildMembers([guildMember1, guildMember2, guildMember3], connection);
+      await guildMemberService.createGuildMembers(connection, [
+        guildMember1,
+        guildMember2,
+        guildMember3,
+      ]);
       const result = await guildMemberService.getGuildMembers(connection, {
         roles: ['role8'],
       });
@@ -128,7 +135,7 @@ describe('guildMember service', () => {
       roles: ['role1Id', 'role21Id'],
     };
     test('should update an existing guild member that match the filter criteria', async () => {
-      await insertGuildMembers([guildMember1], connection);
+      await guildMemberService.createGuildMember(connection, guildMember1);
       const result = await guildMemberService.updateGuildMember(
         connection,
         { discordId: guildMember1.discordId },
@@ -149,7 +156,7 @@ describe('guildMember service', () => {
       });
     });
 
-    test('should return null when no guild members match the filter criteria', async () => {
+    test('should return null when no guild member match the filter criteria', async () => {
       const result = await guildMemberService.updateGuildMember(
         connection,
         { discordId: guildMember1.discordId },
@@ -164,7 +171,11 @@ describe('guildMember service', () => {
       avatar: 'new-avatar.png',
     };
     test('should update guild members that match the filter criteria', async () => {
-      await insertGuildMembers([guildMember1, guildMember2, guildMember3], connection);
+      await guildMemberService.createGuildMembers(connection, [
+        guildMember1,
+        guildMember2,
+        guildMember3,
+      ]);
       const result = await guildMemberService.updateGuildMembers(
         connection,
         { roles: guildMember2.roles },
@@ -195,7 +206,7 @@ describe('guildMember service', () => {
 
   describe('deleteGuildMember', () => {
     test('should delete guild member that match the filter criteria', async () => {
-      await insertGuildMembers([guildMember1], connection);
+      await guildMemberService.createGuildMember(connection, guildMember1);
       const result = await guildMemberService.deleteGuildMember(connection, {
         discordId: guildMember1.discordId,
       });
@@ -212,7 +223,11 @@ describe('guildMember service', () => {
 
   describe('deleteGuildMembers', () => {
     test('should delete guild members that match the filter criteria', async () => {
-      await insertGuildMembers([guildMember1, guildMember2, guildMember3], connection);
+      await guildMemberService.createGuildMembers(connection, [
+        guildMember1,
+        guildMember2,
+        guildMember3,
+      ]);
       const result = await guildMemberService.deleteGuildMembers(connection, {
         roles: guildMember2.roles,
       });
