@@ -2,6 +2,7 @@ import { Events, Channel, GuildChannel, TextChannel } from 'discord.js';
 import { channelService } from '../../database/services';
 import { databaseService } from '@togethercrew.dev/db';
 import config from '../../config';
+import { closeConnection } from '../../database/connection';
 
 export default {
     name: Events.ChannelUpdate,
@@ -21,6 +22,7 @@ export default {
                         parent_id: newChannel.parentId
                     })
                 }
+                await closeConnection(connection)
             }
         } catch (err) {
             // TODO: improve error handling

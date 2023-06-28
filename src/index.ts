@@ -10,6 +10,7 @@ import { connectDB } from './database';
 import fetchMembers from './functions/fetchMembers';
 import { databaseService } from '@togethercrew.dev/db';
 import guildExtraction from './functions/guildExtraction';
+import { closeConnection } from './database/connection';
 
 Sentry.init({
   dsn: config.sentry.dsn,
@@ -39,6 +40,7 @@ const fetchMethod = async (msg: any) => {
   else {
     await guildExtraction(connection, client, guildId)
   }
+  await closeConnection(connection)
   console.log(`Finished fetchMethod.`)
 }
 
