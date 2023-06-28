@@ -7,7 +7,6 @@ import { Client, Snowflake } from "discord.js";
  * @returns throw error if User has DMs closed or has no mutual servers with the bot
  */
 export default async function sendDirectMessage(client: Client, info: { discordId: Snowflake, message: string }) {
-    console.log("First of [sendDirectMessage]")
     const { discordId, message } = info
 
     // Fetch the user object
