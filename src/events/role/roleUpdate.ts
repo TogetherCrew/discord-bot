@@ -2,6 +2,7 @@ import { Events, Role } from 'discord.js';
 import { roleService } from '../../database/services';
 import { databaseService } from '@togethercrew.dev/db';
 import config from '../../config';
+import { closeConnection } from '../../database/connection';
 
 export default {
     name: Events.GuildRoleUpdate,
@@ -20,6 +21,7 @@ export default {
                     color: newRole.color
                 })
             }
+            await closeConnection(connection)
 
         } catch (err) {
             // TODO: improve error handling
