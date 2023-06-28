@@ -68,10 +68,11 @@ const notifyUserAboutAnalysisFinish = async (discordId: string, info: { guildId:
   }catch(error){
 
     // can not send DM to the user 
-    // Will create a private thread and notify him/her about the status
-    createPrivateThreadAndSendMessage(upperTextChannel, 
-      { threadName: 'TogetherCrew Status', message: `<@${discordId}> ${message}` } 
-    )
+    // Will create a private thread and notify him/her about the status if useFallback is true
+    if(useFallback)
+      createPrivateThreadAndSendMessage(upperTextChannel, 
+        { threadName: 'TogetherCrew Status', message: `<@${discordId}> ${message}` } 
+      )
 
   }
 }
