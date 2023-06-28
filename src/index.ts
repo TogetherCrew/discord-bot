@@ -1,4 +1,4 @@
-import { Client, GatewayIntentBits } from 'discord.js';
+import { Channel, ChannelType, Client, GatewayIntentBits, Snowflake, TextChannel, ThreadChannel } from 'discord.js';
 import config from './config';
 import * as Sentry from '@sentry/node';
 import loadEvents from './functions/loadEvents';
@@ -10,6 +10,9 @@ import { connectDB } from './database';
 import fetchMembers from './functions/fetchMembers';
 import { databaseService } from '@togethercrew.dev/db';
 import guildExtraction from './functions/guildExtraction';
+import sendDirectMessage from './functions/sendDirectMessage';
+import { createPrivateThreadAndSendMessage } from './functions/thread';
+
 
 Sentry.init({
   dsn: config.sentry.dsn,
@@ -18,7 +21,13 @@ Sentry.init({
 });
 
 const client = new Client({
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildPresences],
+  intents: [
+    GatewayIntentBits.Guilds, 
+    GatewayIntentBits.GuildMembers, 
+    GatewayIntentBits.GuildMessages, 
+    GatewayIntentBits.GuildPresences, 
+    GatewayIntentBits.DirectMessages,
+  ],
 });
 
 const partial = (func: any, ...args: any) => (...rest: any) => func(...args, ...rest)
@@ -40,6 +49,31 @@ const fetchMethod = async (msg: any) => {
     await guildExtraction(connection, client, guildId)
   }
   console.log(`Finished fetchMethod.`)
+}
+
+const notifyUserAboutAnalysisFinish = async (discordId: string, info: { guildId: Snowflake, message: string, useFallback: boolean }) => {
+  // related issue https://github.com/RnDAO/tc-discordBot/issues/68
+  const { guildId, message, useFallback } = info;
+
+  const guild = await client.guilds.fetch(guildId);
+  const channels = await guild.channels.fetch()
+  
+  const arrayChannels = Array.from(channels, ([name, value]) => ({ ...value } as Channel))
+  const textChannels = arrayChannels.filter(channel => channel.type == ChannelType.GuildText) as TextChannel[]
+  const rawPositionBasedSortedTextChannels = textChannels.sort((textChannelA, textChannelB) => textChannelA.rawPosition > textChannelB.rawPosition ? 1 : -1)
+  const upperTextChannel = rawPositionBasedSortedTextChannels[0]
+
+  try {
+    sendDirectMessage(client, { discordId, message })
+  }catch(error){
+
+    // can not send DM to the user 
+    // Will create a private thread and notify him/her about the status
+    createPrivateThreadAndSendMessage(upperTextChannel, 
+      { threadName: 'TogetherCrew Status', message: `<@${discordId}> ${message}` } 
+    )
+
+  }
 }
 
 // APP
@@ -64,6 +98,24 @@ async function app() {
     const fn = partial(fetchMethod, msg)
     await saga.next(fn)
     console.log(`Finished ${Event.DISCORD_BOT.FETCH} event with msg: ${msg}`)
+  })
+  
+  RabbitMQ.onEvent(Event.DISCORD_BOT.SEND_MESSAGE, async (msg) => {
+    console.log(`Received ${Event.DISCORD_BOT.FETCH} event with msg: ${msg}`)
+    if (!msg) return
+
+    const { content } = msg
+    const saga = await MBConnection.models.Saga.findOne({ sagaId: content.uuid })
+    
+    const guildId = saga.data["guildId"];
+    const discordId = saga.data["discordId"];
+    const message = saga.data["message"];
+    const useFallback = saga.data["useFallback"];
+
+    const fn = notifyUserAboutAnalysisFinish.bind({}, discordId, { guildId, message, useFallback })
+    await saga.next(fn)
+    console.log(`Finished ${Event.DISCORD_BOT.FETCH} event with msg: ${msg}`)
+
   })
 
 
