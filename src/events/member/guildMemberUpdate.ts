@@ -2,7 +2,6 @@ import { Events, GuildMember } from 'discord.js';
 import { guildMemberService } from '../../database/services';
 import { databaseService } from '@togethercrew.dev/db';
 import config from '../../config';
-import { closeConnection } from '../../database/connection';
 
 export default {
   name: Events.GuildMemberUpdate,
@@ -32,7 +31,6 @@ export default {
           discriminator: newMember.user.discriminator,
         });
       }
-      await closeConnection(connection)
     } catch (err) {
       // TODO: improve error handling
       console.log(err);
