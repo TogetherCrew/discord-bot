@@ -16,7 +16,7 @@ export default {
             );
             if (!role) {
                 roleService.createRole(connection, {
-                    id: newRole.id,
+                    roleId: newRole.id,
                     name: newRole.name,
                     color: newRole.color
                 })

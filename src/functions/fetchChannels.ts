@@ -10,9 +10,9 @@ import { channelService, guildService } from '../database/services';
 */
 function getNeedDataFromChannel(channel: TextChannel | VoiceChannel | CategoryChannel): IChannel {
     return {
-        id: channel.id,
+        channelId: channel.id,
         name: channel.name, // cast to TextChannel for 'name'
-        parent_id: channel.parentId,
+        parentId: channel.parentId,
         // ... extract other properties as needed
     };
 }

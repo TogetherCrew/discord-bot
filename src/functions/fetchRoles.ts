@@ -10,7 +10,7 @@ import { roleService, guildService } from '../database/services';
 */
 function getNeedDataFromRole(role: Role): IRole {
     return {
-        id: role.id,
+        roleId: role.id,
         name: role.name,
         color: role.color,
     };
