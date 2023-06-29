@@ -16,7 +16,7 @@ export default {
                     { name: newChannel.name, parentId: newChannel.parentId }
                 );
                 if (!channel) {
-                    channelService.createChannel(connection, {
+                    await channelService.createChannel(connection, {
                         channelId: newChannel.id,
                         name: newChannel.name,
                         parentId: newChannel.parentId

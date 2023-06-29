@@ -23,10 +23,10 @@ Sentry.init({
 
 const client = new Client({
   intents: [
-    GatewayIntentBits.Guilds, 
-    GatewayIntentBits.GuildMembers, 
-    GatewayIntentBits.GuildMessages, 
-    GatewayIntentBits.GuildPresences, 
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildPresences,
     GatewayIntentBits.DirectMessages,
   ],
 });
@@ -59,7 +59,7 @@ const notifyUserAboutAnalysisFinish = async (discordId: string, info: { guildId:
 
   const guild = await client.guilds.fetch(guildId);
   const channels = await guild.channels.fetch()
-  
+
   const arrayChannels = Array.from(channels, ([name, value]) => ({ ...value } as Channel))
   const textChannels = arrayChannels.filter(channel => channel.type == ChannelType.GuildText) as TextChannel[]
   const rawPositionBasedSortedTextChannels = textChannels.sort((textChannelA, textChannelB) => textChannelA.rawPosition > textChannelB.rawPosition ? 1 : -1)
@@ -67,13 +67,13 @@ const notifyUserAboutAnalysisFinish = async (discordId: string, info: { guildId:
 
   try {
     sendDirectMessage(client, { discordId, message })
-  }catch(error){
+  } catch (error) {
 
     // can not send DM to the user 
     // Will create a private thread and notify him/her about the status if useFallback is true
-    if(useFallback)
-      createPrivateThreadAndSendMessage(upperTextChannel, 
-        { threadName: 'TogetherCrew Status', message: `<@${discordId}> ${message}` } 
+    if (useFallback)
+      createPrivateThreadAndSendMessage(upperTextChannel,
+        { threadName: 'TogetherCrew Status', message: `<@${discordId}> ${message}` }
       )
 
   }
@@ -102,14 +102,14 @@ async function app() {
     await saga.next(fn)
     console.log(`Finished ${Event.DISCORD_BOT.FETCH} event with msg: ${msg}`)
   })
-  
+
   RabbitMQ.onEvent(Event.DISCORD_BOT.SEND_MESSAGE, async (msg) => {
     console.log(`Received ${Event.DISCORD_BOT.FETCH} event with msg: ${msg}`)
     if (!msg) return
 
     const { content } = msg
     const saga = await MBConnection.models.Saga.findOne({ sagaId: content.uuid })
-    
+
     const guildId = saga.data["guildId"];
     const discordId = saga.data["discordId"];
     const message = saga.data["message"];
@@ -124,50 +124,50 @@ async function app() {
 
   // *****************************BULLMQ
   // Create a queue instance with the Redis connection
-  const queue = new Queue('cronJobQueue', {
-    connection: {
-      host: config.redis.host,
-      port: config.redis.port,
-      password: config.redis.password
-    }
-  });
-  queue.add('cronJob', {}, {
-    repeat: {
-      cron: '0 12 * * *', // Run once a day at 12 PM
-      // cron: '* * * * *', // Run every minute
-      // every: 10000
-    },
-    jobId: 'cronJob', // Optional: Provide a unique ID for the job
-    attempts: 1, // Number of times to retry the job if it fails
-    backoff: {
-      type: 'exponential',
-      delay: 1000, // Initial delay between retries in milliseconds
-    },
-  } as never);
+  // const queue = new Queue('cronJobQueue', {
+  //   connection: {
+  //     host: config.redis.host,
+  //     port: config.redis.port,
+  //     password: config.redis.password
+  //   }
+  // });
+  // queue.add('cronJob', {}, {
+  //   repeat: {
+  //     cron: '0 12 * * *', // Run once a day at 12 PM
+  //     // cron: '* * * * *', // Run every minute
+  //     // every: 10000
+  //   },
+  //   jobId: 'cronJob', // Optional: Provide a unique ID for the job
+  //   attempts: 1, // Number of times to retry the job if it fails
+  //   backoff: {
+  //     type: 'exponential',
+  //     delay: 1000, // Initial delay between retries in milliseconds
+  //   },
+  // } as never);
 
-  // Create a worker to process the job
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const worker = new Worker('cronJobQueue', async (job: Job<any, any, string> | undefined) => {
-    if (job) {
-      // Call the extractMessagesDaily function
-      await cronJob(client);
-    }
-  }, {
-    connection: {
-      host: config.redis.host,
-      port: config.redis.port,
-      password: config.redis.password
-    }
-  });
+  // // Create a worker to process the job
+  // // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // const worker = new Worker('cronJobQueue', async (job: Job<any, any, string> | undefined) => {
+  //   if (job) {
+  //     // Call the extractMessagesDaily function
+  //     await cronJob(client);
+  //   }
+  // }, {
+  //   connection: {
+  //     host: config.redis.host,
+  //     port: config.redis.port,
+  //     password: config.redis.password
+  //   }
+  // });
 
-  // Listen for completed and failed events to log the job status
-  worker.on('completed', job => {
-    console.log(`Job ${job?.id} completed successfully.`);
-  });
+  // // Listen for completed and failed events to log the job status
+  // worker.on('completed', job => {
+  //   console.log(`Job ${job?.id} completed successfully.`);
+  // });
 
-  worker.on('failed', (job, error) => {
-    console.error(`Job ${job?.id} failed with error:`, error);
-  });
+  // worker.on('failed', (job, error) => {
+  //   console.error(`Job ${job?.id} failed with error:`, error);
+  // });
 }
 app();
 

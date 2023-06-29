@@ -11,7 +11,7 @@ export default {
         try {
             if (channel instanceof GuildChannel && channel instanceof TextChannel) {
                 const connection = databaseService.connectionFactory(channel.guildId, config.mongoose.dbURL);
-                channelService.createChannel(connection, {
+                await channelService.createChannel(connection, {
                     channelId: channel.id,
                     name: channel.name,
                     parentId: channel.parentId
