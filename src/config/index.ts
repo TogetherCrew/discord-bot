@@ -2,7 +2,7 @@ import Joi from 'joi';
 
 const envVarsSchema = Joi.object()
   .keys({
-    NODE_ENV: Joi.string().valid('production', 'development', 'local', 'test').required(),
+    NODE_ENV: Joi.string().valid('production', 'development', 'test').required(),
     DB_HOST: Joi.string().required().description('Mongo DB url'),
     DB_PORT: Joi.string().required().description('Mongo DB port'),
     DB_USER: Joi.string().required().description('Mongo DB username'),
@@ -32,14 +32,8 @@ if (error) {
 export default {
   env: envVars.NODE_ENV,
   mongoose: {
-    serverURL:
-      envVars.NODE_ENV === 'local' || envVars.NODE_ENV === 'test'
-        ? `mongodb://127.0.0.1:27017/RnDAO-${envVars.NODE_ENV}`
-        : `mongodb://${envVars.DB_USER}:${envVars.DB_PASSWORD}@${envVars.DB_HOST}:${envVars.DB_PORT}/${envVars.DB_NAME}`,
-    dbURL:
-      envVars.NODE_ENV === 'local' || envVars.NODE_ENV === 'test'
-        ? `mongodb://127.0.0.1:27017`
-        : `mongodb://${envVars.DB_USER}:${envVars.DB_PASSWORD}@${envVars.DB_HOST}:${envVars.DB_PORT}`,
+    serverURL: `mongodb://${envVars.DB_USER}:${envVars.DB_PASSWORD}@${envVars.DB_HOST}:${envVars.DB_PORT}/${envVars.DB_NAME}`,
+    dbURL: `mongodb://${envVars.DB_USER}:${envVars.DB_PASSWORD}@${envVars.DB_HOST}:${envVars.DB_PORT}`
   },
   redis: {
     host: envVars.REDIS_HOST,

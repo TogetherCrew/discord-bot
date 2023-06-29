@@ -18,7 +18,7 @@ export const guild1 = {
   isInProgress: true,
   icon: 'guild1.png',
   window: [1, 2], // Update to have 2 numbers
-  action: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 1, 1], // Update to have 13 numbers
+  action: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16], // Update to have 13 numbers
 };
 
 export const guild2 = {
@@ -37,7 +37,7 @@ export const guild2 = {
   isInProgress: false,
   icon: null,
   window: [7, 8], // Update to have 2 numbers
-  action: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 1, 1], // Update to have 13 numbers
+  action: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16], // Update to have 13 numbers
 };
 
 export const guild3 = {

@@ -13,6 +13,7 @@ import guildExtraction from './functions/guildExtraction';
 import sendDirectMessage from './functions/sendDirectMessage';
 import { createPrivateThreadAndSendMessage } from './functions/thread';
 
+import { closeConnection } from './database/connection';
 
 Sentry.init({
   dsn: config.sentry.dsn,
@@ -48,6 +49,7 @@ const fetchMethod = async (msg: any) => {
   else {
     await guildExtraction(connection, client, guildId)
   }
+  await closeConnection(connection)
   console.log(`Finished fetchMethod.`)
 }
 
