@@ -12,7 +12,7 @@ export default {
         try {
             const connection = databaseService.connectionFactory(role.guild.id, config.mongoose.dbURL);
             roleService.createRole(connection, {
-                id: role.id,
+                roleId: role.id,
                 name: role.name,
                 color: role.color
             })

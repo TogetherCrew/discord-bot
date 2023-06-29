@@ -13,13 +13,13 @@ export default {
                 const connection = databaseService.connectionFactory(oldChannel.guildId, config.mongoose.dbURL);
                 const channel = await channelService.updateChannel(connection,
                     { id: oldChannel.id },
-                    { name: newChannel.name, parent_id: newChannel.parentId }
+                    { name: newChannel.name, parentId: newChannel.parentId }
                 );
                 if (!channel) {
                     channelService.createChannel(connection, {
-                        id: newChannel.id,
+                        channelId: newChannel.id,
                         name: newChannel.name,
-                        parent_id: newChannel.parentId
+                        parentId: newChannel.parentId
                     })
                 }
                 await closeConnection(connection)

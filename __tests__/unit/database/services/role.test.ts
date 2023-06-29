@@ -40,16 +40,16 @@ describe('role service', () => {
                 role1
             );
             expect(result).toBeDefined();
-            expect(result?.id).toEqual(role1.id);
+            expect(result?.roleId).toEqual(role1.roleId);
 
             const roleDoc1 = await roleService.getRole(
                 connection,
-                { id: role1.id }
+                { roleId: role1.roleId }
             );
 
             expect(roleDoc1).toBeDefined();
             expect(roleDoc1).toMatchObject({
-                id: role1.id,
+                roleId: role1.roleId,
                 name: role1.name,
                 color: role1.color,
             });
@@ -66,23 +66,23 @@ describe('role service', () => {
 
             const roleDoc1 = await roleService.getRole(
                 connection,
-                { id: role1.id }
+                { roleId: role1.roleId }
             );
 
             const roleDoc2 = await roleService.getRole(
                 connection,
-                { id: role2.id }
+                { roleId: role2.roleId }
             );
 
             expect(roleDoc1).toBeDefined();
             expect(roleDoc1).toMatchObject({
-                id: role1.id,
+                roleId: role1.roleId,
                 name: role1.name,
                 color: role1.color,
             });
             expect(roleDoc2).toBeDefined();
             expect(roleDoc2).toMatchObject({
-                id: role2.id,
+                roleId: role2.roleId,
                 name: role2.name,
                 color: role2.color,
             });
@@ -93,14 +93,14 @@ describe('role service', () => {
         test('should retrieve an existing role that match the filter criteria', async () => {
             await insertRoles([role1], connection);
             const result = await roleService.getRole(connection, {
-                id: role1.id,
+                roleId: role1.roleId,
             });
             expect(result).toMatchObject(role1);
         });
         test('should return null when no role match the filter criteria', async () => {
             await insertRoles([role1], connection);
             const result = await roleService.getRole(connection, {
-                id: role2.id,
+                roleId: role2.roleId,
             });
             expect(result).toBe(null);
         });
@@ -133,14 +133,14 @@ describe('role service', () => {
             await insertRoles([role1], connection);
             const result = await roleService.updateRole(
                 connection,
-                { id: role1.id },
+                { roleId: role1.roleId },
                 updateBody
             );
             expect(result).toMatchObject(updateBody);
 
             const roleDoc1 = await roleService.getRole(
                 connection,
-                { id: role1.id }
+                { roleId: role1.roleId }
             );
 
             expect(roleDoc1).toBeDefined();
@@ -153,7 +153,7 @@ describe('role service', () => {
         test('should return null when no role match the filter criteria', async () => {
             const result = await roleService.updateRole(
                 connection,
-                { id: role1.id },
+                { roleId: role1.roleId },
                 updateBody
             );
             expect(result).toEqual(null);
@@ -174,11 +174,11 @@ describe('role service', () => {
             expect(result).toEqual(2);
             const roleDoc1 = await roleService.getRole(
                 connection,
-                { id: role2.id }
+                { roleId: role2.roleId }
             );
             const roleDoc12 = await roleService.getRole(
                 connection,
-                { id: role3.id }
+                { roleId: role3.roleId }
             );
             expect(roleDoc1?.color).toBe(updateBody.color);
             expect(roleDoc12?.color).toBe(updateBody.color);
