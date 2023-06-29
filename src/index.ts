@@ -79,6 +79,13 @@ const notifyUserAboutAnalysisFinish = async (discordId: string, info: { guildId:
   }
 }
 
+const fetchMembersByGuildId = async (guildId:Snowflake) => {
+  const connection = await databaseService.connectionFactory(guildId, config.mongoose.dbURL);
+
+  await fetchMembers(connection, client, guildId)
+  await closeConnection(connection)
+}
+
 // APP
 async function app() {
   await loadEvents(client);
@@ -104,7 +111,7 @@ async function app() {
   })
   
   RabbitMQ.onEvent(Event.DISCORD_BOT.SEND_MESSAGE, async (msg) => {
-    console.log(`Received ${Event.DISCORD_BOT.FETCH} event with msg: ${msg}`)
+    console.log(`Received ${Event.DISCORD_BOT.SEND_MESSAGE} event with msg: ${msg}`)
     if (!msg) return
 
     const { content } = msg
@@ -117,8 +124,22 @@ async function app() {
 
     const fn = notifyUserAboutAnalysisFinish.bind({}, discordId, { guildId, message, useFallback })
     await saga.next(fn)
-    console.log(`Finished ${Event.DISCORD_BOT.FETCH} event with msg: ${msg}`)
+    console.log(`Finished ${Event.DISCORD_BOT.SEND_MESSAGE} event with msg: ${msg}`)
 
+  })
+
+  RabbitMQ.onEvent(Event.DISCORD_BOT.FETCH_MEMBERS, async (msg) => {
+    console.log(`Received ${Event.DISCORD_BOT.FETCH_MEMBERS} event with msg: ${msg}`)
+    if (!msg) return
+
+    const { content } = msg
+    const saga = await MBConnection.models.Saga.findOne({ sagaId: content.uuid })
+    
+    const guildId = saga.data["guildId"];
+
+    const fn = fetchMembersByGuildId.bind({}, guildId)
+    await saga.next(fn)
+    console.log(`Finished ${Event.DISCORD_BOT.FETCH_MEMBERS} event with msg: ${msg}`)
   })
 
 
