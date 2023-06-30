@@ -1,4 +1,4 @@
-import { Channel, ChannelType, Client, GatewayIntentBits, Snowflake, TextChannel, ThreadChannel } from 'discord.js';
+import { Channel, ChannelType, Client, GatewayIntentBits, Snowflake, TextChannel } from 'discord.js';
 import config from './config';
 import * as Sentry from '@sentry/node';
 import loadEvents from './functions/loadEvents';
