@@ -1,4 +1,4 @@
-import { Channel, ChannelType, Client, GatewayIntentBits, Snowflake, TextChannel, ThreadChannel } from 'discord.js';
+import { Channel, ChannelType, Client, GatewayIntentBits, Snowflake, TextChannel } from 'discord.js';
 import config from './config';
 import * as Sentry from '@sentry/node';
 import loadEvents from './functions/loadEvents';
@@ -23,10 +23,10 @@ Sentry.init({
 
 const client = new Client({
   intents: [
-    GatewayIntentBits.Guilds, 
-    GatewayIntentBits.GuildMembers, 
-    GatewayIntentBits.GuildMessages, 
-    GatewayIntentBits.GuildPresences, 
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildPresences,
     GatewayIntentBits.DirectMessages,
   ],
 });
@@ -59,7 +59,7 @@ const notifyUserAboutAnalysisFinish = async (discordId: string, info: { guildId:
 
   const guild = await client.guilds.fetch(guildId);
   const channels = await guild.channels.fetch()
-  
+
   const arrayChannels = Array.from(channels, ([name, value]) => ({ ...value } as Channel))
   const textChannels = arrayChannels.filter(channel => channel.type == ChannelType.GuildText) as TextChannel[]
   const rawPositionBasedSortedTextChannels = textChannels.sort((textChannelA, textChannelB) => textChannelA.rawPosition > textChannelB.rawPosition ? 1 : -1)
@@ -67,13 +67,13 @@ const notifyUserAboutAnalysisFinish = async (discordId: string, info: { guildId:
 
   try {
     sendDirectMessage(client, { discordId, message })
-  }catch(error){
+  } catch (error) {
 
     // can not send DM to the user 
     // Will create a private thread and notify him/her about the status if useFallback is true
-    if(useFallback)
-      createPrivateThreadAndSendMessage(upperTextChannel, 
-        { threadName: 'TogetherCrew Status', message: `<@${discordId}> ${message}` } 
+    if (useFallback)
+      createPrivateThreadAndSendMessage(upperTextChannel,
+        { threadName: 'TogetherCrew Status', message: `<@${discordId}> ${message}` }
       )
 
   }
@@ -109,14 +109,14 @@ async function app() {
     await saga.next(fn)
     console.log(`Finished ${Event.DISCORD_BOT.FETCH} event with msg: ${msg}`)
   })
-  
+
   RabbitMQ.onEvent(Event.DISCORD_BOT.SEND_MESSAGE, async (msg) => {
     console.log(`Received ${Event.DISCORD_BOT.SEND_MESSAGE} event with msg: ${msg}`)
     if (!msg) return
 
     const { content } = msg
     const saga = await MBConnection.models.Saga.findOne({ sagaId: content.uuid })
-    
+
     const guildId = saga.data["guildId"];
     const discordId = saga.data["discordId"];
     const message = saga.data["message"];

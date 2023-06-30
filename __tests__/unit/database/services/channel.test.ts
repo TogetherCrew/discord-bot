@@ -40,18 +40,18 @@ describe('channel service', () => {
                 channel1
             );
             expect(result).toBeDefined();
-            expect(result?.id).toEqual(channel1.id);
+            expect(result?.channelId).toEqual(channel1.channelId);
 
             const channelDoc1 = await channelService.getChannel(
                 connection,
-                { id: channel1.id }
+                { channelId: channel1.channelId }
             );
 
             expect(channelDoc1).toBeDefined();
             expect(channelDoc1).toMatchObject({
-                id: channel1.id,
+                channelId: channel1.channelId,
                 name: channel1.name,
-                parent_id: channel1.parent_id,
+                parentId: channel1.parentId,
             });
         });
     });
@@ -66,25 +66,25 @@ describe('channel service', () => {
 
             const channelDoc1 = await channelService.getChannel(
                 connection,
-                { id: channel1.id }
+                { channelId: channel1.channelId }
             );
 
             const channelDoc2 = await channelService.getChannel(
                 connection,
-                { id: channel2.id }
+                { channelId: channel2.channelId }
             );
 
             expect(channelDoc1).toBeDefined();
             expect(channelDoc1).toMatchObject({
-                id: channel1.id,
+                channelId: channel1.channelId,
                 name: channel1.name,
-                parent_id: channel1.parent_id,
+                parentId: channel1.parentId,
             });
             expect(channelDoc2).toBeDefined();
             expect(channelDoc2).toMatchObject({
-                id: channel2.id,
+                channelId: channel2.channelId,
                 name: channel2.name,
-                parent_id: channel2.parent_id,
+                parentId: channel2.parentId,
             });
         });
     });
@@ -93,14 +93,14 @@ describe('channel service', () => {
         test('should retrieve an existing channel that match the filter criteria', async () => {
             await insertChannels([channel1], connection);
             const result = await channelService.getChannel(connection, {
-                id: channel1.id,
+                channelId: channel1.channelId,
             });
             expect(result).toMatchObject(channel1);
         });
         test('should return null when no channel match the filter criteria', async () => {
             await insertChannels([channel1], connection);
             const result = await channelService.getChannel(connection, {
-                id: channel2.id,
+                channelId: channel2.channelId,
             });
             expect(result).toBe(null);
         });
@@ -110,7 +110,7 @@ describe('channel service', () => {
         test('should retrieve channels that match the filter criteria', async () => {
             await insertChannels([channel1, channel2, channel3], connection);
             const result = await channelService.getChannels(connection, {
-                parent_id: channel2.parent_id,
+                parentId: channel2.parentId,
             });
             expect(result).toMatchObject([channel2, channel3]);
         });
@@ -118,7 +118,7 @@ describe('channel service', () => {
         test('should return an empty array when no channels match the filter criteria', async () => {
             await insertChannels([channel1, channel2, channel3], connection);
             const result = await channelService.getChannels(connection, {
-                parent_id: "111111",
+                parentId: "111111",
             });
             expect(result).toEqual([]);
         });
@@ -127,33 +127,33 @@ describe('channel service', () => {
     describe('updateChannel', () => {
         const updateBody: IChannelUpdateBody = {
             name: 'Channel 10',
-            parent_id: "111111"
+            parentId: "111111"
         };
         test('should update an existing channel that match the filter criteria', async () => {
             await insertChannels([channel1], connection);
             const result = await channelService.updateChannel(
                 connection,
-                { id: channel1.id },
+                { channelId: channel1.channelId },
                 updateBody
             );
             expect(result).toMatchObject(updateBody);
 
             const channelDoc1 = await channelService.getChannel(
                 connection,
-                { id: channel1.id }
+                { channelId: channel1.channelId }
             );
 
             expect(channelDoc1).toBeDefined();
             expect(channelDoc1).toMatchObject({
                 name: updateBody.name,
-                parent_id: updateBody.parent_id,
+                parentId: updateBody.parentId,
             });
         });
 
         test('should return null when no channel match the filter criteria', async () => {
             const result = await channelService.updateChannel(
                 connection,
-                { id: channel1.id },
+                { channelId: channel1.channelId },
                 updateBody
             );
             expect(result).toEqual(null);
@@ -162,32 +162,32 @@ describe('channel service', () => {
 
     describe('updateChannels', () => {
         const updateBody: IChannelUpdateBody = {
-            parent_id: "111111"
+            parentId: "111111"
         };
         test('should update channels that match the filter criteria', async () => {
             await insertChannels([channel1, channel2, channel3], connection);
             const result = await channelService.updateChannels(
                 connection,
-                { parent_id: channel2.parent_id },
+                { parentId: channel2.parentId },
                 updateBody
             );
             expect(result).toEqual(2);
             const channelDoc1 = await channelService.getChannel(
                 connection,
-                { id: channel2.id }
+                { channelId: channel2.channelId }
             );
             const channelDoc12 = await channelService.getChannel(
                 connection,
-                { id: channel3.id }
+                { channelId: channel3.channelId }
             );
-            expect(channelDoc1?.parent_id).toBe(updateBody.parent_id);
-            expect(channelDoc12?.parent_id).toBe(updateBody.parent_id);
+            expect(channelDoc1?.parentId).toBe(updateBody.parentId);
+            expect(channelDoc12?.parentId).toBe(updateBody.parentId);
         });
 
         test('should return 0 when no channels match the filter criteria', async () => {
             const result = await channelService.updateChannels(
                 connection,
-                { parent_id: channel2.parent_id },
+                { parentId: channel2.parentId },
                 updateBody
             );
             expect(result).toEqual(0);

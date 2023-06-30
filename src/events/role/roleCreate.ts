@@ -11,8 +11,8 @@ export default {
         console.log(role)
         try {
             const connection = databaseService.connectionFactory(role.guild.id, config.mongoose.dbURL);
-            roleService.createRole(connection, {
-                id: role.id,
+            await roleService.createRole(connection, {
+                roleId: role.id,
                 name: role.name,
                 color: role.color
             })
