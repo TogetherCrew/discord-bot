@@ -7,12 +7,13 @@ import { Queue, Worker, Job } from 'bullmq';
 import RabbitMQ, { Event, MBConnection, Queue as RabbitMQQueue } from '@togethercrew.dev/tc-messagebroker';
 // import './rabbitmqEvents' // we need this import statement here to initialize RabbitMQ events
 import { connectDB } from './database';
-import fetchMembers from './functions/fetchMembers';
 import { databaseService } from '@togethercrew.dev/db';
 import guildExtraction from './functions/guildExtraction';
 import sendDirectMessage from './functions/sendDirectMessage';
 import { createPrivateThreadAndSendMessage } from './functions/thread';
-
+import fetchMembers from './functions/fetchMembers';
+import fetchChannels from './functions/fetchChannels';
+import fetchRoles from './functions/fetchRoles';
 import { closeConnection } from './database/connection';
 
 Sentry.init({
@@ -34,7 +35,7 @@ const client = new Client({
 const partial = (func: any, ...args: any) => (...rest: any) => func(...args, ...rest)
 
 const fetchMethod = async (msg: any) => {
-  console.log(`Starting fetchMethod with: ${msg}`)
+  console.log(`Starting  fetch initial with: ${msg}`)
   if (!msg) return;
 
   const { content } = msg
@@ -50,7 +51,7 @@ const fetchMethod = async (msg: any) => {
     await guildExtraction(connection, client, guildId)
   }
   await closeConnection(connection)
-  console.log(`Finished fetchMethod.`)
+  console.log(`Finished fetch initial data.`)
 }
 
 const notifyUserAboutAnalysisFinish = async (discordId: string, info: { guildId: Snowflake, message: string, useFallback: boolean }) => {
@@ -79,9 +80,10 @@ const notifyUserAboutAnalysisFinish = async (discordId: string, info: { guildId:
   }
 }
 
-const fetchMembersByGuildId = async (guildId:Snowflake) => {
+const fetchInitialData = async (guildId: Snowflake) => {
   const connection = await databaseService.connectionFactory(guildId, config.mongoose.dbURL);
-
+  await fetchRoles(connection, client, guildId)
+  await fetchChannels(connection, client, guildId)
   await fetchMembers(connection, client, guildId)
   await closeConnection(connection)
 }
@@ -134,10 +136,10 @@ async function app() {
 
     const { content } = msg
     const saga = await MBConnection.models.Saga.findOne({ sagaId: content.uuid })
-    
+
     const guildId = saga.data["guildId"];
 
-    const fn = fetchMembersByGuildId.bind({}, guildId)
+    const fn = fetchInitialData.bind({}, guildId)
     await saga.next(fn)
     console.log(`Finished ${Event.DISCORD_BOT.FETCH_MEMBERS} event with msg: ${msg}`)
   })
