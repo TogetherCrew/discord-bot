@@ -6,10 +6,10 @@ import config from '../../config';
 export default {
   name: Events.GuildMemberAdd,
   once: false,
-  execute(member: GuildMember) {
+  async execute(member: GuildMember) {
     try {
       const connection = databaseService.connectionFactory(member.guild.id, config.mongoose.dbURL);
-      guildMemberService.createGuildMember(connection, {
+      await guildMemberService.createGuildMember(connection, {
         discordId: member.user.id,
         username: member.user.username,
         avatar: member.user.avatar,

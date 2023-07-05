@@ -21,7 +21,7 @@ export default {
         }
       );
       if (!guildMember) {
-        guildMemberService.createGuildMember(connection, {
+        await guildMemberService.createGuildMember(connection, {
           discordId: newMember.user.id,
           username: newMember.user.username,
           avatar: newMember.user.avatar,

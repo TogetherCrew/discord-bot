@@ -1,4 +1,4 @@
-import { Client, GatewayIntentBits } from 'discord.js';
+import { Channel, ChannelType, Client, GatewayIntentBits, Snowflake, TextChannel } from 'discord.js';
 import config from './config';
 import * as Sentry from '@sentry/node';
 import loadEvents from './functions/loadEvents';
@@ -7,9 +7,14 @@ import { Queue, Worker, Job } from 'bullmq';
 import RabbitMQ, { Event, MBConnection, Queue as RabbitMQQueue } from '@togethercrew.dev/tc-messagebroker';
 // import './rabbitmqEvents' // we need this import statement here to initialize RabbitMQ events
 import { connectDB } from './database';
-import fetchMembers from './functions/fetchMembers';
 import { databaseService } from '@togethercrew.dev/db';
 import guildExtraction from './functions/guildExtraction';
+import sendDirectMessage from './functions/sendDirectMessage';
+import { createPrivateThreadAndSendMessage } from './functions/thread';
+import fetchMembers from './functions/fetchMembers';
+import fetchChannels from './functions/fetchChannels';
+import fetchRoles from './functions/fetchRoles';
+import { closeConnection } from './database/connection';
 
 Sentry.init({
   dsn: config.sentry.dsn,
@@ -18,13 +23,19 @@ Sentry.init({
 });
 
 const client = new Client({
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildPresences],
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildPresences,
+    GatewayIntentBits.DirectMessages,
+  ],
 });
 
 const partial = (func: any, ...args: any) => (...rest: any) => func(...args, ...rest)
 
 const fetchMethod = async (msg: any) => {
-  console.log(`Starting fetchMethod with: ${msg}`)
+  console.log(`Starting  fetch initial with: ${msg}`)
   if (!msg) return;
 
   const { content } = msg
@@ -39,7 +50,42 @@ const fetchMethod = async (msg: any) => {
   else {
     await guildExtraction(connection, client, guildId)
   }
-  console.log(`Finished fetchMethod.`)
+  await closeConnection(connection)
+  console.log(`Finished fetch initial data.`)
+}
+
+const notifyUserAboutAnalysisFinish = async (discordId: string, info: { guildId: Snowflake, message: string, useFallback: boolean }) => {
+  // related issue https://github.com/RnDAO/tc-discordBot/issues/68
+  const { guildId, message, useFallback } = info;
+
+  const guild = await client.guilds.fetch(guildId);
+  const channels = await guild.channels.fetch()
+
+  const arrayChannels = Array.from(channels, ([name, value]) => ({ ...value } as Channel))
+  const textChannels = arrayChannels.filter(channel => channel.type == ChannelType.GuildText) as TextChannel[]
+  const rawPositionBasedSortedTextChannels = textChannels.sort((textChannelA, textChannelB) => textChannelA.rawPosition > textChannelB.rawPosition ? 1 : -1)
+  const upperTextChannel = rawPositionBasedSortedTextChannels[0]
+
+  try {
+    sendDirectMessage(client, { discordId, message })
+  } catch (error) {
+
+    // can not send DM to the user 
+    // Will create a private thread and notify him/her about the status if useFallback is true
+    if (useFallback)
+      createPrivateThreadAndSendMessage(upperTextChannel,
+        { threadName: 'TogetherCrew Status', message: `<@${discordId}> ${message}` }
+      )
+
+  }
+}
+
+const fetchInitialData = async (guildId: Snowflake) => {
+  const connection = await databaseService.connectionFactory(guildId, config.mongoose.dbURL);
+  await fetchRoles(connection, client, guildId)
+  await fetchChannels(connection, client, guildId)
+  await fetchMembers(connection, client, guildId)
+  await closeConnection(connection)
 }
 
 // APP
@@ -64,6 +110,38 @@ async function app() {
     const fn = partial(fetchMethod, msg)
     await saga.next(fn)
     console.log(`Finished ${Event.DISCORD_BOT.FETCH} event with msg: ${msg}`)
+  })
+
+  RabbitMQ.onEvent(Event.DISCORD_BOT.SEND_MESSAGE, async (msg) => {
+    console.log(`Received ${Event.DISCORD_BOT.SEND_MESSAGE} event with msg: ${msg}`)
+    if (!msg) return
+
+    const { content } = msg
+    const saga = await MBConnection.models.Saga.findOne({ sagaId: content.uuid })
+
+    const guildId = saga.data["guildId"];
+    const discordId = saga.data["discordId"];
+    const message = saga.data["message"];
+    const useFallback = saga.data["useFallback"];
+
+    const fn = notifyUserAboutAnalysisFinish.bind({}, discordId, { guildId, message, useFallback })
+    await saga.next(fn)
+    console.log(`Finished ${Event.DISCORD_BOT.SEND_MESSAGE} event with msg: ${msg}`)
+
+  })
+
+  RabbitMQ.onEvent(Event.DISCORD_BOT.FETCH_MEMBERS, async (msg) => {
+    console.log(`Received ${Event.DISCORD_BOT.FETCH_MEMBERS} event with msg: ${msg}`)
+    if (!msg) return
+
+    const { content } = msg
+    const saga = await MBConnection.models.Saga.findOne({ sagaId: content.uuid })
+
+    const guildId = saga.data["guildId"];
+
+    const fn = fetchInitialData.bind({}, guildId)
+    await saga.next(fn)
+    console.log(`Finished ${Event.DISCORD_BOT.FETCH_MEMBERS} event with msg: ${msg}`)
   })
 
 
