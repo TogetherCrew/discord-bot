@@ -5,7 +5,6 @@ import {
   rawInfo1,
   rawInfo2,
   rawInfo3,
-  insertRawInfos
 } from '../../../fixtures/rawInfo.fixture';
 import { rawInfoService } from '../../../../src/database/services';
 import config from '../../../../src/config';
@@ -34,7 +33,7 @@ describe('rawInfo service', () => {
     test('should create a rawInfo', async () => {
       const result = await rawInfoService.createRawInfo(connection, rawInfo1);
       expect(result).toBeDefined();
-      expect(result?.messageId).toEqual(rawInfo1.messageId);
+      expect(result.messageId).toEqual(rawInfo1.messageId);
 
       const rawInfoDoc1 = await rawInfoService.getRawInfo(connection, {
         channelId: rawInfo1.channelId,
@@ -85,7 +84,7 @@ describe('rawInfo service', () => {
 
   describe('getRawInfo', () => {
     test('should retrieve an existing rawInfo that matches the filter criteria', async () => {
-      await insertRawInfos([rawInfo3], connection);
+      await rawInfoService.createRawInfo(connection, rawInfo3);
       const result = await rawInfoService.getRawInfo(connection, {
         messageId: rawInfo3.messageId,
       });
@@ -93,7 +92,7 @@ describe('rawInfo service', () => {
     });
 
     test('should return null when no rawInfo matches the filter criteria', async () => {
-      await insertRawInfos([rawInfo3], connection);
+      await rawInfoService.createRawInfo(connection, rawInfo3);
       const result = await rawInfoService.getRawInfo(connection, {
         role_mentions: ['role8'],
       });
@@ -103,7 +102,11 @@ describe('rawInfo service', () => {
 
   describe('getRawInfos', () => {
     test('should retrieve rawInfo that matches the filter criteria', async () => {
-      await insertRawInfos([rawInfo1, rawInfo2, rawInfo3], connection);
+      await rawInfoService.createRawInfos(connection, [
+        rawInfo1,
+        rawInfo2,
+        rawInfo3,
+      ]);
       const result = await rawInfoService.getRawInfos(connection, {
         role_mentions: rawInfo2.role_mentions,
       });
@@ -112,7 +115,11 @@ describe('rawInfo service', () => {
     });
 
     test('should return an empty array when no rawInfo matches the filter criteria', async () => {
-      await insertRawInfos([rawInfo1, rawInfo2, rawInfo3], connection);
+      await rawInfoService.createRawInfos(connection, [
+        rawInfo1,
+        rawInfo2,
+        rawInfo3,
+      ]);
       const result = await rawInfoService.getRawInfos(connection, {
         role_mentions: ['role8'],
       });
@@ -127,7 +134,7 @@ describe('rawInfo service', () => {
     };
 
     test('should update an existing rawInfo that matches the filter criteria', async () => {
-      await insertRawInfos([rawInfo1], connection);
+      await rawInfoService.createRawInfo(connection, rawInfo1);
 
       const result = await rawInfoService.updateRawInfo(
         connection,
@@ -165,7 +172,7 @@ describe('rawInfo service', () => {
     };
 
     test('should update rawInfos that match the filter criteria', async () => {
-      await insertRawInfos([rawInfo1, rawInfo2], connection);
+      await rawInfoService.createRawInfos(connection, [rawInfo1, rawInfo2]);
       const result = await rawInfoService.updateManyRawInfo(
         connection,
         { role_mentions: rawInfo1.role_mentions },
@@ -204,7 +211,7 @@ describe('rawInfo service', () => {
 
   describe('deleteRawInfo', () => {
     test('should delete rawInfo that matches the filter criteria', async () => {
-      await insertRawInfos([rawInfo1], connection);
+      await rawInfoService.createRawInfo(connection, rawInfo1);
       const result = await rawInfoService.deleteRawInfo(connection, {
         content: rawInfo1.content,
       });
@@ -221,7 +228,11 @@ describe('rawInfo service', () => {
 
   describe('deleteRawInfos', () => {
     test('should delete rawInfo that matches the filter criteria', async () => {
-      await insertRawInfos([rawInfo1, rawInfo2, rawInfo3], connection);
+      await rawInfoService.createRawInfos(connection, [
+        rawInfo1,
+        rawInfo2,
+        rawInfo3,
+      ]);
       const result = await rawInfoService.deleteManyRawInfo(connection, {
         content: rawInfo1.content,
       });

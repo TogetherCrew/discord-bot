@@ -17,4 +17,3 @@ export default async function sendDirectMessage(client: Client, info: { discordI
 
     return sendResponse
 }
-

@@ -6,13 +6,13 @@ import { ChannelType, TextChannel } from "discord.js";
  * @param info 
  * @returns thread object
  */
-export async function createPrivateThreadAndSendMessage(channel: TextChannel, info: { threadName: string, message: string, threadReason?: string }){
-    const { threadName, message, threadReason}  = info
+export async function createPrivateThreadAndSendMessage(channel: TextChannel, info: { threadName: string, message: string, threadReason?: string }) {
+    const { threadName, message, threadReason } = info
 
     const thread = await channel.threads.create({
         name: threadName,
         reason: threadReason,
-        type: ChannelType.PrivateThread, 
+        type: ChannelType.PrivateThread,
         invitable: false,
     });
 
@@ -20,4 +20,3 @@ export async function createPrivateThreadAndSendMessage(channel: TextChannel, in
 
     return thread
 }
-
