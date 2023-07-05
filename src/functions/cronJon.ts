@@ -4,6 +4,7 @@ import { databaseService } from '@togethercrew.dev/db';
 import { ChoreographyDict, MBConnection, Status } from "@togethercrew.dev/tc-messagebroker"
 import config from '../config';
 import guildExtraction from './guildExtraction'
+import { closeConnection } from '../database/connection';
 
 async function createAndStartCronJobSaga(guildId: Snowflake) {
     console.log("[createAndStartCronJobSaga]")
@@ -29,12 +30,9 @@ export default async function cronJob(client: Client) {
             await guildExtraction(connection, client, guilds[i].guildId)
             await createAndStartCronJobSaga(guilds[i].guildId)
             console.log(`Cron JOB is Done ${guilds[i].guildId}:${guilds[i].name}`)
+            await closeConnection(connection)
         }
     } catch (err) {
         console.log('Cron job failed', err)
     }
 }
-
-
-
-
