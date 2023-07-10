@@ -33,7 +33,7 @@ describe('rawInfo service', () => {
     test('should create a rawInfo', async () => {
       const result = await rawInfoService.createRawInfo(connection, rawInfo1);
       expect(result).toBeDefined();
-      expect(result.messageId).toEqual(rawInfo1.messageId);
+      expect(result?.messageId).toEqual(rawInfo1.messageId);
 
       const rawInfoDoc1 = await rawInfoService.getRawInfo(connection, {
         channelId: rawInfo1.channelId,
