@@ -147,49 +147,49 @@ async function app() {
 
   // *****************************BULLMQ
   // Create a queue instance with the Redis connection
-  // const queue = new Queue('cronJobQueue', {
-  //   connection: {
-  //     host: config.redis.host,
-  //     port: config.redis.port,
-  //     password: config.redis.password
-  //   }
-  // });
-  // queue.add('cronJob', {}, {
-  //   repeat: {
-  //     cron: '0 12 * * *', // Run once a day at 12 PM
-  //     // cron: '* * * * *', // Run every minute
-  //     // every: 10000
-  //   },
-  //   jobId: 'cronJob', // Optional: Provide a unique ID for the job
-  //   attempts: 1, // Number of times to retry the job if it fails
-  //   backoff: {
-  //     type: 'exponential',
-  //     delay: 1000, // Initial delay between retries in milliseconds
-  //   },
-  // } as never);
+  const queue = new Queue('cronJobQueue', {
+    connection: {
+      host: config.redis.host,
+      port: config.redis.port,
+      password: config.redis.password
+    }
+  });
+  queue.add('cronJob', {}, {
+    repeat: {
+      cron: '0 12 * * *', // Run once a day at 12 PM
+      // cron: '* * * * *', // Run every minute
+      // every: 10000
+    },
+    jobId: 'cronJob', // Optional: Provide a unique ID for the job
+    attempts: 1, // Number of times to retry the job if it fails
+    backoff: {
+      type: 'exponential',
+      delay: 1000, // Initial delay between retries in milliseconds
+    },
+  } as never);
 
-  // // Create a worker to process the job
-  // // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // const worker = new Worker('cronJobQueue', async (job: Job<any, any, string> | undefined) => {
-  //   if (job) {
-  //     // Call the extractMessagesDaily function
-  //     await cronJob(client);
-  //   }
-  // }, {
-  //   connection: {
-  //     host: config.redis.host,
-  //     port: config.redis.port,
-  //     password: config.redis.password
-  //   }
-  // });
+  // Create a worker to process the job
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const worker = new Worker('cronJobQueue', async (job: Job<any, any, string> | undefined) => {
+    if (job) {
+      // Call the extractMessagesDaily function
+      await cronJob(client);
+    }
+  }, {
+    connection: {
+      host: config.redis.host,
+      port: config.redis.port,
+      password: config.redis.password
+    }
+  });
 
-  // // Listen for completed and failed events to log the job status
-  // worker.on('completed', job => {
-  //   console.log(`Job ${job?.id} completed successfully.`);
-  // });
+  // Listen for completed and failed events to log the job status
+  worker.on('completed', job => {
+    console.log(`Job ${job?.id} completed successfully.`);
+  });
 
-  // worker.on('failed', (job, error) => {
-  //   console.error(`Job ${job?.id} failed with error:`, error);
-  // });
+  worker.on('failed', (job, error) => {
+    console.error(`Job ${job?.id} failed with error:`, error);
+  });
 }
 app();

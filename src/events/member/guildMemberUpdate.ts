@@ -21,6 +21,8 @@ export default {
           discriminator: newMember.user.discriminator,
         }
       );
+      console.log('MEMBERRRRRRRRRRRR')
+      console.log(oldMember.permissions, newMember.permissions)
       if (!guildMember) {
         await guildMemberService.createGuildMember(connection, {
           discordId: newMember.user.id,
