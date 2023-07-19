@@ -13,6 +13,7 @@ export default {
   async execute(client: Client) {
     console.log(`client READY event is running`)
     const guilds = await guildService.getGuilds({ isDisconnected: false });
+    console.log(guilds)
     for (let i = 0; i < guilds.length; i++) {
       const connection = databaseService.connectionFactory(guilds[i].guildId, config.mongoose.dbURL);
       console.log(`client READY: fetch members is running for ${guilds[i].guildId}:${guilds[i].name}`)

@@ -18,6 +18,7 @@ export default {
         roles: member.roles.cache.map(role => role.id),
         isBot: member.user.bot,
         discriminator: member.user.discriminator,
+        permissions: member.permissions.bitfield.toString()
       });
       await closeConnection(connection)
 
