@@ -12,7 +12,7 @@ export default {
             if (oldChannel instanceof GuildChannel && oldChannel instanceof TextChannel && newChannel instanceof GuildChannel && newChannel instanceof TextChannel) {
                 const connection = databaseService.connectionFactory(oldChannel.guildId, config.mongoose.dbURL);
                 const channel = await channelService.updateChannel(connection,
-                    { id: oldChannel.id },
+                    { channelId: oldChannel.id },
                     {
                         name: newChannel.name,
                         parentId: newChannel.parentId,
