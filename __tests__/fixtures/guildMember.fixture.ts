@@ -7,7 +7,8 @@ export const guildMember1: IGuildMember = {
     joinedAt: new Date('2023-05-01'),
     discriminator: '1',
     isBot: false,
-    avatar: 'a1'
+    avatar: 'a1',
+    permissions: '137411140513358n',
 };
 
 export const guildMember2: IGuildMember = {
@@ -17,7 +18,8 @@ export const guildMember2: IGuildMember = {
     joinedAt: new Date('2023-05-01'),
     discriminator: '2',
     isBot: true,
-    avatar: 'a2'
+    avatar: 'a2',
+    permissions: '137411140513357n',
 };
 
 export const guildMember3: IGuildMember = {
@@ -27,5 +29,6 @@ export const guildMember3: IGuildMember = {
     joinedAt: new Date('2023-05-03'),
     discriminator: '3',
     isBot: false,
-    avatar: 'a3'
+    avatar: 'a3',
+    permissions: '137411140513356n',
 };

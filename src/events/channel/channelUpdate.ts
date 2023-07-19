@@ -12,14 +12,29 @@ export default {
             if (oldChannel instanceof GuildChannel && oldChannel instanceof TextChannel && newChannel instanceof GuildChannel && newChannel instanceof TextChannel) {
                 const connection = databaseService.connectionFactory(oldChannel.guildId, config.mongoose.dbURL);
                 const channel = await channelService.updateChannel(connection,
-                    { id: oldChannel.id },
-                    { name: newChannel.name, parentId: newChannel.parentId }
+                    { channelId: oldChannel.id },
+                    {
+                        name: newChannel.name,
+                        parentId: newChannel.parentId,
+                        permissionOverwrites: Array.from(newChannel.permissionOverwrites.cache.values()).map(overwrite => ({
+                            id: overwrite.id,
+                            type: overwrite.type,
+                            allow: overwrite.allow.bitfield.toString(),
+                            deny: overwrite.deny.bitfield.toString(),
+                        }))
+                    }
                 );
                 if (!channel) {
                     await channelService.createChannel(connection, {
                         channelId: newChannel.id,
                         name: newChannel.name,
-                        parentId: newChannel.parentId
+                        parentId: newChannel.parentId,
+                        permissionOverwrites: Array.from(newChannel.permissionOverwrites.cache.values()).map(overwrite => ({
+                            id: overwrite.id,
+                            type: overwrite.type,
+                            allow: overwrite.allow.bitfield.toString(),
+                            deny: overwrite.deny.bitfield.toString(),
+                        }))
                     })
                 }
                 await closeConnection(connection)

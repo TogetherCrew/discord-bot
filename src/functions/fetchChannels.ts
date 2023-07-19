@@ -13,7 +13,12 @@ function getNeedDataFromChannel(channel: TextChannel | VoiceChannel | CategoryCh
         channelId: channel.id,
         name: channel.name, // cast to TextChannel for 'name'
         parentId: channel.parentId,
-        // ... extract other properties as needed
+        permissionOverwrites: Array.from(channel.permissionOverwrites.cache.values()).map(overwrite => ({
+            id: overwrite.id,
+            type: overwrite.type,
+            allow: overwrite.allow.bitfield.toString(),
+            deny: overwrite.deny.bitfield.toString(),
+        }))
     };
 }
 

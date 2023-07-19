@@ -11,9 +11,11 @@ export default {
         try {
             const connection = databaseService.connectionFactory(oldRole.guild.id, config.mongoose.dbURL);
             const role = await roleService.updateRole(connection,
-                { id: oldRole.id },
+                { roleId: oldRole.id },
                 { name: newRole.name, color: newRole.color }
             );
+            console.log('ROLEEEEEEEEEEEEEEE')
+            console.log(oldRole, newRole)
             if (!role) {
                 await roleService.createRole(connection, {
                     roleId: newRole.id,

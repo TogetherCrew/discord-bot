@@ -14,7 +14,13 @@ export default {
                 await channelService.createChannel(connection, {
                     channelId: channel.id,
                     name: channel.name,
-                    parentId: channel.parentId
+                    parentId: channel.parentId,
+                    permissionOverwrites: Array.from(channel.permissionOverwrites.cache.values()).map(overwrite => ({
+                        id: overwrite.id,
+                        type: overwrite.type,
+                        allow: overwrite.allow.bitfield.toString(),
+                        deny: overwrite.deny.bitfield.toString(),
+                    }))
                 })
                 await closeConnection(connection)
             }
