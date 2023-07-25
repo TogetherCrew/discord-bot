@@ -14,8 +14,6 @@ export default {
                 { roleId: oldRole.id },
                 { name: newRole.name, color: newRole.color }
             );
-            console.log('ROLEEEEEEEEEEEEEEE')
-            console.log(oldRole, newRole)
             if (!role) {
                 await roleService.createRole(connection, {
                     roleId: newRole.id,

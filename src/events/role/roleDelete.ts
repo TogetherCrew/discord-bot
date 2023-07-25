@@ -5,16 +5,13 @@ import config from '../../config';
 import { closeConnection } from '../../database/connection';
 
 export default {
-    name: Events.GuildRoleCreate,
+    name: Events.GuildRoleDelete,
     once: false,
     async execute(role: Role) {
         try {
             const connection = databaseService.connectionFactory(role.guild.id, config.mongoose.dbURL);
-            await roleService.createRole(connection, {
-                roleId: role.id,
-                name: role.name,
-                color: role.color
-            })
+            const roleDoc = await roleService.getRole(connection, { roleId: role.id });
+            await roleDoc?.softDelete();
             await closeConnection(connection)
 
         } catch (err) {
