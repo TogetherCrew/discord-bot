@@ -1,5 +1,5 @@
 import { Connection } from 'mongoose';
-import { IChannel, IChannelUpdateBody } from '@togethercrew.dev/db';
+import { IChannel, IChannelMethods, IChannelUpdateBody } from '@togethercrew.dev/db';
 
 /**
  * Create a channel in the database.
@@ -37,7 +37,7 @@ async function createChannels(connection: Connection, channels: IChannel[]): Pro
  * @param {object} filter - An object specifying the filter criteria to match the desired channel entry.
  * @returns {Promise<IChannel | null>} - A promise that resolves to the matching channel object or null if not found.
  */
-async function getChannel(connection: Connection, filter: object): Promise<IChannel | null> {
+async function getChannel(connection: Connection, filter: object): Promise<(IChannel & IChannelMethods) | null> {
     try {
         return await connection.models.Channel.findOne(filter);
     } catch (error) {

@@ -1,5 +1,5 @@
 import { Connection } from 'mongoose';
-import { IRole, IRoleUpdateBody } from '@togethercrew.dev/db';
+import { IRole, IRoleMethods, IRoleUpdateBody } from '@togethercrew.dev/db';
 
 /**
  * Create a role in the database.
@@ -37,7 +37,7 @@ async function createRoles(connection: Connection, roles: IRole[]): Promise<IRol
  * @param {object} filter - An object specifying the filter criteria to match the desired role entry.
  * @returns {Promise<IRole | null>} - A promise that resolves to the matching role object or null if not found.
  */
-async function getRole(connection: Connection, filter: object): Promise<IRole | null> {
+async function getRole(connection: Connection, filter: object): Promise<(IRole & IRoleMethods) | null> {
     try {
         return await connection.models.Role.findOne(filter);
     } catch (error) {
