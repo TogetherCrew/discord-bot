@@ -156,7 +156,7 @@ async function app() {
   });
   queue.add('cronJob', {}, {
     repeat: {
-      cron: '0 12 * * *', // Run once a day at 12 PM
+      cron: '0 0 * * *', // Run once 00:00 UTC
       // cron: '* * * * *', // Run every minute
       // every: 10000
     },
