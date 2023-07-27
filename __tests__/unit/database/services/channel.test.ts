@@ -52,6 +52,7 @@ describe('channel service', () => {
                 channelId: channel1.channelId,
                 name: channel1.name,
                 parentId: channel1.parentId,
+
             });
         });
     });
