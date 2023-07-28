@@ -8,7 +8,6 @@ export default {
   name: Events.GuildMemberAdd,
   once: false,
   async execute(member: GuildMember) {
-    console.log('wtf')
     try {
       const connection = databaseService.connectionFactory(member.guild.id, config.mongoose.dbURL);
       const guildMemberDoc = await guildMemberService.getGuildMember(connection, { discordId: member.user.id });
