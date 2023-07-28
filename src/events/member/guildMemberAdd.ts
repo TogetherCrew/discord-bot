@@ -8,6 +8,7 @@ export default {
   name: Events.GuildMemberAdd,
   once: false,
   async execute(member: GuildMember) {
+    console.log('wtf')
     try {
       const connection = databaseService.connectionFactory(member.guild.id, config.mongoose.dbURL);
       const guildMemberDoc = await guildMemberService.getGuildMember(connection, { discordId: member.user.id });
@@ -21,7 +22,9 @@ export default {
             joinedAt: member.joinedAt,
             roles: member.roles.cache.map(role => role.id),
             discriminator: member.user.discriminator,
-            deletedAt: null
+            deletedAt: null,
+            permissions: member.permissions.bitfield.toString(),
+            nickname: member.nickname
           }
         );
       }
@@ -34,7 +37,8 @@ export default {
           roles: member.roles.cache.map(role => role.id),
           isBot: member.user.bot,
           discriminator: member.user.discriminator,
-          permissions: member.permissions.bitfield.toString()
+          permissions: member.permissions.bitfield.toString(),
+          nickname: member.nickname
         });
       }
       await closeConnection(connection)

@@ -19,6 +19,8 @@ export default {
           joinedAt: newMember.joinedAt,
           roles: newMember.roles.cache.map(role => role.id),
           discriminator: newMember.user.discriminator,
+          nickname: newMember.nickname,
+          permissions: newMember.permissions.bitfield.toString(),
         }
       );
       if (!guildMember) {
@@ -30,6 +32,8 @@ export default {
           roles: newMember.roles.cache.map(role => role.id),
           isBot: newMember.user.bot,
           discriminator: newMember.user.discriminator,
+          nickname: newMember.nickname,
+          permissions: newMember.permissions.bitfield.toString(),
         });
       }
       await closeConnection(connection)
