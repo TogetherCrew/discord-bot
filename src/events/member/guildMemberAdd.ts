@@ -21,7 +21,9 @@ export default {
             joinedAt: member.joinedAt,
             roles: member.roles.cache.map(role => role.id),
             discriminator: member.user.discriminator,
-            deletedAt: null
+            deletedAt: null,
+            permissions: member.permissions.bitfield.toString(),
+            nickname: member.nickname
           }
         );
       }
@@ -34,7 +36,8 @@ export default {
           roles: member.roles.cache.map(role => role.id),
           isBot: member.user.bot,
           discriminator: member.user.discriminator,
-          permissions: member.permissions.bitfield.toString()
+          permissions: member.permissions.bitfield.toString(),
+          nickname: member.nickname
         });
       }
       await closeConnection(connection)

@@ -17,7 +17,8 @@ function getNeedDataFromGuildMember(guildMember: GuildMember): IGuildMember {
         roles: guildMember.roles.cache.map(role => role.id),
         isBot: guildMember.user.bot,
         discriminator: guildMember.user.discriminator,
-        permissions: guildMember.permissions.bitfield.toString()
+        permissions: guildMember.permissions.bitfield.toString(),
+        nickname: guildMember.nickname
     };
 }
 
