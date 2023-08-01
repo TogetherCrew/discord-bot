@@ -23,7 +23,9 @@ export default {
             discriminator: member.user.discriminator,
             deletedAt: null,
             permissions: member.permissions.bitfield.toString(),
-            nickname: member.nickname
+            nickname: member.nickname,
+            globalName: member.user.globalName
+
           }
         );
       }
@@ -37,7 +39,8 @@ export default {
           isBot: member.user.bot,
           discriminator: member.user.discriminator,
           permissions: member.permissions.bitfield.toString(),
-          nickname: member.nickname
+          nickname: member.nickname,
+          globalName: member.user.globalName
         });
       }
       await closeConnection(connection)
