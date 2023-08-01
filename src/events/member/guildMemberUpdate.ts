@@ -9,7 +9,6 @@ export default {
   once: false,
   async execute(oldMember: GuildMember, newMember: GuildMember) {
     try {
-      console.log(newMember.user)
       const connection = databaseService.connectionFactory(oldMember.guild.id, config.mongoose.dbURL);
       const guildMember = await guildMemberService.updateGuildMember(
         connection,
