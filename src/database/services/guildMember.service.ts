@@ -37,7 +37,10 @@ async function createGuildMembers(connection: Connection, guildMembers: IGuildMe
  * @param {object} filter - An object specifying the filter criteria to match the desired guild member entry.
  * @returns {Promise<IGuildMember | null>} - A promise that resolves to the matching guild member object or null if not found.
  */
-async function getGuildMember(connection: Connection, filter: object): Promise<(IGuildMember & IGuildMemberMethods) | null> {
+async function getGuildMember(
+  connection: Connection,
+  filter: object
+): Promise<(IGuildMember & IGuildMemberMethods) | null> {
   try {
     return await connection.models.GuildMember.findOne(filter);
   } catch (error) {

@@ -11,10 +11,10 @@ import { Connection } from 'mongoose';
  */
 export default async function guildExtraction(connection: Connection, client: Client, guildId: Snowflake) {
   try {
-    console.log(`********guild Extraction is running for ${(guildId)}********`)
+    console.log(`********guild Extraction is running for ${guildId}********`);
     if (!client.guilds.cache.has(guildId)) {
-      await guildService.updateGuild({ guildId }, { isDisconnected: false })
-      return
+      await guildService.updateGuild({ guildId }, { isDisconnected: false });
+      return;
     }
     const guild = await client.guilds.fetch(guildId);
     const guildDoc = await guildService.getGuild({ guildId });
@@ -29,13 +29,12 @@ export default async function guildExtraction(connection: Connection, client: Cl
         await fetchChannelMessages(connection, channel, guildDoc?.period);
       }
     }
-    console.log(`********guild Extraction is done for ${guildId}********`)
-    console.log('###################################')
+    console.log(`********guild Extraction is done for ${guildId}********`);
+    console.log('###################################');
   } catch (err) {
     console.log(err);
   }
 }
-
 
 // GUILD : 980858613587382322
 // Channel name: Text Channels, ID: 980858613587382323

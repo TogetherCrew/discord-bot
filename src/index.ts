@@ -32,61 +32,67 @@ const client = new Client({
   ],
 });
 
-const partial = (func: any, ...args: any) => (...rest: any) => func(...args, ...rest)
+const partial =
+  (func: any, ...args: any) =>
+  (...rest: any) =>
+    func(...args, ...rest);
 
 const fetchMethod = async (msg: any) => {
-  console.log(`Starting  fetch initial with: ${msg}`)
+  console.log(`Starting  fetch initial with: ${msg}`);
   if (!msg) return;
 
-  const { content } = msg
-  const saga = await MBConnection.models.Saga.findOne({ sagaId: content.uuid })
-  const guildId = saga.data["guildId"];
-  const isGuildCreated = saga.data["created"];
+  const { content } = msg;
+  const saga = await MBConnection.models.Saga.findOne({ sagaId: content.uuid });
+  const guildId = saga.data['guildId'];
+  const isGuildCreated = saga.data['created'];
   const connection = await databaseService.connectionFactory(guildId, config.mongoose.dbURL);
 
   if (isGuildCreated) {
-    await fetchMembers(connection, client, guildId)
+    await fetchMembers(connection, client, guildId);
+  } else {
+    await guildExtraction(connection, client, guildId);
   }
-  else {
-    await guildExtraction(connection, client, guildId)
-  }
-  await closeConnection(connection)
-  console.log(`Finished fetch initial data.`)
-}
+  await closeConnection(connection);
+  console.log(`Finished fetch initial data.`);
+};
 
-const notifyUserAboutAnalysisFinish = async (discordId: string, info: { guildId: Snowflake, message: string, useFallback: boolean }) => {
+const notifyUserAboutAnalysisFinish = async (
+  discordId: string,
+  info: { guildId: Snowflake; message: string; useFallback: boolean }
+) => {
   // related issue https://github.com/RnDAO/tc-discordBot/issues/68
   const { guildId, message, useFallback } = info;
 
   const guild = await client.guilds.fetch(guildId);
-  const channels = await guild.channels.fetch()
+  const channels = await guild.channels.fetch();
 
-  const arrayChannels = Array.from(channels, ([name, value]) => ({ ...value } as Channel))
-  const textChannels = arrayChannels.filter(channel => channel.type == ChannelType.GuildText) as TextChannel[]
-  const rawPositionBasedSortedTextChannels = textChannels.sort((textChannelA, textChannelB) => textChannelA.rawPosition > textChannelB.rawPosition ? 1 : -1)
-  const upperTextChannel = rawPositionBasedSortedTextChannels[0]
+  const arrayChannels = Array.from(channels, ([name, value]) => ({ ...value } as Channel));
+  const textChannels = arrayChannels.filter(channel => channel.type == ChannelType.GuildText) as TextChannel[];
+  const rawPositionBasedSortedTextChannels = textChannels.sort((textChannelA, textChannelB) =>
+    textChannelA.rawPosition > textChannelB.rawPosition ? 1 : -1
+  );
+  const upperTextChannel = rawPositionBasedSortedTextChannels[0];
 
   try {
-    sendDirectMessage(client, { discordId, message })
+    sendDirectMessage(client, { discordId, message });
   } catch (error) {
-
-    // can not send DM to the user 
+    // can not send DM to the user
     // Will create a private thread and notify him/her about the status if useFallback is true
     if (useFallback)
-      createPrivateThreadAndSendMessage(upperTextChannel,
-        { threadName: 'TogetherCrew Status', message: `<@${discordId}> ${message}` }
-      )
-
+      createPrivateThreadAndSendMessage(upperTextChannel, {
+        threadName: 'TogetherCrew Status',
+        message: `<@${discordId}> ${message}`,
+      });
   }
-}
+};
 
 const fetchInitialData = async (guildId: Snowflake) => {
   const connection = await databaseService.connectionFactory(guildId, config.mongoose.dbURL);
-  await fetchRoles(connection, client, guildId)
-  await fetchChannels(connection, client, guildId)
-  await fetchMembers(connection, client, guildId)
-  await closeConnection(connection)
-}
+  await fetchRoles(connection, client, guildId);
+  await fetchChannels(connection, client, guildId);
+  await fetchMembers(connection, client, guildId);
+  await closeConnection(connection);
+};
 
 // APP
 async function app() {
@@ -94,56 +100,53 @@ async function app() {
   await client.login(config.discord.botToken);
   await connectDB();
 
-
   // *****************************RABBITMQ
-  await MBConnection.connect(config.mongoose.dbURL)
+  await MBConnection.connect(config.mongoose.dbURL);
   await RabbitMQ.connect(config.rabbitMQ.url, RabbitMQQueue.DISCORD_BOT).then(() => {
-    console.log("Connected to RabbitMQ!")
-  })
-  RabbitMQ.onEvent(Event.DISCORD_BOT.FETCH, async (msg) => {
-    console.log(`Received ${Event.DISCORD_BOT.FETCH} event with msg: ${msg}`)
-    if (!msg) return
+    console.log('Connected to RabbitMQ!');
+  });
+  RabbitMQ.onEvent(Event.DISCORD_BOT.FETCH, async msg => {
+    console.log(`Received ${Event.DISCORD_BOT.FETCH} event with msg: ${msg}`);
+    if (!msg) return;
 
-    const { content } = msg
-    const saga = await MBConnection.models.Saga.findOne({ sagaId: content.uuid })
+    const { content } = msg;
+    const saga = await MBConnection.models.Saga.findOne({ sagaId: content.uuid });
 
-    const fn = partial(fetchMethod, msg)
-    await saga.next(fn)
-    console.log(`Finished ${Event.DISCORD_BOT.FETCH} event with msg: ${msg}`)
-  })
+    const fn = partial(fetchMethod, msg);
+    await saga.next(fn);
+    console.log(`Finished ${Event.DISCORD_BOT.FETCH} event with msg: ${msg}`);
+  });
 
-  RabbitMQ.onEvent(Event.DISCORD_BOT.SEND_MESSAGE, async (msg) => {
-    console.log(`Received ${Event.DISCORD_BOT.SEND_MESSAGE} event with msg: ${msg}`)
-    if (!msg) return
+  RabbitMQ.onEvent(Event.DISCORD_BOT.SEND_MESSAGE, async msg => {
+    console.log(`Received ${Event.DISCORD_BOT.SEND_MESSAGE} event with msg: ${msg}`);
+    if (!msg) return;
 
-    const { content } = msg
-    const saga = await MBConnection.models.Saga.findOne({ sagaId: content.uuid })
+    const { content } = msg;
+    const saga = await MBConnection.models.Saga.findOne({ sagaId: content.uuid });
 
-    const guildId = saga.data["guildId"];
-    const discordId = saga.data["discordId"];
-    const message = saga.data["message"];
-    const useFallback = saga.data["useFallback"];
+    const guildId = saga.data['guildId'];
+    const discordId = saga.data['discordId'];
+    const message = saga.data['message'];
+    const useFallback = saga.data['useFallback'];
 
-    const fn = notifyUserAboutAnalysisFinish.bind({}, discordId, { guildId, message, useFallback })
-    await saga.next(fn)
-    console.log(`Finished ${Event.DISCORD_BOT.SEND_MESSAGE} event with msg: ${msg}`)
+    const fn = notifyUserAboutAnalysisFinish.bind({}, discordId, { guildId, message, useFallback });
+    await saga.next(fn);
+    console.log(`Finished ${Event.DISCORD_BOT.SEND_MESSAGE} event with msg: ${msg}`);
+  });
 
-  })
+  RabbitMQ.onEvent(Event.DISCORD_BOT.FETCH_MEMBERS, async msg => {
+    console.log(`Received ${Event.DISCORD_BOT.FETCH_MEMBERS} event with msg: ${msg}`);
+    if (!msg) return;
 
-  RabbitMQ.onEvent(Event.DISCORD_BOT.FETCH_MEMBERS, async (msg) => {
-    console.log(`Received ${Event.DISCORD_BOT.FETCH_MEMBERS} event with msg: ${msg}`)
-    if (!msg) return
+    const { content } = msg;
+    const saga = await MBConnection.models.Saga.findOne({ sagaId: content.uuid });
 
-    const { content } = msg
-    const saga = await MBConnection.models.Saga.findOne({ sagaId: content.uuid })
+    const guildId = saga.data['guildId'];
 
-    const guildId = saga.data["guildId"];
-
-    const fn = fetchInitialData.bind({}, guildId)
-    await saga.next(fn)
-    console.log(`Finished ${Event.DISCORD_BOT.FETCH_MEMBERS} event with msg: ${msg}`)
-  })
-
+    const fn = fetchInitialData.bind({}, guildId);
+    await saga.next(fn);
+    console.log(`Finished ${Event.DISCORD_BOT.FETCH_MEMBERS} event with msg: ${msg}`);
+  });
 
   // *****************************BULLMQ
   // Create a queue instance with the Redis connection
@@ -151,8 +154,8 @@ async function app() {
     connection: {
       host: config.redis.host,
       port: config.redis.port,
-      password: config.redis.password
-    }
+      password: config.redis.password,
+    },
   });
   queue.add('cronJob', {}, {
     repeat: {
@@ -170,18 +173,22 @@ async function app() {
 
   // Create a worker to process the job
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const worker = new Worker('cronJobQueue', async (job: Job<any, any, string> | undefined) => {
-    if (job) {
-      // Call the extractMessagesDaily function
-      await cronJob(client);
+  const worker = new Worker(
+    'cronJobQueue',
+    async (job: Job<any, any, string> | undefined) => {
+      if (job) {
+        // Call the extractMessagesDaily function
+        await cronJob(client);
+      }
+    },
+    {
+      connection: {
+        host: config.redis.host,
+        port: config.redis.port,
+        password: config.redis.password,
+      },
     }
-  }, {
-    connection: {
-      host: config.redis.host,
-      port: config.redis.port,
-      password: config.redis.password
-    }
-  });
+  );
 
   // Listen for completed and failed events to log the job status
   worker.on('completed', job => {

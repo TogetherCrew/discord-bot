@@ -24,12 +24,9 @@ export default {
             deletedAt: null,
             permissions: member.permissions.bitfield.toString(),
             nickname: member.nickname,
-            globalName: member.user.globalName
-
           }
         );
-      }
-      else {
+      } else {
         await guildMemberService.createGuildMember(connection, {
           discordId: member.user.id,
           username: member.user.username,
@@ -40,10 +37,9 @@ export default {
           discriminator: member.user.discriminator,
           permissions: member.permissions.bitfield.toString(),
           nickname: member.nickname,
-          globalName: member.user.globalName
         });
       }
-      await closeConnection(connection)
+      await closeConnection(connection);
     } catch (err) {
       // TODO: improve error handling
       console.log(err);
