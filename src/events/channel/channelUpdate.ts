@@ -21,6 +21,7 @@ export default {
           connection,
           { channelId: oldChannel.id },
           {
+            channelId: oldChannel.id,
             name: newChannel.name,
             parentId: newChannel.parentId,
             permissionOverwrites: Array.from(newChannel.permissionOverwrites.cache.values()).map(overwrite => ({
@@ -29,7 +30,7 @@ export default {
               allow: overwrite.allow.bitfield.toString(),
               deny: overwrite.deny.bitfield.toString(),
             })),
-          },
+          } as any,
           { upsert: true }
         );
 
