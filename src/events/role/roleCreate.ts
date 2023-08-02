@@ -5,21 +5,20 @@ import config from '../../config';
 import { closeConnection } from '../../database/connection';
 
 export default {
-    name: Events.GuildRoleCreate,
-    once: false,
-    async execute(role: Role) {
-        try {
-            const connection = databaseService.connectionFactory(role.guild.id, config.mongoose.dbURL);
-            await roleService.createRole(connection, {
-                roleId: role.id,
-                name: role.name,
-                color: role.color
-            })
-            await closeConnection(connection)
-
-        } catch (err) {
-            // TODO: improve error handling
-            console.log(err);
-        }
-    },
+  name: Events.GuildRoleCreate,
+  once: false,
+  async execute(role: Role) {
+    try {
+      const connection = databaseService.connectionFactory(role.guild.id, config.mongoose.dbURL);
+      await roleService.createRole(connection, {
+        roleId: role.id,
+        name: role.name,
+        color: role.color,
+      });
+      await closeConnection(connection);
+    } catch (err) {
+      // TODO: improve error handling
+      console.log(err);
+    }
+  },
 };

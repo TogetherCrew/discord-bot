@@ -49,42 +49,48 @@ async function getReactions(message: Message): Promise<string[]> {
  * @returns {Promise<IRawInfo>} - A promise that resolves to an object of type IRawInfo containing the extracted data.
  */
 async function getNeedDataFromMessage(message: Message, threadInfo?: threadInfo): Promise<IRawInfo> {
-  if (threadInfo) {
-    return {
-      type: message.type,
-      author: message.author.id,
-      content: message.content,
-      createdDate: message.createdAt,
-      role_mentions: message.mentions.roles.map((role: Role) => role.id),
-      user_mentions: message.mentions.users.map((user: User) => user.id),
-      replied_user: message.type === 19 ? message.mentions.repliedUser?.id : null,
-      reactions: await getReactions(message),
-      messageId: message.id,
-      channelId: threadInfo?.channelId ? threadInfo?.channelId : '',
-      channelName: threadInfo?.channelName ? threadInfo?.channelName : '',
-      threadId: threadInfo?.threadId ? threadInfo?.threadId : null,
-      threadName: threadInfo?.threadName ? threadInfo?.threadName : null,
-    };
-  } else {
-    return {
-      type: message.type,
-      author: message.author.id,
-      content: message.content,
-      createdDate: message.createdAt,
-      role_mentions: message.mentions.roles.map((role: Role) => role.id),
-      user_mentions: message.mentions.users.map((user: User) => user.id),
-      replied_user: message.type === 19 ? message.mentions.repliedUser?.id : null,
-      reactions: await getReactions(message),
-      messageId: message.id,
-      channelId: message.channelId,
-      channelName: message.channel instanceof TextChannel ? message.channel.name : null,
-      threadId: null,
-      threadName: null,
-    };
-  }
+  const type = message.type;
+  const author = message.author.id;
+  const content = message.content;
+  const createdDate = message.createdAt;
+  const role_mentions = message.mentions.roles.map((role: Role) => role.id);
+  const user_mentions = message.mentions.users.map((user: User) => user.id);
+  const replied_user = message.type === 19 ? message.mentions.repliedUser?.id : null;
+  const reactions = await getReactions(message);
+  const messageId = message.id;
 
+  let channelId;
+  if (threadInfo) channelId = threadInfo?.channelId ? threadInfo?.channelId : '';
+  else channelId = message.channelId;
+
+  let channelName;
+  if (threadInfo) channelName = threadInfo?.channelName ? threadInfo?.channelName : '';
+  else channelName = message.channel instanceof TextChannel ? message.channel.name : null;
+
+  let threadId;
+  if (threadInfo) threadId = threadInfo?.threadId ? threadInfo?.threadId : null;
+  else threadId = null;
+
+  let threadName;
+  if (threadInfo) threadName = threadInfo?.threadName ? threadInfo?.threadName : null;
+  else threadName = null;
+
+  return {
+    type,
+    author,
+    content,
+    createdDate,
+    role_mentions,
+    user_mentions,
+    replied_user,
+    reactions,
+    messageId,
+    channelId,
+    channelName,
+    threadId,
+    threadName,
+  };
 }
-
 
 /**
  * Iterates over a list of messages and pushes extracted data from each message to an array.
@@ -130,7 +136,7 @@ async function fetchMessages(
   fetchDirection: 'before' | 'after' = 'before'
 ) {
   try {
-    console.log(`fetch msgs is running for ${channel.name}: ${channel.id}`)
+    console.log(`fetch msgs is running for ${channel.name}: ${channel.id}`);
     const messagesToStore: IRawInfo[] = [];
     const options: FetchOptions = { limit: 10 };
     if (rawInfo) {
@@ -140,39 +146,30 @@ async function fetchMessages(
 
     while (fetchedMessages.size > 0) {
       const boundaryMessage = fetchDirection === 'before' ? fetchedMessages.last() : fetchedMessages.first();
+      const isBoundaryMessage = !boundaryMessage || (period && boundaryMessage.createdAt < period);
 
-      if (!boundaryMessage || (period && boundaryMessage.createdAt < period)) {
-        if (period) {
-          fetchedMessages = fetchedMessages.filter(msg => msg.createdAt > period);
-        }
-        channel instanceof ThreadChannel
-          ? await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()], {
+      if (isBoundaryMessage && period) fetchedMessages = fetchedMessages.filter(msg => msg.createdAt > period);
+
+      channel instanceof ThreadChannel
+        ? await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()], {
             threadId: channel.id,
             threadName: channel.name,
             channelId: channel.parent?.id,
             channelName: channel.parent?.name,
           })
-          : await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()]);
-        break;
-      }
-
-      channel instanceof ThreadChannel
-        ? await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()], {
-          threadId: channel.id,
-          threadName: channel.name,
-          channelId: channel.parent?.id,
-          channelName: channel.parent?.name,
-        })
         : await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()]);
-      options[fetchDirection] = boundaryMessage.id;
-      fetchedMessages = await channel.messages.fetch(options);
+
+      if (isBoundaryMessage) break;
+      else {
+        options[fetchDirection] = boundaryMessage.id;
+        fetchedMessages = await channel.messages.fetch(options);
+      }
     }
     await rawInfoService.createRawInfos(connection, messagesToStore);
-    console.log(`fetch msgs is done for ${channel.name}: ${channel.id}`)
+    console.log(`fetch msgs is done for ${channel.name}: ${channel.id}`);
   } catch (err) {
-    console.log(`Failed to fetchMessages of channle: ${channel.id} `, err)
+    console.log(`Failed to fetchMessages of channle: ${channel.id} `, err);
   }
-
 }
 
 /**
@@ -184,7 +181,7 @@ async function fetchMessages(
  */
 export default async function fetchChannelMessages(connection: Connection, channel: TextChannel, period: Date) {
   try {
-    console.log(`fetch channel messages is running for ${channel.name}: ${channel.id} : ${channel.type}`)
+    console.log(`fetch channel messages is running for ${channel.name}: ${channel.id} : ${channel.type}`);
     const oldestChannelRawInfo = await rawInfoService.getOldestRawInfo(connection, {
       channelId: channel?.id,
       threadId: null,
@@ -228,9 +225,9 @@ export default async function fetchChannelMessages(connection: Connection, chann
         await fetchMessages(connection, thread, undefined, period, 'before');
       }
     }
-    console.log(`fetch channel messages is done for ${channel.name}: ${channel.id} : ${channel.type}`)
-    console.log('###################################')
+    console.log(`fetch channel messages is done for ${channel.name}: ${channel.id} : ${channel.type}`);
+    console.log('###################################');
   } catch (err) {
-    console.log(`Failed to fetchChannelMessages of channle: ${channel.id} `, err)
+    console.log(`Failed to fetchChannelMessages of channle: ${channel.id} `, err);
   }
 }

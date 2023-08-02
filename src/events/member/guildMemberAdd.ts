@@ -23,11 +23,10 @@ export default {
             discriminator: member.user.discriminator,
             deletedAt: null,
             permissions: member.permissions.bitfield.toString(),
-            nickname: member.nickname
+            nickname: member.nickname,
           }
         );
-      }
-      else {
+      } else {
         await guildMemberService.createGuildMember(connection, {
           discordId: member.user.id,
           username: member.user.username,
@@ -37,10 +36,10 @@ export default {
           isBot: member.user.bot,
           discriminator: member.user.discriminator,
           permissions: member.permissions.bitfield.toString(),
-          nickname: member.nickname
+          nickname: member.nickname,
         });
       }
-      await closeConnection(connection)
+      await closeConnection(connection);
     } catch (err) {
       // TODO: improve error handling
       console.log(err);

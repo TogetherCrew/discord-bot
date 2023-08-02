@@ -36,7 +36,7 @@ export default {
           permissions: newMember.permissions.bitfield.toString(),
         });
       }
-      await closeConnection(connection)
+      await closeConnection(connection);
     } catch (err) {
       // TODO: improve error handling
       console.log(err);

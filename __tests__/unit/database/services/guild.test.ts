@@ -1,10 +1,6 @@
 import { Guild, IGuildUpdateBody } from '@togethercrew.dev/db';
 import { guildService } from '../../../../src/database/services';
-import {
-  insertManyGuilds,
-  guild1,
-  guild2,
-} from '../../../fixtures/guid.fixture';
+import { insertManyGuilds, guild1, guild2 } from '../../../fixtures/guid.fixture';
 import setupTestDB from '../../../utils/setupTestDB';
 
 setupTestDB();
@@ -50,10 +46,7 @@ describe('guildService', () => {
     };
     test('should update an existing guild that matches the filter criteria', async () => {
       await insertManyGuilds([guild1]);
-      const result = await guildService.updateGuild(
-        { guildId: guild1.guildId },
-        updateBody
-      );
+      const result = await guildService.updateGuild({ guildId: guild1.guildId }, updateBody);
 
       expect(result).toMatchObject({
         id: guild1?._id.toHexString(),
@@ -71,10 +64,7 @@ describe('guildService', () => {
       });
     });
     test('should return null when no guild matches the filter criteria', async () => {
-      const result = await guildService.updateGuild(
-        { guildId: 'notExistId' },
-        updateBody
-      );
+      const result = await guildService.updateGuild({ guildId: 'notExistId' }, updateBody);
       expect(result).toBeNull();
     });
   });
@@ -91,18 +81,12 @@ describe('guildService', () => {
     };
     test('should update an existing guilds that matches the filter criteria', async () => {
       await insertManyGuilds([guild1, guild2]);
-      const result = await guildService.updateManyGuilds(
-        { user: guild1.user },
-        updateBody
-      );
+      const result = await guildService.updateManyGuilds({ user: guild1.user }, updateBody);
 
       expect(result).toBe(2);
     });
     test('should return null when no guild matches the filter criteria', async () => {
-      const result = await guildService.updateManyGuilds(
-        { guildId: 'notExistId' },
-        updateBody
-      );
+      const result = await guildService.updateManyGuilds({ guildId: 'notExistId' }, updateBody);
 
       expect(result).toBe(0);
     });

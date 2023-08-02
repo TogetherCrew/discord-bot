@@ -58,5 +58,5 @@ export const guild3 = {
 };
 
 export const insertManyGuilds = async function <Type>(guilds: Array<Type>) {
-  await Guild.insertMany(guilds.map((guild) => guild));
+  await Guild.insertMany(guilds.map(guild => guild));
 };

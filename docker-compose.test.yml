@@ -1,4 +1,4 @@
-version: "3.9"
+version: '3.9'
 
 services:
   app:
@@ -24,14 +24,14 @@ services:
       - redis
       - mongo
   redis:
-    image: "redis:alpine"
+    image: 'redis:alpine'
   mongo:
-    image: "mongo"
+    image: 'mongo'
     environment:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=pass
   rabbitmq:
-    image: "rabbitmq:3-management-alpine"
+    image: 'rabbitmq:3-management-alpine'
     environment:
       - RABBITMQ_DEFAULT_USER=root
       - RABBITMQ_DEFAULT_PASS=pass
