@@ -30,6 +30,7 @@ export default {
               allow: overwrite.allow.bitfield.toString(),
               deny: overwrite.deny.bitfield.toString(),
             })),
+            // TODO: any should be removed once we update @togethercrew.dev/db
           } as any,
           { upsert: true }
         );
