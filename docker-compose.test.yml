@@ -8,30 +8,72 @@ services:
       dockerfile: Dockerfile
     environment:
       - PORT=3000
-      - MONGODB_HOST=mongo
-      - MONGODB_PORT=27017
-      - MONGODB_USER=root
-      - MONGODB_PASS=pass
-      - REDIS_QUEUE_HOST=redis
-      - REDIS_QUEUE_PORT=6379
-      - RABBITMQ_HOST=localhost
-      - RABBITMQ_PORT=5672
-      - RABBITMQ_USER=root
-      - RABBITMQ_PASS=pass
+      - DB_HOST=mongo
+      - DB_PORT=27017
+      - DB_USER=root
+      - DB_PASSWORD=pass
+      - DB_NAME=discord-bot
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=twin
+      - RABBIT_HOST=localhost
+      - RABBIT_PORT=5672
+      - RABBIT_USER=root
+      - RABBIT_PASSWORD=pass
+      - DISCROD_CLIENT_ID=123406245034481529638963
+      - DISCORD_CLIENT_SECRET=hTgnafd0dndAJz6oYhpxNGp3hcasdf
+      - DISCORD_BOT_TOKEN=MTAasdf2MjQasf1MDQ4MTUyOTYzODk2Mw
+      - SENTRY_DSN=https://b9a3cf6fc9b849b6a9fdbd19dbb3a0eb@o4505110094282752.ingest.sentry.io/4505110103130112
+      - SENTRY_ENV=test
     volumes:
       - ./coverage:/project/coverage
     depends_on:
-      - redis
-      - mongo
+      redis:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+        
   redis:
     image: 'redis:alpine'
+    healthcheck:
+      test: ["CMD", "redis-cli","ping"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 2
+      start_period: 40s
+    networks:
+      - discord_bot_network
+
   mongo:
     image: 'mongo'
     environment:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=pass
+    healthcheck:
+      test: echo 'db.stats().ok' | mongosh localhost:27017/test --quiet
+      interval: 60s
+      timeout: 10s
+      retries: 2
+      start_period: 40s
+    networks:
+      - discord_bot_network
+
   rabbitmq:
     image: 'rabbitmq:3-management-alpine'
     environment:
       - RABBITMQ_DEFAULT_USER=root
       - RABBITMQ_DEFAULT_PASS=pass
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 2
+      start_period: 40s
+    networks:
+      - discord_bot_network
+
+networks:
+  discord_bot_network:
+    driver: bridge
