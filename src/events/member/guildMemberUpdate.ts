@@ -21,6 +21,7 @@ export default {
           discriminator: newMember.user.discriminator,
           nickname: newMember.nickname,
           permissions: newMember.permissions.bitfield.toString(),
+          globalName: newMember.user.globalName,
         }
       );
       if (!guildMember) {
@@ -34,9 +35,10 @@ export default {
           discriminator: newMember.user.discriminator,
           nickname: newMember.nickname,
           permissions: newMember.permissions.bitfield.toString(),
+          globalName: newMember.user.globalName,
         });
       }
-      await closeConnection(connection)
+      await closeConnection(connection);
     } catch (err) {
       // TODO: improve error handling
       console.log(err);

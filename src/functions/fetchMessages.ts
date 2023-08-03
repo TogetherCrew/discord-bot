@@ -82,9 +82,7 @@ async function getNeedDataFromMessage(message: Message, threadInfo?: threadInfo)
       threadName: null,
     };
   }
-
 }
-
 
 /**
  * Iterates over a list of messages and pushes extracted data from each message to an array.
@@ -130,7 +128,7 @@ async function fetchMessages(
   fetchDirection: 'before' | 'after' = 'before'
 ) {
   try {
-    console.log(`fetch msgs is running for ${channel.name}: ${channel.id}`)
+    console.log(`fetch msgs is running for ${channel.name}: ${channel.id}`);
     const messagesToStore: IRawInfo[] = [];
     const options: FetchOptions = { limit: 10 };
     if (rawInfo) {
@@ -147,32 +145,31 @@ async function fetchMessages(
         }
         channel instanceof ThreadChannel
           ? await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()], {
-            threadId: channel.id,
-            threadName: channel.name,
-            channelId: channel.parent?.id,
-            channelName: channel.parent?.name,
-          })
+              threadId: channel.id,
+              threadName: channel.name,
+              channelId: channel.parent?.id,
+              channelName: channel.parent?.name,
+            })
           : await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()]);
         break;
       }
 
       channel instanceof ThreadChannel
         ? await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()], {
-          threadId: channel.id,
-          threadName: channel.name,
-          channelId: channel.parent?.id,
-          channelName: channel.parent?.name,
-        })
+            threadId: channel.id,
+            threadName: channel.name,
+            channelId: channel.parent?.id,
+            channelName: channel.parent?.name,
+          })
         : await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()]);
       options[fetchDirection] = boundaryMessage.id;
       fetchedMessages = await channel.messages.fetch(options);
     }
     await rawInfoService.createRawInfos(connection, messagesToStore);
-    console.log(`fetch msgs is done for ${channel.name}: ${channel.id}`)
+    console.log(`fetch msgs is done for ${channel.name}: ${channel.id}`);
   } catch (err) {
-    console.log(`Failed to fetchMessages of channle: ${channel.id} `, err)
+    console.log(`Failed to fetchMessages of channle: ${channel.id} `, err);
   }
-
 }
 
 /**
@@ -184,7 +181,7 @@ async function fetchMessages(
  */
 export default async function fetchChannelMessages(connection: Connection, channel: TextChannel, period: Date) {
   try {
-    console.log(`fetch channel messages is running for ${channel.name}: ${channel.id} : ${channel.type}`)
+    console.log(`fetch channel messages is running for ${channel.name}: ${channel.id} : ${channel.type}`);
     const oldestChannelRawInfo = await rawInfoService.getOldestRawInfo(connection, {
       channelId: channel?.id,
       threadId: null,
@@ -228,9 +225,9 @@ export default async function fetchChannelMessages(connection: Connection, chann
         await fetchMessages(connection, thread, undefined, period, 'before');
       }
     }
-    console.log(`fetch channel messages is done for ${channel.name}: ${channel.id} : ${channel.type}`)
-    console.log('###################################')
+    console.log(`fetch channel messages is done for ${channel.name}: ${channel.id} : ${channel.type}`);
+    console.log('###################################');
   } catch (err) {
-    console.log(`Failed to fetchChannelMessages of channle: ${channel.id} `, err)
+    console.log(`Failed to fetchChannelMessages of channle: ${channel.id} `, err);
   }
 }

@@ -8,12 +8,12 @@ import { IRole, IRoleMethods, IRoleUpdateBody } from '@togethercrew.dev/db';
  * @returns {Promise<IRole|null>} - A promise that resolves to the created role object.
  */
 async function createRole(connection: Connection, role: IRole): Promise<IRole | null> {
-    try {
-        return await connection.models.Role.create(role);
-    } catch (error) {
-        console.log('Failed to create role', error);
-        return null;
-    }
+  try {
+    return await connection.models.Role.create(role);
+  } catch (error) {
+    console.log('Failed to create role', error);
+    return null;
+  }
 }
 
 /**
@@ -23,12 +23,12 @@ async function createRole(connection: Connection, role: IRole): Promise<IRole | 
  * @returns {Promise<IRole[] | []>} - A promise that resolves to an array of the created role objects.
  */
 async function createRoles(connection: Connection, roles: IRole[]): Promise<IRole[] | []> {
-    try {
-        return await connection.models.Role.insertMany(roles, { ordered: false });
-    } catch (error) {
-        console.log('Failed to create roles', error);
-        return [];
-    }
+  try {
+    return await connection.models.Role.insertMany(roles, { ordered: false });
+  } catch (error) {
+    console.log('Failed to create roles', error);
+    return [];
+  }
 }
 
 /**
@@ -38,12 +38,12 @@ async function createRoles(connection: Connection, roles: IRole[]): Promise<IRol
  * @returns {Promise<IRole | null>} - A promise that resolves to the matching role object or null if not found.
  */
 async function getRole(connection: Connection, filter: object): Promise<(IRole & IRoleMethods) | null> {
-    try {
-        return await connection.models.Role.findOne(filter);
-    } catch (error) {
-        console.log('Failed to retrieve  role', error);
-        return null;
-    }
+  try {
+    return await connection.models.Role.findOne(filter);
+  } catch (error) {
+    console.log('Failed to retrieve  role', error);
+    return null;
+  }
 }
 
 /**
@@ -53,12 +53,12 @@ async function getRole(connection: Connection, filter: object): Promise<(IRole &
  * @returns {Promise<IRole[] | []>} - A promise that resolves to an array of the matching role objects.
  */
 async function getRoles(connection: Connection, filter: object): Promise<IRole[] | []> {
-    try {
-        return await connection.models.Role.find(filter);
-    } catch (error) {
-        console.log('Failed to retrieve  roles', error);
-        return [];
-    }
+  try {
+    return await connection.models.Role.find(filter);
+  } catch (error) {
+    console.log('Failed to retrieve  roles', error);
+    return [];
+  }
 }
 
 /**
@@ -68,22 +68,18 @@ async function getRoles(connection: Connection, filter: object): Promise<IRole[]
  * @param {IRoleUpdateBody} UpdateBody - An object containing the updated role data.
  * @returns {Promise<IRole | null>} - A promise that resolves to the updated role object or null if not found.
  */
-async function updateRole(
-    connection: Connection,
-    filter: object,
-    UpdateBody: IRoleUpdateBody
-): Promise<IRole | null> {
-    try {
-        const role = await connection.models.Role.findOne(filter);
-        if (!role) {
-            return null;
-        }
-        Object.assign(role, UpdateBody);
-        return await role.save();
-    } catch (error) {
-        console.log('Failed to update role', error);
-        return null;
+async function updateRole(connection: Connection, filter: object, UpdateBody: IRoleUpdateBody): Promise<IRole | null> {
+  try {
+    const role = await connection.models.Role.findOne(filter);
+    if (!role) {
+      return null;
     }
+    Object.assign(role, UpdateBody);
+    return await role.save();
+  } catch (error) {
+    console.log('Failed to update role', error);
+    return null;
+  }
 }
 
 /**
@@ -93,25 +89,21 @@ async function updateRole(
  * @param {IRoleUpdateBody} UpdateBody - An object containing the updated role data.
  * @returns {Promise<number>} - A promise that resolves to the number of updated role entries.
  */
-async function updateRoles(
-    connection: Connection,
-    filter: object,
-    UpdateBody: IRoleUpdateBody
-): Promise<number> {
-    try {
-        const updateResult = await connection.models.Role.updateMany(filter, UpdateBody);
-        return updateResult.modifiedCount || 0;
-    } catch (error) {
-        console.log('Failed to update roles', error);
-        return 0;
-    }
+async function updateRoles(connection: Connection, filter: object, UpdateBody: IRoleUpdateBody): Promise<number> {
+  try {
+    const updateResult = await connection.models.Role.updateMany(filter, UpdateBody);
+    return updateResult.modifiedCount || 0;
+  } catch (error) {
+    console.log('Failed to update roles', error);
+    return 0;
+  }
 }
 
 export default {
-    createRole,
-    createRoles,
-    updateRole,
-    getRole,
-    getRoles,
-    updateRoles,
+  createRole,
+  createRoles,
+  updateRole,
+  getRole,
+  getRoles,
+  updateRoles,
 };

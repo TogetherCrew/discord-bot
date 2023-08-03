@@ -20,7 +20,6 @@ const envVarsSchema = Joi.object()
     REDIS_HOST: Joi.string().required().description('Reids host'),
     REDIS_PORT: Joi.string().required().description('Reids port'),
     REDIS_PASSWORD: Joi.string().required().description('Reids password').allow(''),
-
   })
   .unknown();
 
@@ -33,12 +32,12 @@ export default {
   env: envVars.NODE_ENV,
   mongoose: {
     serverURL: `mongodb://${envVars.DB_USER}:${envVars.DB_PASSWORD}@${envVars.DB_HOST}:${envVars.DB_PORT}/${envVars.DB_NAME}`,
-    dbURL: `mongodb://${envVars.DB_USER}:${envVars.DB_PASSWORD}@${envVars.DB_HOST}:${envVars.DB_PORT}`
+    dbURL: `mongodb://${envVars.DB_USER}:${envVars.DB_PASSWORD}@${envVars.DB_HOST}:${envVars.DB_PORT}`,
   },
   redis: {
     host: envVars.REDIS_HOST,
     port: envVars.REDIS_PORT,
-    password: envVars.REDIS_PASSWORD
+    password: envVars.REDIS_PASSWORD,
   },
   rabbitMQ: {
     url: `amqp://${envVars.RABBIT_USER}:${envVars.RABBIT_PASSWORD}@${envVars.RABBIT_HOST}:${envVars.RABBIT_PORT}`,
