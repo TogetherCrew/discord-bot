@@ -19,6 +19,7 @@ function getNeedDataFromGuildMember(guildMember: GuildMember): IGuildMember {
     discriminator: guildMember.user.discriminator,
     permissions: guildMember.permissions.bitfield.toString(),
     nickname: guildMember.nickname,
+    globalName: guildMember.user.globalName
   };
 }
 
