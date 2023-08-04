@@ -16,17 +16,19 @@ services:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - REDIS_PASSWORD=twin
-      - RABBIT_HOST=localhost
+      - RABBIT_HOST=rabbitmq
       - RABBIT_PORT=5672
       - RABBIT_USER=root
       - RABBIT_PASSWORD=pass
       - DISCROD_CLIENT_ID=123406245034481529638963
       - DISCORD_CLIENT_SECRET=hTgnafd0dndAJz6oYhpxNGp3hcasdf
-      - DISCORD_BOT_TOKEN=MTAasdf2MjQasf1MDQ4MTUyOTYzODk2Mw
+      - DISCORD_BOT_TOKEN=assdMTAasdf2MjQasf1MDQ4MTUyOTYzODk2Mw
       - SENTRY_DSN=https://b9a3cf6fc9b849b6a9fdbd19dbb3a0eb@o4505110094282752.ingest.sentry.io/4505110103130112
       - SENTRY_ENV=test
     volumes:
       - ./coverage:/project/coverage
+    networks:
+      - discord_bot_network
     depends_on:
       redis:
         condition: service_healthy
@@ -34,7 +36,8 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
-        
+    
+
   redis:
     image: 'redis:alpine'
     healthcheck:
@@ -48,15 +51,23 @@ services:
 
   mongo:
     image: 'mongo'
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=pass
+    # environment:
+    #   - MONGO_INITDB_DATABASE=discord-bot
+    #   - MONGO_INITDB_ROOT_USERNAME=root
+    #   - MONGO_INITDB_ROOT_PASSWORD=pass
     healthcheck:
       test: echo 'db.stats().ok' | mongosh localhost:27017/test --quiet
       interval: 60s
       timeout: 10s
       retries: 2
       start_period: 40s
+    volumes:
+      - type: bind
+        source: ./init-mongo.js
+        target: /docker-entrypoint-initdb.d/init-mongo.js
+        read_only: true
+    ports:
+      - 27017:27017
     networks:
       - discord_bot_network
 
