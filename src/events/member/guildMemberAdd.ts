@@ -21,11 +21,12 @@ export default {
             joinedAt: member.joinedAt,
             roles: member.roles.cache.map(role => role.id),
             discriminator: member.user.discriminator,
-            deletedAt: null
+            deletedAt: null,
+            permissions: member.permissions.bitfield.toString(),
+            nickname: member.nickname,
           }
         );
-      }
-      else {
+      } else {
         await guildMemberService.createGuildMember(connection, {
           discordId: member.user.id,
           username: member.user.username,
@@ -34,10 +35,11 @@ export default {
           roles: member.roles.cache.map(role => role.id),
           isBot: member.user.bot,
           discriminator: member.user.discriminator,
-          permissions: member.permissions.bitfield.toString()
+          permissions: member.permissions.bitfield.toString(),
+          nickname: member.nickname,
         });
       }
-      await closeConnection(connection)
+      await closeConnection(connection);
     } catch (err) {
       // TODO: improve error handling
       console.log(err);
