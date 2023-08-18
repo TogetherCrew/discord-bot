@@ -1,53 +1,32 @@
-import { Events, Channel, GuildChannel, TextChannel } from 'discord.js';
+import { Events, Channel, TextChannel, VoiceChannel, CategoryChannel } from 'discord.js';
 import { channelService } from '../../database/services';
 import { databaseService } from '@togethercrew.dev/db';
 import config from '../../config';
 import { closeConnection } from '../../database/connection';
+import parentLogger from '../../config/logger';
+
+const logger = parentLogger.child({ event: 'ChannelUpdate' });
 
 export default {
   name: Events.ChannelUpdate,
   once: false,
   async execute(oldChannel: Channel, newChannel: Channel) {
-    try {
-      if (
-        oldChannel instanceof GuildChannel &&
-        oldChannel instanceof TextChannel &&
-        newChannel instanceof GuildChannel &&
-        newChannel instanceof TextChannel
-      ) {
-        const connection = databaseService.connectionFactory(oldChannel.guildId, config.mongoose.dbURL);
-        const channel = await channelService.updateChannel(
-          connection,
-          { channelId: oldChannel.id },
-          {
-            name: newChannel.name,
-            parentId: newChannel.parentId,
-            permissionOverwrites: Array.from(newChannel.permissionOverwrites.cache.values()).map(overwrite => ({
-              id: overwrite.id,
-              type: overwrite.type,
-              allow: overwrite.allow.bitfield.toString(),
-              deny: overwrite.deny.bitfield.toString(),
-            })),
-          }
-        );
-        if (!channel) {
-          await channelService.createChannel(connection, {
-            channelId: newChannel.id,
-            name: newChannel.name,
-            parentId: newChannel.parentId,
-            permissionOverwrites: Array.from(newChannel.permissionOverwrites.cache.values()).map(overwrite => ({
-              id: overwrite.id,
-              type: overwrite.type,
-              allow: overwrite.allow.bitfield.toString(),
-              deny: overwrite.deny.bitfield.toString(),
-            })),
-          });
-        }
+    if (
+      newChannel instanceof TextChannel ||
+      newChannel instanceof VoiceChannel ||
+      newChannel instanceof CategoryChannel
+    ) {
+      const logFields = { guild_id: newChannel.guild.id, channel_id: newChannel.id };
+      logger.info(logFields, 'event is running');
+      const connection = databaseService.connectionFactory(newChannel.guild.id, config.mongoose.dbURL);
+      try {
+        await channelService.handelChannelChanges(connection, newChannel);
+      } catch (err) {
+        logger.error({ ...logFields, err }, 'Failed to handle channel changes');
+      } finally {
         await closeConnection(connection);
+        logger.info(logFields, 'event is done');
       }
-    } catch (err) {
-      // TODO: improve error handling
-      console.log(err);
     }
   },
 };

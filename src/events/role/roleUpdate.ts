@@ -3,29 +3,24 @@ import { roleService } from '../../database/services';
 import { databaseService } from '@togethercrew.dev/db';
 import config from '../../config';
 import { closeConnection } from '../../database/connection';
+import parentLogger from '../../config/logger';
+
+const logger = parentLogger.child({ event: 'GuildRoleUpdate' });
 
 export default {
   name: Events.GuildRoleUpdate,
   once: false,
   async execute(oldRole: Role, newRole: Role) {
+    const logFields = { guild_id: newRole.guild.id, role_id: newRole.id };
+    logger.info(logFields, 'event is running');
+    const connection = databaseService.connectionFactory(newRole.guild.id, config.mongoose.dbURL);
     try {
-      const connection = databaseService.connectionFactory(oldRole.guild.id, config.mongoose.dbURL);
-      const role = await roleService.updateRole(
-        connection,
-        { roleId: oldRole.id },
-        { name: newRole.name, color: newRole.color }
-      );
-      if (!role) {
-        await roleService.createRole(connection, {
-          roleId: newRole.id,
-          name: newRole.name,
-          color: newRole.color,
-        });
-      }
-      await closeConnection(connection);
+      await roleService.handelRoleChanges(connection, newRole);
     } catch (err) {
-      // TODO: improve error handling
-      console.log(err);
+      logger.error({ ...logFields, err }, 'Failed to handle role changes');
+    } finally {
+      await closeConnection(connection);
+      logger.info(logFields, 'event is done');
     }
   },
 };

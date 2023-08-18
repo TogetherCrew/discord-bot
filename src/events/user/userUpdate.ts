@@ -3,11 +3,15 @@ import { guildMemberService, guildService } from '../../database/services';
 import { databaseService } from '@togethercrew.dev/db';
 import config from '../../config';
 import { closeConnection } from '../../database/connection';
+import parentLogger from '../../config/logger';
 
+const logger = parentLogger.child({ event: 'UserUpdate' });
 export default {
   name: Events.UserUpdate,
   once: false,
   async execute(oldUser: User, newUser: User) {
+    const logFields = { user_id: newUser.id };
+    logger.info(logFields, 'event is running');
     try {
       const guilds = await guildService.getGuilds({});
       for (let i = 0; i < guilds.length; i++) {
@@ -23,8 +27,8 @@ export default {
         await closeConnection(connection);
       }
     } catch (err) {
-      // TODO: improve error handling
-      console.log(err);
+      logger.error({ ...logFields, err }, 'Failed to handle user changes');
     }
+    logger.info(logFields, 'event is done');
   },
 };

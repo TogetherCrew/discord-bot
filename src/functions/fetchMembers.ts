@@ -2,26 +2,9 @@ import { GuildMember, Client, Snowflake } from 'discord.js';
 import { Connection } from 'mongoose';
 import { IGuildMember } from '@togethercrew.dev/db';
 import { guildMemberService, guildService } from '../database/services';
+import parentLogger from '../config/logger';
 
-/**
- * Extracts necessary data from a given guild member.
- * @param {IGuildMember} guildMember - The guild member object from which data is to be extracted.
- * @returns {Promise<IGuildMember>} - A promise that resolves to an object of type IRawInfo containing the extracted data.
- */
-function getNeedDataFromGuildMember(guildMember: GuildMember): IGuildMember {
-  return {
-    discordId: guildMember.user.id,
-    username: guildMember.user.username,
-    avatar: guildMember.user.avatar,
-    joinedAt: guildMember.joinedAt,
-    roles: guildMember.roles.cache.map(role => role.id),
-    isBot: guildMember.user.bot,
-    discriminator: guildMember.user.discriminator,
-    permissions: guildMember.permissions.bitfield.toString(),
-    nickname: guildMember.nickname,
-    globalName: guildMember.user.globalName
-  };
-}
+const logger = parentLogger.child({ module: 'FetchMembers' });
 
 /**
  * Iterates over a list of guild members and pushes extracted data from each guild member to an array.
@@ -32,7 +15,7 @@ function getNeedDataFromGuildMember(guildMember: GuildMember): IGuildMember {
  */
 function pushMembersToArray(arr: IGuildMember[], guildMembersArray: GuildMember[]): IGuildMember[] {
   for (const guildMember of guildMembersArray) {
-    arr.push(getNeedDataFromGuildMember(guildMember));
+    arr.push(guildMemberService.getNeededDateFromGuildMember(guildMember));
   }
   return arr;
 }
@@ -44,7 +27,6 @@ function pushMembersToArray(arr: IGuildMember[], guildMembersArray: GuildMember[
  * @param {Snowflake} guildId - The identifier of the guild to extract information from.
  */
 export default async function fetchGuildMembers(connection: Connection, client: Client, guildId: Snowflake) {
-  console.log(`Fetching members for guild: ${guildId}`);
   try {
     if (!client.guilds.cache.has(guildId)) {
       await guildService.updateGuild({ guildId }, { isDisconnected: false });
@@ -55,8 +37,7 @@ export default async function fetchGuildMembers(connection: Connection, client: 
     const fetchMembers = await guild.members.fetch();
     pushMembersToArray(membersToStore, [...fetchMembers.values()]);
     await guildMemberService.createGuildMembers(connection, membersToStore);
-  } catch (err) {
-    console.error(`Failed to fetch members of guild ${guildId}`, err);
+  } catch (error) {
+    logger.error({ guildId, error }, 'Failed to fetch guild members');
   }
-  console.log(`Completed fetching members for guild: ${guildId}`);
 }

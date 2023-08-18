@@ -20,6 +20,7 @@ const envVarsSchema = Joi.object()
     REDIS_HOST: Joi.string().required().description('Reids host'),
     REDIS_PORT: Joi.string().required().description('Reids port'),
     REDIS_PASSWORD: Joi.string().required().description('Reids password').allow(''),
+    LOG_LEVEL: Joi.string().required().description('Min allowed log level'),
   })
   .unknown();
 
@@ -50,5 +51,8 @@ export default {
   sentry: {
     dsn: envVars.SENTRY_DSN,
     env: envVars.SENTRY_ENV,
+  },
+  logger: {
+    level: envVars.LOG_LEVEL,
   },
 };

@@ -5,28 +5,31 @@ import fetchMembers from '../../functions/fetchMembers';
 import fetchChannels from '../../functions/fetchChannels';
 import fetchRoles from '../../functions/fetchRoles';
 import { closeConnection } from '../../database/connection';
+import parentLogger from '../../config/logger';
 import config from '../../config';
+
+const logger = parentLogger.child({ event: 'ClientReady' });
 
 export default {
   name: Events.ClientReady,
   once: true,
   async execute(client: Client) {
-    console.log(`client READY event is running`);
+    logger.info('event is running');
     const guilds = await guildService.getGuilds({ isDisconnected: false });
     for (let i = 0; i < guilds.length; i++) {
       const connection = databaseService.connectionFactory(guilds[i].guildId, config.mongoose.dbURL);
-      console.log(`client READY: fetch members is running for ${guilds[i].guildId}:${guilds[i].name}`);
-      await fetchMembers(connection, client, guilds[i].guildId);
-      console.log(`client READY: fetch members is Done ${guilds[i].guildId}:${guilds[i].name}`);
-
-      console.log(`client READY: fetch roles is running for ${guilds[i].guildId}:${guilds[i].name}`);
-      await fetchRoles(connection, client, guilds[i].guildId);
-      console.log(`client READY: fetch roles is Done ${guilds[i].guildId}:${guilds[i].name}`);
-
-      console.log(`client READY: fetch channels is running for ${guilds[i].guildId}:${guilds[i].name}`);
-      await fetchChannels(connection, client, guilds[i].guildId);
-      console.log(`client READY: fetch channels is Done ${guilds[i].guildId}:${guilds[i].name}`);
-      await closeConnection(connection);
+      try {
+        logger.info({ guild_id: guilds[i].guildId }, 'Fetching guild members, roles,and channels');
+        await fetchMembers(connection, client, guilds[i].guildId);
+        await fetchRoles(connection, client, guilds[i].guildId);
+        await fetchChannels(connection, client, guilds[i].guildId);
+        logger.info({ guild_id: guilds[i].guildId }, 'Fetching guild members, roles, channels is done');
+      } catch (err) {
+        logger.error({ guild_id: guilds[i].guildId, err }, 'Fetching guild members, roles,and channels failed');
+      } finally {
+        await closeConnection(connection);
+      }
     }
+    logger.info('event is done');
   },
 };

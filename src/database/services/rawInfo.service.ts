@@ -1,6 +1,8 @@
 import { Connection } from 'mongoose';
 import { IRawInfo, IRawInfoUpdateBody } from '@togethercrew.dev/db';
+import parentLogger from '../../config/logger';
 
+const logger = parentLogger.child({ module: 'rawInfoService' });
 /**
  * Create a rawInfo entry in the database.
  * @param {Connection} connection - Mongoose connection object for the database.
@@ -10,8 +12,19 @@ import { IRawInfo, IRawInfoUpdateBody } from '@togethercrew.dev/db';
 async function createRawInfo(connection: Connection, rawInfo: IRawInfo): Promise<IRawInfo | null> {
   try {
     return await connection.models.RawInfo.create(rawInfo);
-  } catch (error) {
-    console.log('Failed to create rawInfo', error);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    if (error.code == 11000) {
+      logger.warn(
+        { database: connection.name, channel_id: rawInfo.channelId, message_id: rawInfo.messageId },
+        'Failed to create duplicate rawInfo'
+      );
+      return null;
+    }
+    logger.error(
+      { database: connection.name, channel_id: rawInfo.channelId, message_id: rawInfo.messageId },
+      'Failed to create rawInfo'
+    );
     return null;
   }
 }
@@ -25,8 +38,13 @@ async function createRawInfo(connection: Connection, rawInfo: IRawInfo): Promise
 async function createRawInfos(connection: Connection, rawInfos: IRawInfo[]): Promise<IRawInfo[] | []> {
   try {
     return await connection.models.RawInfo.insertMany(rawInfos, { ordered: false });
-  } catch (error) {
-    console.log('Failed to create rawInfos', error);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    if (error.code == 11000) {
+      logger.warn({ database: connection.name }, 'Failed to create duplicate rawInfos');
+      return [];
+    }
+    logger.error({ database: connection.name, error }, 'Failed to create rawInfos');
     return [];
   }
 }
@@ -38,12 +56,7 @@ async function createRawInfos(connection: Connection, rawInfos: IRawInfo[]): Pro
  * @returns {Promise<IRawInfo | null>} - A promise that resolves to the matching rawInfo object or null if not found.
  */
 async function getRawInfo(connection: Connection, filter: object): Promise<IRawInfo | null> {
-  try {
-    return await connection.models.RawInfo.findOne(filter);
-  } catch (error) {
-    console.log('Failed to retrieve rawInfo', error);
-    return null;
-  }
+  return await connection.models.RawInfo.findOne(filter);
 }
 
 /**
@@ -53,35 +66,30 @@ async function getRawInfo(connection: Connection, filter: object): Promise<IRawI
  * @returns {Promise<IRawInfo[] | []>} - A promise that resolves to an array of the matching rawInfo objects.
  */
 async function getRawInfos(connection: Connection, filter: object): Promise<IRawInfo[] | []> {
-  try {
-    return await connection.models.RawInfo.find(filter);
-  } catch (error) {
-    console.log('Failed to retrieves rawInfo', error);
-    return [];
-  }
+  return await connection.models.RawInfo.find(filter);
 }
 
 /**
  * Update a rawInfo entry in the database based on the filter criteria.
  * @param {Connection} connection - Mongoose connection object for the database.
  * @param {object} filter - An object specifying the filter criteria to match the desired rawInfo entry.
- * @param {IRawInfo} UpdateBody - An object containing the updated rawInfo data.
+ * @param {IRawInfo} updateBody - An object containing the updated rawInfo data.
  * @returns {Promise<IRawInfo | null>} - A promise that resolves to the updated rawInfo object or null if not found.
  */
 async function updateRawInfo(
   connection: Connection,
   filter: object,
-  UpdateBody: IRawInfoUpdateBody
+  updateBody: IRawInfoUpdateBody
 ): Promise<IRawInfo | null> {
   try {
     const rawInfo = await connection.models.RawInfo.findOne(filter);
     if (!rawInfo) {
       return null;
     }
-    Object.assign(rawInfo, UpdateBody);
+    Object.assign(rawInfo, updateBody);
     return await rawInfo.save();
   } catch (error) {
-    console.log('Failed to update rawInfo', error);
+    logger.error({ database: connection.name, filter, updateBody, error }, 'Failed to update rawInfo');
     return null;
   }
 }
@@ -90,19 +98,19 @@ async function updateRawInfo(
  * Update multiple rawInfo entries in the database based on the filter criteria.
  * @param {Connection} connection - Mongoose connection object for the database.
  * @param {object} filter - An object specifying the filter criteria to match multiple rawInfo entries.
- * @param {IRawInfo} UpdateBody - An object containing the updated rawInfo data.
+ * @param {IRawInfo} updateBody - An object containing the updated rawInfo data.
  * @returns {Promise<number>} - A promise that resolves to the number of updated rawInfo entries.
  */
 async function updateManyRawInfo(
   connection: Connection,
   filter: object,
-  UpdateBody: IRawInfoUpdateBody
+  updateBody: IRawInfoUpdateBody
 ): Promise<number> {
   try {
-    const updateResult = await connection.models.RawInfo.updateMany(filter, UpdateBody);
+    const updateResult = await connection.models.RawInfo.updateMany(filter, updateBody);
     return updateResult.modifiedCount || 0;
   } catch (error) {
-    console.log('Failed to update rawInfos', error);
+    logger.error({ database: connection.name, filter, updateBody, error }, 'Failed to update rawInfos');
     return 0;
   }
 }
@@ -118,7 +126,7 @@ async function deleteRawInfo(connection: Connection, filter: object): Promise<bo
     const deleteResult = await connection.models.RawInfo.deleteOne(filter);
     return deleteResult.deletedCount === 1;
   } catch (error) {
-    console.log('Failed to delete rawInfo', error);
+    logger.error({ database: connection.name, filter, error }, 'Failed to delete rawInfo');
     return false;
   }
 }
@@ -135,7 +143,7 @@ async function deleteManyRawInfo(connection: Connection, filter: object): Promis
     const deleteResult = await connection.models.RawInfo.deleteMany(filter);
     return deleteResult.deletedCount;
   } catch (error) {
-    console.log('Failed to delete rawInfo', error);
+    logger.error({ database: connection.name, filter, error }, 'Failed to delete rawInfos');
     return 0;
   }
 }
@@ -147,12 +155,7 @@ async function deleteManyRawInfo(connection: Connection, filter: object): Promis
  * @returns {Promise<IRawInfo | null>} - A promise that resolves to the oldest rawInfo object for the channel, or null if not found.
  */
 async function getNewestRawInfo(connection: Connection, filter: object): Promise<IRawInfo | null> {
-  try {
-    return await connection.models.RawInfo.findOne(filter).sort({ createdDate: -1 });
-  } catch (error) {
-    console.log('Failed to retrieve NewestRawInfo', error);
-    return null;
-  }
+  return await connection.models.RawInfo.findOne(filter).sort({ createdDate: -1 });
 }
 
 /**
@@ -162,12 +165,7 @@ async function getNewestRawInfo(connection: Connection, filter: object): Promise
  * @returns {Promise<IRawInfo | null>} - A promise that resolves to the oldest rawInfo object for the channel, or null if not found.
  */
 async function getOldestRawInfo(connection: Connection, filter: object): Promise<IRawInfo | null> {
-  try {
-    return await connection.models.RawInfo.findOne(filter).sort({ createdDate: 1 });
-  } catch (error) {
-    console.log('Failed to retrieve OldestRawInfo', error);
-    return null;
-  }
+  return await connection.models.RawInfo.findOne(filter).sort({ createdDate: 1 });
 }
 
 export default {
