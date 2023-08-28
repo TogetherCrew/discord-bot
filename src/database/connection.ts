@@ -14,6 +14,6 @@ export async function closeConnection(connection: Connection) {
     await connection.close();
     logger.info({ database: connection.name }, 'The connection to database has been successfully closed');
   } catch (error) {
-    logger.error({ database: connection.name, error }, 'Failed to close the connection to the database');
+    logger.fatal({ database: connection.name, error }, 'Failed to close the connection to the database');
   }
 }

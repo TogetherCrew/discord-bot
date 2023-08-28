@@ -37,8 +37,8 @@ const client = new Client({
 
 const partial =
   (func: any, ...args: any) =>
-  (...rest: any) =>
-    func(...args, ...rest);
+    (...rest: any) =>
+      func(...args, ...rest);
 
 const fetchMethod = async (msg: any) => {
   logger.info({ msg }, 'fetchMethod is running');
@@ -107,14 +107,14 @@ async function app() {
   try {
     await MBConnection.connect(config.mongoose.dbURL);
   } catch (error) {
-    logger.error({ url: config.mongoose.dbURL, error }, 'Failed to connect to MongoDB!');
+    logger.fatal({ url: config.mongoose.dbURL, error }, 'Failed to connect to MongoDB!');
   }
   await RabbitMQ.connect(config.rabbitMQ.url, RabbitMQQueue.DISCORD_BOT)
     .then(() => {
       logger.info({ url: config.rabbitMQ.url, queue: RabbitMQQueue.DISCORD_BOT }, 'Connected to RabbitMQ!');
     })
     .catch(error =>
-      logger.error(
+      logger.fatal(
         { url: config.rabbitMQ.url, queue: RabbitMQQueue.DISCORD_BOT, error },
         'Failed to connect to RabbitMQ!'
       )
