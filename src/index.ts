@@ -15,6 +15,9 @@ import fetchMembers from './functions/fetchMembers';
 import fetchChannels from './functions/fetchChannels';
 import fetchRoles from './functions/fetchRoles';
 import { closeConnection } from './database/connection';
+import parentLogger from './config/logger';
+
+const logger = parentLogger.child({ module: 'App' });
 
 Sentry.init({
   dsn: config.sentry.dsn,
@@ -34,26 +37,27 @@ const client = new Client({
 
 const partial =
   (func: any, ...args: any) =>
-  (...rest: any) =>
-    func(...args, ...rest);
+    (...rest: any) =>
+      func(...args, ...rest);
 
 const fetchMethod = async (msg: any) => {
-  console.log(`Starting  fetch initial with: ${msg}`);
+  logger.info({ msg }, 'fetchMethod is running');
   if (!msg) return;
-
   const { content } = msg;
   const saga = await MBConnection.models.Saga.findOne({ sagaId: content.uuid });
+  logger.info({ saga: saga.data }, 'the saga info');
   const guildId = saga.data['guildId'];
   const isGuildCreated = saga.data['created'];
   const connection = await databaseService.connectionFactory(guildId, config.mongoose.dbURL);
-
   if (isGuildCreated) {
     await fetchMembers(connection, client, guildId);
+    await fetchRoles(connection, client, guildId);
+    await fetchChannels(connection, client, guildId);
   } else {
     await guildExtraction(connection, client, guildId);
   }
   await closeConnection(connection);
-  console.log(`Finished fetch initial data.`);
+  logger.info({ msg }, 'fetchMethod is done');
 };
 
 const notifyUserAboutAnalysisFinish = async (
@@ -99,14 +103,25 @@ async function app() {
   await loadEvents(client);
   await client.login(config.discord.botToken);
   await connectDB();
-
   // *****************************RABBITMQ
-  await MBConnection.connect(config.mongoose.dbURL);
-  await RabbitMQ.connect(config.rabbitMQ.url, RabbitMQQueue.DISCORD_BOT).then(() => {
-    console.log('Connected to RabbitMQ!');
-  });
+  try {
+    await MBConnection.connect(config.mongoose.dbURL);
+  } catch (error) {
+    logger.fatal({ url: config.mongoose.dbURL, error }, 'Failed to connect to MongoDB!');
+  }
+  await RabbitMQ.connect(config.rabbitMQ.url, RabbitMQQueue.DISCORD_BOT)
+    .then(() => {
+      logger.info({ url: config.rabbitMQ.url, queue: RabbitMQQueue.DISCORD_BOT }, 'Connected to RabbitMQ!');
+    })
+    .catch(error =>
+      logger.fatal(
+        { url: config.rabbitMQ.url, queue: RabbitMQQueue.DISCORD_BOT, error },
+        'Failed to connect to RabbitMQ!'
+      )
+    );
+
   RabbitMQ.onEvent(Event.DISCORD_BOT.FETCH, async msg => {
-    console.log(`Received ${Event.DISCORD_BOT.FETCH} event with msg: ${msg}`);
+    logger.info({ msg, event: Event.DISCORD_BOT.FETCH }, 'is running');
     if (!msg) return;
 
     const { content } = msg;
@@ -114,11 +129,11 @@ async function app() {
 
     const fn = partial(fetchMethod, msg);
     await saga.next(fn);
-    console.log(`Finished ${Event.DISCORD_BOT.FETCH} event with msg: ${msg}`);
+    logger.info({ msg, event: Event.DISCORD_BOT.FETCH }, 'is done');
   });
 
   RabbitMQ.onEvent(Event.DISCORD_BOT.SEND_MESSAGE, async msg => {
-    console.log(`Received ${Event.DISCORD_BOT.SEND_MESSAGE} event with msg: ${msg}`);
+    logger.info({ msg, event: Event.DISCORD_BOT.SEND_MESSAGE }, 'is running');
     if (!msg) return;
 
     const { content } = msg;
@@ -131,11 +146,11 @@ async function app() {
 
     const fn = notifyUserAboutAnalysisFinish.bind({}, discordId, { guildId, message, useFallback });
     await saga.next(fn);
-    console.log(`Finished ${Event.DISCORD_BOT.SEND_MESSAGE} event with msg: ${msg}`);
+    logger.info({ msg, event: Event.DISCORD_BOT.SEND_MESSAGE }, 'is done');
   });
 
   RabbitMQ.onEvent(Event.DISCORD_BOT.FETCH_MEMBERS, async msg => {
-    console.log(`Received ${Event.DISCORD_BOT.FETCH_MEMBERS} event with msg: ${msg}`);
+    logger.info({ msg, event: Event.DISCORD_BOT.FETCH_MEMBERS }, 'is running');
     if (!msg) return;
 
     const { content } = msg;
@@ -145,7 +160,7 @@ async function app() {
 
     const fn = fetchInitialData.bind({}, guildId);
     await saga.next(fn);
-    console.log(`Finished ${Event.DISCORD_BOT.FETCH_MEMBERS} event with msg: ${msg}`);
+    logger.info({ msg, event: Event.DISCORD_BOT.FETCH_MEMBERS }, 'is done');
   });
 
   // *****************************BULLMQ
@@ -192,11 +207,11 @@ async function app() {
 
   // Listen for completed and failed events to log the job status
   worker.on('completed', job => {
-    console.log(`Job ${job?.id} completed successfully.`);
+    logger.info({ job }, 'Job is done');
   });
 
   worker.on('failed', (job, error) => {
-    console.error(`Job ${job?.id} failed with error:`, error);
+    logger.error({ job, error }, 'Job failed');
   });
 }
 app();

@@ -2,7 +2,9 @@ import { Message, TextChannel, Collection, User, Role, ThreadChannel, Snowflake 
 import { IRawInfo } from '@togethercrew.dev/db';
 import { rawInfoService } from '../database/services';
 import { Connection } from 'mongoose';
+import parentLogger from '../config/logger';
 
+const logger = parentLogger.child({ module: 'FetchMessages' });
 interface threadInfo {
   threadId: Snowflake;
   threadName: string;
@@ -37,7 +39,7 @@ async function getReactions(message: Message): Promise<string[]> {
 
     return reactionsArr;
   } catch (err) {
-    console.log(err);
+    logger.error({ message, err }, 'Faild to get reactions');
     return [];
   }
 }
@@ -128,7 +130,10 @@ async function fetchMessages(
   fetchDirection: 'before' | 'after' = 'before'
 ) {
   try {
-    console.log(`fetch msgs is running for ${channel.name}: ${channel.id}`);
+    logger.info(
+      { guild_id: connection.name, channel_id: channel.id, fetchDirection },
+      'Fetching channel messages is running'
+    );
     const messagesToStore: IRawInfo[] = [];
     const options: FetchOptions = { limit: 10 };
     if (rawInfo) {
@@ -166,10 +171,16 @@ async function fetchMessages(
       fetchedMessages = await channel.messages.fetch(options);
     }
     await rawInfoService.createRawInfos(connection, messagesToStore);
-    console.log(`fetch msgs is done for ${channel.name}: ${channel.id}`);
   } catch (err) {
-    console.log(`Failed to fetchMessages of channle: ${channel.id} `, err);
+    logger.error(
+      { guild_id: connection.name, channel_id: channel.id, fetchDirection, err },
+      'Fetching channel messages failed'
+    );
   }
+  logger.info(
+    { guild_id: connection.name, channel_id: channel.id, fetchDirection },
+    'Fetching channel messages is done'
+  );
 }
 
 /**
@@ -179,9 +190,9 @@ async function fetchMessages(
  * @param {Date} period - A date object specifying the oldest date for the messages to be fetched.
  * @throws Will throw an error if an issue is encountered during processing.
  */
-export default async function fetchChannelMessages(connection: Connection, channel: TextChannel, period: Date) {
+export default async function handleFetchChannelMessages(connection: Connection, channel: TextChannel, period: Date) {
+  logger.info({ guild_id: connection.name, channel_id: channel.id }, 'Handle channel messages for channel is running');
   try {
-    console.log(`fetch channel messages is running for ${channel.name}: ${channel.id} : ${channel.type}`);
     const oldestChannelRawInfo = await rawInfoService.getOldestRawInfo(connection, {
       channelId: channel?.id,
       threadId: null,
@@ -225,9 +236,8 @@ export default async function fetchChannelMessages(connection: Connection, chann
         await fetchMessages(connection, thread, undefined, period, 'before');
       }
     }
-    console.log(`fetch channel messages is done for ${channel.name}: ${channel.id} : ${channel.type}`);
-    console.log('###################################');
   } catch (err) {
-    console.log(`Failed to fetchChannelMessages of channle: ${channel.id} `, err);
+    logger.error({ guild_id: connection.name, channel_id: channel.id, err }, 'Handle fetch channel messages failed');
   }
+  logger.info({ guild_id: connection.name, channel_id: channel.id }, 'Handle fetch channel messages is done');
 }
