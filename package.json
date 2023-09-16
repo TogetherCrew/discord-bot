@@ -26,7 +26,7 @@
   "homepage": "https://github.com/Behzad-rabiei/tc-discordBot#readme",
   "dependencies": {
     "@sentry/node": "^7.51.2",
-    "@togethercrew.dev/db": "^2.4.96",
+    "@togethercrew.dev/db": "^2.5.0",
     "@togethercrew.dev/tc-messagebroker": "^0.0.40",
     "babel-jest": "^29.5.0",
     "bullmq": "^3.14.0",
