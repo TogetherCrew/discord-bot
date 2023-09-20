@@ -6,8 +6,8 @@
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "target": "ES2017",
-        "sourceMap": true,
-        "outDir": "./lib",
+        "sourceMap": false,
+        "outDir": "./dist",
         "baseUrl": "./",
         "incremental": true,
         "strict": true,
@@ -26,7 +26,7 @@
     },
     "exclude": [
         "./coverage",
-        "./lib",
+        "./dist",
         "__tests__",
         "jest.config.js"
     ],
