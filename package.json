@@ -12,7 +12,10 @@
     "test:ci": "jest --ci --detectOpenHandles",
     "lint": "eslint **/*.ts",
     "lint-fix": "eslint --fix **/*.ts",
-    "format": "prettier --write src/**/*.ts"
+    "format": "prettier --write src/**/*.ts",
+    "migrate:create": "migrate create --template-file ./src/migrations/utils/template.ts --migrations-dir=\"./src/migrations/db\" --compiler=\"ts:./src/migrations/utils/ts-compiler.js\"",
+    "migrate:up": "migrate --migrations-dir=\"./src/migrations/db\" --compiler=\"ts:./src/migrations/utils/ts-compiler.js\" up",
+    "migrate:down": "migrate --migrations-dir=\"./src/migrations/db\" --compiler=\"ts:./src/migrations/utils/ts-compiler.js\" down"
   },
   "repository": {
     "type": "git",
@@ -26,12 +29,13 @@
   "homepage": "https://github.com/Behzad-rabiei/tc-discordBot#readme",
   "dependencies": {
     "@sentry/node": "^7.51.2",
-    "@togethercrew.dev/db": "^2.4.96",
+    "@togethercrew.dev/db": "^2.5.1",
     "@togethercrew.dev/tc-messagebroker": "^0.0.40",
     "babel-jest": "^29.5.0",
     "bullmq": "^3.14.0",
     "discord.js": "^14.12.1",
     "joi": "^17.9.2",
+    "migrate": "^2.0.0",
     "moment": "^2.29.4",
     "mongodb": "^5.4.0",
     "mongoose": "^6.11.1",

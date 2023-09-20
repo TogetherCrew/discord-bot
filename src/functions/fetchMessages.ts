@@ -66,6 +66,7 @@ async function getNeedDataFromMessage(message: Message, threadInfo?: threadInfo)
       channelName: threadInfo?.channelName ? threadInfo?.channelName : '',
       threadId: threadInfo?.threadId ? threadInfo?.threadId : null,
       threadName: threadInfo?.threadName ? threadInfo?.threadName : null,
+      isGeneratedByWebhook: message.webhookId ? true : false
     };
   } else {
     return {
@@ -82,6 +83,7 @@ async function getNeedDataFromMessage(message: Message, threadInfo?: threadInfo)
       channelName: message.channel instanceof TextChannel ? message.channel.name : null,
       threadId: null,
       threadName: null,
+      isGeneratedByWebhook: message.webhookId ? true : false
     };
   }
 }
@@ -135,7 +137,7 @@ async function fetchMessages(
       'Fetching channel messages is running'
     );
     const messagesToStore: IRawInfo[] = [];
-    const options: FetchOptions = { limit: 10 };
+    const options: FetchOptions = { limit: 100 };
     if (rawInfo) {
       options[fetchDirection] = rawInfo.messageId;
     }
@@ -150,22 +152,22 @@ async function fetchMessages(
         }
         channel instanceof ThreadChannel
           ? await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()], {
-              threadId: channel.id,
-              threadName: channel.name,
-              channelId: channel.parent?.id,
-              channelName: channel.parent?.name,
-            })
+            threadId: channel.id,
+            threadName: channel.name,
+            channelId: channel.parent?.id,
+            channelName: channel.parent?.name,
+          })
           : await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()]);
         break;
       }
 
       channel instanceof ThreadChannel
         ? await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()], {
-            threadId: channel.id,
-            threadName: channel.name,
-            channelId: channel.parent?.id,
-            channelName: channel.parent?.name,
-          })
+          threadId: channel.id,
+          threadName: channel.name,
+          channelId: channel.parent?.id,
+          channelName: channel.parent?.name,
+        })
         : await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()]);
       options[fetchDirection] = boundaryMessage.id;
       fetchedMessages = await channel.messages.fetch(options);
