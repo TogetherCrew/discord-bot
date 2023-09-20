@@ -20,10 +20,6 @@ async function fetchMessagesBetweenOldestAndNewest(
 ) {
     try {
         let allMessages: Message[] = [];
-        logger.info(
-            { guild_id: connection.name, channel_id: channel.id },
-            'Fetching channel messages is running'
-        );
         const options: FetchOptions = { limit: 100 };
         options.after = oldestRawInfo.messageId;
         let fetchedMessages = await channel.messages.fetch(options);
@@ -42,16 +38,10 @@ async function fetchMessagesBetweenOldestAndNewest(
             'Fetching channel messages failed'
         );
     }
-    logger.info(
-        { guild_id: connection.name, channel_id: channel.id },
-        'Fetching channel messages is done'
-    );
 }
 
 async function migrateIsGeneratedByWebhook(connection: Connection, channel: TextChannel) {
     try {
-        logger.info({ guild_id: connection.name, channel_id: channel.id }, 'Migration for isGeneratedByWebhook is running');
-
         // Fetch oldest rawInfo from DB
         const oldestChannelRawInfo = await rawInfoService.getOldestRawInfo(connection, {
             channelId: channel?.id,
@@ -159,8 +149,6 @@ async function migrateIsGeneratedByWebhook(connection: Connection, channel: Text
             }
         }
 
-        logger.info({ guild_id: connection.name, channel_id: channel.id }, 'Migration for isGeneratedByWebhook is done');
-
     } catch (err) {
         logger.error({ guild_id: connection.name, channel_id: channel.id, err }, 'Migration for isGeneratedByWebhook failed');
     }
@@ -174,7 +162,6 @@ async function migrateIsGeneratedByWebhook(connection: Connection, channel: Text
  * @param {Snowflake} guildId - The identifier of the guild to extract information from.
  */
 async function runRawInfoMigration(connection: Connection, client: Client, guildId: Snowflake) {
-    logger.info({ guild_id: guildId }, 'Migration is running');
     try {
         const guild = await client.guilds.fetch(guildId);
         const channels = await channelService.getChannels(connection, {});
@@ -188,7 +175,6 @@ async function runRawInfoMigration(connection: Connection, client: Client, guild
     } catch (err) {
         logger.error({ guild_id: guildId, err }, 'Migration is failed');
     }
-    logger.info({ guild_id: guildId }, 'Migration is done');
 }
 
 export default runRawInfoMigration;
