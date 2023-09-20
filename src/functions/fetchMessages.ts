@@ -66,7 +66,7 @@ async function getNeedDataFromMessage(message: Message, threadInfo?: threadInfo)
       channelName: threadInfo?.channelName ? threadInfo?.channelName : '',
       threadId: threadInfo?.threadId ? threadInfo?.threadId : null,
       threadName: threadInfo?.threadName ? threadInfo?.threadName : null,
-      isGeneratedByWebhook: message.webhookId ? true : false
+      // isGeneratedByWebhook: message.webhookId ? true : false
     };
   } else {
     return {
@@ -83,7 +83,7 @@ async function getNeedDataFromMessage(message: Message, threadInfo?: threadInfo)
       channelName: message.channel instanceof TextChannel ? message.channel.name : null,
       threadId: null,
       threadName: null,
-      isGeneratedByWebhook: message.webhookId ? true : false
+      // isGeneratedByWebhook: message.webhookId ? true : false
     };
   }
 }
@@ -137,7 +137,7 @@ async function fetchMessages(
       'Fetching channel messages is running'
     );
     const messagesToStore: IRawInfo[] = [];
-    const options: FetchOptions = { limit: 10 };
+    const options: FetchOptions = { limit: 100 };
     if (rawInfo) {
       options[fetchDirection] = rawInfo.messageId;
     }
