@@ -37,8 +37,8 @@ const client = new Client({
 
 const partial =
   (func: any, ...args: any) =>
-    (...rest: any) =>
-      func(...args, ...rest);
+  (...rest: any) =>
+    func(...args, ...rest);
 
 const fetchMethod = async (msg: any) => {
   logger.info({ msg }, 'fetchMethod is running');
@@ -179,7 +179,7 @@ async function app() {
       // every: 10000
     },
     jobId: 'cronJob', // Optional: Provide a unique ID for the job
-    attempts: 1, // Number of times to retry the job if it fails
+    attempts: 0, // Number of times to retry the job if it fails
     backoff: {
       type: 'exponential',
       delay: 1000, // Initial delay between retries in milliseconds
