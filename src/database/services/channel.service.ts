@@ -1,5 +1,9 @@
 import { Connection } from 'mongoose';
 import { IChannel, IChannelMethods, IChannelUpdateBody } from '@togethercrew.dev/db';
+import { VoiceChannel, TextChannel, CategoryChannel } from 'discord.js';
+import parentLogger from '../../config/logger';
+
+const logger = parentLogger.child({ module: 'ChannelService' });
 
 /**
  * Create a channel in the database.
@@ -10,8 +14,13 @@ import { IChannel, IChannelMethods, IChannelUpdateBody } from '@togethercrew.dev
 async function createChannel(connection: Connection, channel: IChannel): Promise<IChannel | null> {
   try {
     return await connection.models.Channel.create(channel);
-  } catch (error) {
-    console.log('Failed to create channel', error);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    if (error.code == 11000) {
+      logger.warn({ database: connection.name, channel_id: channel.channelId }, 'Failed to create duplicate channel');
+      return null;
+    }
+    logger.error({ database: connection.name, channel_id: channel.channelId, error }, 'Failed to create channel');
     return null;
   }
 }
@@ -25,8 +34,13 @@ async function createChannel(connection: Connection, channel: IChannel): Promise
 async function createChannels(connection: Connection, channels: IChannel[]): Promise<IChannel[] | []> {
   try {
     return await connection.models.Channel.insertMany(channels, { ordered: false });
-  } catch (error) {
-    console.log('Failed to create channels', error);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    if (error.code == 11000) {
+      logger.warn({ database: connection.name }, 'Failed to create duplicate channels');
+      return [];
+    }
+    logger.error({ database: connection.name, error }, 'Failed to create channels');
     return [];
   }
 }
@@ -38,12 +52,7 @@ async function createChannels(connection: Connection, channels: IChannel[]): Pro
  * @returns {Promise<IChannel | null>} - A promise that resolves to the matching channel object or null if not found.
  */
 async function getChannel(connection: Connection, filter: object): Promise<(IChannel & IChannelMethods) | null> {
-  try {
-    return await connection.models.Channel.findOne(filter);
-  } catch (error) {
-    console.log('Failed to retrieve channel', error);
-    return null;
-  }
+  return await connection.models.Channel.findOne(filter);
 }
 
 /**
@@ -53,35 +62,30 @@ async function getChannel(connection: Connection, filter: object): Promise<(ICha
  * @returns {Promise<IChannel[] | []>} - A promise that resolves to an array of the matching channel objects.
  */
 async function getChannels(connection: Connection, filter: object): Promise<IChannel[] | []> {
-  try {
-    return await connection.models.Channel.find(filter);
-  } catch (error) {
-    console.log('Failed to retrieve channels', error);
-    return [];
-  }
+  return await connection.models.Channel.find(filter);
 }
 
 /**
  * Update a channel in the database based on the filter criteria.
  * @param {Connection} connection - Mongoose connection object for the database.
  * @param {object} filter - An object specifying the filter criteria to match the desired channel entry.
- * @param {IChannelUpdateBody} UpdateBody - An object containing the updated channel data.
+ * @param {IChannelUpdateBody} updateBody - An object containing the updated channel data.
  * @returns {Promise<IChannel | null>} - A promise that resolves to the updated channel object or null if not found.
  */
 async function updateChannel(
   connection: Connection,
   filter: object,
-  UpdateBody: IChannelUpdateBody
+  updateBody: IChannelUpdateBody
 ): Promise<IChannel | null> {
   try {
     const channel = await connection.models.Channel.findOne(filter);
     if (!channel) {
       return null;
     }
-    Object.assign(channel, UpdateBody);
+    Object.assign(channel, updateBody);
     return await channel.save();
   } catch (error) {
-    console.log('Failed to update channel', error);
+    logger.error({ database: connection.name, filter, updateBody, error }, 'Failed to update channel');
     return null;
   }
 }
@@ -90,17 +94,58 @@ async function updateChannel(
  * Update multiple channels in the database based on the filter criteria.
  * @param {Connection} connection - Mongoose connection object for the database.
  * @param {object} filter - An object specifying the filter criteria to match multiple channel entries.
- * @param {IChannelUpdateBody} UpdateBody - An object containing the updated channel data.
+ * @param {IChannelUpdateBody} updateBody - An object containing the updated channel data.
  * @returns {Promise<number>} - A promise that resolves to the number of updated channel entries.
  */
-async function updateChannels(connection: Connection, filter: object, UpdateBody: IChannelUpdateBody): Promise<number> {
+async function updateChannels(connection: Connection, filter: object, updateBody: IChannelUpdateBody): Promise<number> {
   try {
-    const updateResult = await connection.models.Channel.updateMany(filter, UpdateBody);
+    const updateResult = await connection.models.Channel.updateMany(filter, updateBody);
     return updateResult.modifiedCount || 0;
   } catch (error) {
-    console.log('Failed to update channels', error);
+    logger.error({ database: connection.name, filter, updateBody, error }, 'Failed to update channels');
     return 0;
   }
+}
+
+/**
+ * Handle the logic for creating or updating channels in the database.
+ * @param {Connection} connection - Mongoose connection object for the specific guild database.
+ * @param {TextChannel | VoiceChannel | CategoryChannel} channel - The Discord.js Channel object containing the full channel details.
+ * @returns {Promise<void>} - A promise that resolves when the create or update operation is complete.
+ *
+ */
+async function handelChannelChanges(
+  connection: Connection,
+  channel: TextChannel | VoiceChannel | CategoryChannel
+): Promise<void> {
+  const commonFields = getNeededDateFromChannel(channel);
+  try {
+    const channelDoc = await updateChannel(connection, { channelId: channel.id }, commonFields);
+    if (!channelDoc) {
+      await createChannel(connection, commonFields);
+    }
+  } catch (error) {
+    logger.error({ guild_id: connection.name, channel_id: channel.id, error }, 'Failed to handle channel changes');
+  }
+}
+
+/**
+ * Extracts necessary fields from a Discord.js GuildMember object to form an IGuildMember object.
+ * @param {TextChannel | VoiceChannel | CategoryChannel} channel - The Discord.js Channel object containing the full channel details.
+ * @returns {IChannel} - The extracted data in the form of an IChannel object.
+ */
+function getNeededDateFromChannel(channel: TextChannel | VoiceChannel | CategoryChannel): IChannel {
+  return {
+    channelId: channel.id,
+    name: channel.name, // cast to TextChannel for 'name'
+    parentId: channel.parentId,
+    permissionOverwrites: Array.from(channel.permissionOverwrites.cache.values()).map(overwrite => ({
+      id: overwrite.id,
+      type: overwrite.type,
+      allow: overwrite.allow.bitfield.toString(),
+      deny: overwrite.deny.bitfield.toString(),
+    })),
+  };
 }
 
 export default {
@@ -110,4 +155,6 @@ export default {
   getChannel,
   getChannels,
   updateChannels,
+  handelChannelChanges,
+  getNeededDateFromChannel,
 };

@@ -5,16 +5,21 @@ import { ChoreographyDict, MBConnection, Status } from '@togethercrew.dev/tc-mes
 import config from '../config';
 import guildExtraction from './guildExtraction';
 import { closeConnection } from '../database/connection';
+import parentLogger from '../config/logger';
+
+const logger = parentLogger.child({ event: 'CronJob' });
 
 async function createAndStartCronJobSaga(guildId: Snowflake) {
-  console.log('[createAndStartCronJobSaga]');
-  const saga = await MBConnection.models.Saga.create({
-    status: Status.NOT_STARTED,
-    data: { guildId },
-    choreography: ChoreographyDict.DISCORD_SCHEDULED_JOB,
-  });
-  console.log('[SAGA] ', saga);
-  await saga.start();
+  try {
+    const saga = await MBConnection.models.Saga.create({
+      status: Status.NOT_STARTED,
+      data: { guildId },
+      choreography: ChoreographyDict.DISCORD_SCHEDULED_JOB,
+    });
+    await saga.start();
+  } catch (err) {
+    logger.error({ guild_Id: guildId, err }, 'Faield to create saga');
+  }
 }
 
 /**
@@ -22,17 +27,20 @@ async function createAndStartCronJobSaga(guildId: Snowflake) {
  * @param {Client} client - The discord.js client object used to fetch the guilds.
  */
 export default async function cronJob(client: Client) {
-  try {
-    const guilds = await guildService.getGuilds({ isDisconnected: false });
-    for (let i = 0; i < guilds.length; i++) {
-      console.log(`Cron JOB is running for ${guilds[i].guildId}:${guilds[i].name}`);
-      const connection = databaseService.connectionFactory(guilds[i].guildId, config.mongoose.dbURL);
+  logger.info('event is running');
+  const guilds = await guildService.getGuilds({ isDisconnected: false });
+  for (let i = 0; i < guilds.length; i++) {
+    const connection = databaseService.connectionFactory(guilds[i].guildId, config.mongoose.dbURL);
+    try {
+      logger.info({ guild_id: guilds[i].guildId }, 'is running cronJob for guild');
       await guildExtraction(connection, client, guilds[i].guildId);
       await createAndStartCronJobSaga(guilds[i].guildId);
-      console.log(`Cron JOB is Done ${guilds[i].guildId}:${guilds[i].name}`);
+      logger.info({ guild_id: guilds[i].guildId }, 'cronJob is done for guild');
+    } catch (err) {
+      logger.error({ guild_id: guilds[i].guildId, err }, 'CronJob faield for guild');
+    } finally {
       await closeConnection(connection);
     }
-  } catch (err) {
-    console.log('Cron job failed', err);
   }
+  logger.info('event is done');
 }

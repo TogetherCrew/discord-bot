@@ -1,10 +1,14 @@
 # env vars
 src/config/*.env
+*.env
 
 # compiled output
-/lib
+/dist
 /node_modules
 
+#migration
+migrate.json
+.migrate
 # Logs
 logs
 *.log

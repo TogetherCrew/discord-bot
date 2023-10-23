@@ -1,6 +1,9 @@
 import { Connection } from 'mongoose';
 import { IGuildMember, IGuildMemberMethods, IGuildMemberUpdateBody } from '@togethercrew.dev/db';
+import { GuildMember } from 'discord.js';
+import parentLogger from '../../config/logger';
 
+const logger = parentLogger.child({ module: 'GuildMemberService' });
 /**
  * Create a guild member in the database.
  * @param {Connection} connection - Mongoose connection object for the database.
@@ -10,8 +13,19 @@ import { IGuildMember, IGuildMemberMethods, IGuildMemberUpdateBody } from '@toge
 async function createGuildMember(connection: Connection, guildMember: IGuildMember): Promise<IGuildMember | null> {
   try {
     return await connection.models.GuildMember.create(guildMember);
-  } catch (error) {
-    console.log('Failed to create guild member', error);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    if (error.code == 11000) {
+      logger.warn(
+        { database: connection.name, guild_member_id: guildMember.discordId },
+        'Failed to create duplicate guild member'
+      );
+      return null;
+    }
+    logger.error(
+      { database: connection.name, guild_member_id: guildMember.discordId, error },
+      'Failed to create guild member'
+    );
     return null;
   }
 }
@@ -25,8 +39,13 @@ async function createGuildMember(connection: Connection, guildMember: IGuildMemb
 async function createGuildMembers(connection: Connection, guildMembers: IGuildMember[]): Promise<IGuildMember[] | []> {
   try {
     return await connection.models.GuildMember.insertMany(guildMembers, { ordered: false });
-  } catch (error) {
-    console.log('Failed to create guild members', error);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    if (error.code == 11000) {
+      logger.warn({ database: connection.name }, 'Failed to create duplicate guild members');
+      return [];
+    }
+    logger.error({ database: connection.name, error }, 'Failed to create guild members');
     return [];
   }
 }
@@ -41,12 +60,7 @@ async function getGuildMember(
   connection: Connection,
   filter: object
 ): Promise<(IGuildMember & IGuildMemberMethods) | null> {
-  try {
-    return await connection.models.GuildMember.findOne(filter);
-  } catch (error) {
-    console.log('Failed to retrieve  guild member', error);
-    return null;
-  }
+  return await connection.models.GuildMember.findOne(filter);
 }
 
 /**
@@ -56,35 +70,30 @@ async function getGuildMember(
  * @returns {Promise<IGuildMember[] | []>} - A promise that resolves to an array of the matching guild member objects.
  */
 async function getGuildMembers(connection: Connection, filter: object): Promise<IGuildMember[] | []> {
-  try {
-    return await connection.models.GuildMember.find(filter);
-  } catch (error) {
-    console.log('Failed to retrieve  guild members', error);
-    return [];
-  }
+  return await connection.models.GuildMember.find(filter);
 }
 
 /**
  * Update a guild member in the database based on the filter criteria.
  * @param {Connection} connection - Mongoose connection object for the database.
  * @param {object} filter - An object specifying the filter criteria to match the desired guild member entry.
- * @param {IGuildMemberUpdateBody} UpdateBody - An object containing the updated guild member data.
+ * @param {IGuildMemberUpdateBody} updateBody - An object containing the updated guild member data.
  * @returns {Promise<IGuildMember | null>} - A promise that resolves to the updated guild member object or null if not found.
  */
 async function updateGuildMember(
   connection: Connection,
   filter: object,
-  UpdateBody: IGuildMemberUpdateBody
+  updateBody: IGuildMemberUpdateBody
 ): Promise<IGuildMember | null> {
   try {
     const guildMember = await connection.models.GuildMember.findOne(filter);
     if (!guildMember) {
       return null;
     }
-    Object.assign(guildMember, UpdateBody);
+    Object.assign(guildMember, updateBody);
     return await guildMember.save();
   } catch (error) {
-    console.log('Failed to update guild member', error);
+    logger.error({ database: connection.name, filter, updateBody, error }, 'Failed to update guild member');
     return null;
   }
 }
@@ -93,19 +102,19 @@ async function updateGuildMember(
  * Update multiple guild members in the database based on the filter criteria.
  * @param {Connection} connection - Mongoose connection object for the database.
  * @param {object} filter - An object specifying the filter criteria to match multiple guild member entries.
- * @param {IGuildMemberUpdateBody} UpdateBody - An object containing the updated guild member data.
+ * @param {IGuildMemberUpdateBody} updateBody - An object containing the updated guild member data.
  * @returns {Promise<number>} - A promise that resolves to the number of updated guild member entries.
  */
 async function updateGuildMembers(
   connection: Connection,
   filter: object,
-  UpdateBody: IGuildMemberUpdateBody
+  updateBody: IGuildMemberUpdateBody
 ): Promise<number> {
   try {
-    const updateResult = await connection.models.GuildMember.updateMany(filter, UpdateBody);
+    const updateResult = await connection.models.GuildMember.updateMany(filter, updateBody);
     return updateResult.modifiedCount || 0;
   } catch (error) {
-    console.log('Failed to update guild members', error);
+    logger.error({ database: connection.name, filter, updateBody, error }, 'Failed to update guild members');
     return 0;
   }
 }
@@ -121,7 +130,7 @@ async function deleteGuildMember(connection: Connection, filter: object): Promis
     const deleteResult = await connection.models.GuildMember.deleteOne(filter);
     return deleteResult.deletedCount === 1;
   } catch (error) {
-    console.log('Failed to delete guild member', error);
+    logger.error({ database: connection.name, filter, error }, 'Failed to delete guild member');
     return false;
   }
 }
@@ -137,9 +146,53 @@ async function deleteGuildMembers(connection: Connection, filter: object): Promi
     const deleteResult = await connection.models.GuildMember.deleteMany(filter);
     return deleteResult.deletedCount;
   } catch (error) {
-    console.log('Failed to delete guild members', error);
+    logger.error({ database: connection.name, filter, error }, 'Failed to delete guild members');
     return 0;
   }
+}
+
+/**
+ * Handle the logic for creating or updating guild members in the database.
+ * @param {Connection} connection - Mongoose connection object for the specific guild database.
+ * @param {GuildMember} guildMember - The Discord.js GuildMember object containing the member details.
+ * @returns {Promise<void>} - A promise that resolves when the create or update operation is complete.
+ *
+ */
+async function handelGuildMemberChanges(connection: Connection, guildMember: GuildMember): Promise<void> {
+  const commonFields = getNeededDateFromGuildMember(guildMember);
+  try {
+    const guildMemberDoc = await updateGuildMember(connection, { discordId: guildMember.user.id }, commonFields);
+    if (!guildMemberDoc) {
+      await createGuildMember(connection, {
+        ...commonFields,
+        isBot: guildMember.user.bot,
+      });
+    }
+  } catch (error) {
+    logger.error(
+      { guild_id: connection.name, guild_member_id: guildMember.id, error },
+      'Failed to handle guild member changes'
+    );
+  }
+}
+
+/**
+ * Extracts necessary fields from a Discord.js GuildMember object to form an IGuildMember object.
+ * @param {GuildMember} guildMember - The Discord.js GuildMember object containing the full member details.
+ * @returns {IGuildMember} - An object that adheres to the IGuildMember interface, containing selected fields from the provided guild member.
+ */
+function getNeededDateFromGuildMember(guildMember: GuildMember): IGuildMember {
+  return {
+    discordId: guildMember.user.id,
+    username: guildMember.user.username,
+    avatar: guildMember.user.avatar,
+    joinedAt: guildMember.joinedAt,
+    roles: guildMember.roles.cache.map(role => role.id),
+    discriminator: guildMember.user.discriminator,
+    permissions: guildMember.permissions.bitfield.toString(),
+    nickname: guildMember.nickname,
+    globalName: guildMember.user.globalName,
+  };
 }
 
 export default {
@@ -151,4 +204,6 @@ export default {
   updateGuildMembers,
   deleteGuildMember,
   deleteGuildMembers,
+  handelGuildMemberChanges,
+  getNeededDateFromGuildMember,
 };
