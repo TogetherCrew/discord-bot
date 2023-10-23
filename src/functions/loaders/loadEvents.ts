@@ -3,7 +3,7 @@ import path from 'path';
 import { readdir } from 'node:fs/promises';
 
 export default async function loadEvents(client: Client) {
-  const foldersPath: string = path.join(__dirname, '../events');
+  const foldersPath: string = path.join(__dirname, '../../events');
   const eventFolders: string[] = await readdir(foldersPath);
   for (const folder of eventFolders) {
     const eventsPath: string = path.join(foldersPath, folder);

@@ -1,9 +1,9 @@
 import { Events, Client } from 'discord.js';
 import { databaseService } from '@togethercrew.dev/db';
 import { guildService } from '../../database/services';
-import fetchMembers from '../../functions/fetchMembers';
-import fetchChannels from '../../functions/fetchChannels';
-import fetchRoles from '../../functions/fetchRoles';
+import fetchMembers from '../../functions/fetchData//fetchMembers';
+import fetchChannels from '../../functions/fetchData/fetchChannels';
+import fetchRoles from '../../functions/fetchData/fetchRoles';
 import { closeConnection } from '../../database/connection';
 import parentLogger from '../../config/logger';
 import config from '../../config';

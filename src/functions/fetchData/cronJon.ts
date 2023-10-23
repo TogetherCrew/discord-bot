@@ -1,11 +1,11 @@
 import { Client, Snowflake } from 'discord.js';
-import { guildService } from '../database/services';
+import { guildService } from '../../database/services';
 import { databaseService } from '@togethercrew.dev/db';
 import { ChoreographyDict, MBConnection, Status } from '@togethercrew.dev/tc-messagebroker';
-import config from '../config';
+import config from '../../config';
 import guildExtraction from './guildExtraction';
-import { closeConnection } from '../database/connection';
-import parentLogger from '../config/logger';
+import { closeConnection } from '../../database/connection';
+import parentLogger from '../../config/logger';
 
 const logger = parentLogger.child({ event: 'CronJob' });
 

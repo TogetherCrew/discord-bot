@@ -1,19 +1,20 @@
-import { Channel, ChannelType, Client, GatewayIntentBits, Snowflake, TextChannel } from 'discord.js';
+import { Channel, ChannelType, Client, GatewayIntentBits, Snowflake, TextChannel, REST, Routes, WebhookClient, MessagePayload } from 'discord.js';
 import config from './config';
 import * as Sentry from '@sentry/node';
-import loadEvents from './functions/loadEvents';
-import cronJob from './functions/cronJon';
+import loadEvents from './functions/loaders//loadEvents';
+import loadCommands from './functions/loaders/loadCommands';
+import cronJob from './functions/fetchData/cronJon';
 import { Queue, Worker, Job } from 'bullmq';
 import RabbitMQ, { Event, MBConnection, Queue as RabbitMQQueue } from '@togethercrew.dev/tc-messagebroker';
 // import './rabbitmqEvents' // we need this import statement here to initialize RabbitMQ events
 import { connectDB } from './database';
 import { databaseService } from '@togethercrew.dev/db';
-import guildExtraction from './functions/guildExtraction';
+import guildExtraction from './functions/fetchData//guildExtraction';
 import sendDirectMessage from './functions/sendDirectMessage';
 import { createPrivateThreadAndSendMessage } from './functions/thread';
-import fetchMembers from './functions/fetchMembers';
-import fetchChannels from './functions/fetchChannels';
-import fetchRoles from './functions/fetchRoles';
+import fetchMembers from './functions/fetchData/fetchMembers';
+import fetchChannels from './functions/fetchData/fetchChannels';
+import fetchRoles from './functions/fetchData/fetchRoles';
 import { closeConnection } from './database/connection';
 import parentLogger from './config/logger';
 
@@ -101,8 +102,11 @@ const fetchInitialData = async (guildId: Snowflake) => {
 // APP
 async function app() {
   await loadEvents(client);
+  await loadCommands(client);
   await client.login(config.discord.botToken);
   await connectDB();
+  await registerCommand()
+  // await edit()
   // *****************************RABBITMQ
   try {
     await MBConnection.connect(config.mongoose.dbURL);
@@ -163,55 +167,99 @@ async function app() {
     logger.info({ msg, event: Event.DISCORD_BOT.FETCH_MEMBERS }, 'is done');
   });
 
+
+  RabbitMQ.onEvent(Event.DISCORD_BOT.INTERACTION_RESPONSE.CREATE, async msg => {
+    logger.info(1)
+    logger.info(msg)
+  });
+
+  RabbitMQ.onEvent(Event.DISCORD_BOT.INTERACTION_RESPONSE.EDIT, async msg => {
+    logger.info(2)
+    logger.info(msg)
+  });
+
+  RabbitMQ.onEvent(Event.DISCORD_BOT.INTERACTION_RESPONSE.DELETE, async msg => {
+    logger.info(3)
+    logger.info(msg)
+  });
+
+  RabbitMQ.onEvent(Event.DISCORD_BOT.FOLLOWUP_MESSAGE.CREATE, async msg => {
+    logger.info(4)
+    logger.info(msg)
+  });
+
   // *****************************BULLMQ
   // Create a queue instance with the Redis connection
-  const queue = new Queue('cronJobQueue', {
-    connection: {
-      host: config.redis.host,
-      port: config.redis.port,
-      password: config.redis.password,
-    },
-  });
-  queue.add('cronJob', {}, {
-    repeat: {
-      cron: '0 0 * * *', // Run once 00:00 UTC
-      // cron: '* * * * *', // Run every minute
-      // every: 10000
-    },
-    jobId: 'cronJob', // Optional: Provide a unique ID for the job
-    attempts: 1, // Number of times to retry the job if it fails
-    backoff: {
-      type: 'exponential',
-      delay: 1000, // Initial delay between retries in milliseconds
-    },
-  } as never);
+  // const queue = new Queue('cronJobQueue', {
+  //   connection: {
+  //     host: config.redis.host,
+  //     port: config.redis.port,
+  //     password: config.redis.password,
+  //   },
+  // });
+  // queue.add('cronJob', {}, {
+  //   repeat: {
+  //     cron: '0 0 * * *', // Run once 00:00 UTC
+  //     // cron: '* * * * *', // Run every minute
+  //     // every: 10000
+  //   },
+  //   jobId: 'cronJob', // Optional: Provide a unique ID for the job
+  //   attempts: 1, // Number of times to retry the job if it fails
+  //   backoff: {
+  //     type: 'exponential',
+  //     delay: 1000, // Initial delay between retries in milliseconds
+  //   },
+  // } as never);
 
-  // Create a worker to process the job
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const worker = new Worker(
-    'cronJobQueue',
-    async (job: Job<any, any, string> | undefined) => {
-      if (job) {
-        // Call the extractMessagesDaily function
-        await cronJob(client);
-      }
-    },
-    {
-      connection: {
-        host: config.redis.host,
-        port: config.redis.port,
-        password: config.redis.password,
-      },
-    }
-  );
+  // // Create a worker to process the job
+  // // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // const worker = new Worker(
+  //   'cronJobQueue',
+  //   async (job: Job<any, any, string> | undefined) => {
+  //     if (job) {
+  //       // Call the extractMessagesDaily function
+  //       await cronJob(client);
+  //     }
+  //   },
+  //   {
+  //     connection: {
+  //       host: config.redis.host,
+  //       port: config.redis.port,
+  //       password: config.redis.password,
+  //     },
+  //   }
+  // );
 
-  // Listen for completed and failed events to log the job status
-  worker.on('completed', job => {
-    logger.info({ job }, 'Job is done');
-  });
+  // // Listen for completed and failed events to log the job status
+  // worker.on('completed', job => {
+  //   logger.info({ job }, 'Job is done');
+  // });
 
-  worker.on('failed', (job, error) => {
-    logger.error({ job, error }, 'Job failed');
-  });
+  // worker.on('failed', (job, error) => {
+  //   logger.error({ job, error }, 'Job failed');
+  // });
+}
+
+
+async function registerCommand() {
+  try {
+    console.log('*******')
+    console.log({ commands: client.commands })
+
+    console.log('*******')
+
+    const rest = new REST().setToken(config.discord.botToken)
+    const commandData = [...client.commands.values()].map(command => command.data.toJSON());
+
+    const data = await rest.put(
+      Routes.applicationGuildCommands(config.discord.clientId, "980858613587382322"),
+      { body: commandData },
+    );
+  } catch (err) {
+    console.log(err)
+  }
 }
 app();
+
+
+

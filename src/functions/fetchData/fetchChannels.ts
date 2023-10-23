@@ -1,8 +1,8 @@
 import { Client, Snowflake, TextChannel, VoiceChannel, CategoryChannel } from 'discord.js';
 import { Connection } from 'mongoose';
 import { IChannel } from '@togethercrew.dev/db';
-import { channelService, guildService } from '../database/services';
-import parentLogger from '../config/logger';
+import { channelService, guildService } from '../../database/services';
+import parentLogger from '../../config/logger';
 
 const logger = parentLogger.child({ module: 'FetchChannels' });
 

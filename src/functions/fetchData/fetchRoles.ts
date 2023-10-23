@@ -1,8 +1,8 @@
 import { Client, Snowflake, Role } from 'discord.js';
 import { Connection } from 'mongoose';
 import { IRole } from '@togethercrew.dev/db';
-import { roleService, guildService } from '../database/services';
-import parentLogger from '../config/logger';
+import { roleService, guildService } from '../../database/services';
+import parentLogger from '../../config/logger';
 
 const logger = parentLogger.child({ module: 'FetchRoles' });
 

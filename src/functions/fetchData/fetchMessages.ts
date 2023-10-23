@@ -1,8 +1,8 @@
 import { Message, TextChannel, Collection, User, Role, ThreadChannel, Snowflake } from 'discord.js';
 import { IRawInfo } from '@togethercrew.dev/db';
-import { rawInfoService } from '../database/services';
+import { rawInfoService } from '../../database/services';
 import { Connection } from 'mongoose';
-import parentLogger from '../config/logger';
+import parentLogger from '../../config/logger';
 
 const logger = parentLogger.child({ module: 'FetchMessages' });
 interface threadInfo {

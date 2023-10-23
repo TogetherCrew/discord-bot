@@ -1,8 +1,8 @@
 import { Client, Snowflake } from 'discord.js';
-import { guildService } from '../database/services';
+import { guildService } from '../../database/services';
 import handleFetchChannelMessages from './fetchMessages';
 import { Connection } from 'mongoose';
-import parentLogger from '../config/logger';
+import parentLogger from '../../config/logger';
 
 const logger = parentLogger.child({ module: 'GuildExtraction' });
 /**
