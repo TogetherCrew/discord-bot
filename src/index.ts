@@ -37,8 +37,8 @@ const client = new Client({
 
 const partial =
   (func: any, ...args: any) =>
-  (...rest: any) =>
-    func(...args, ...rest);
+    (...rest: any) =>
+      func(...args, ...rest);
 
 const fetchMethod = async (msg: any) => {
   logger.info({ msg }, 'fetchMethod is running');
@@ -170,13 +170,11 @@ async function app() {
       host: config.redis.host,
       port: config.redis.port,
       password: config.redis.password,
-    },
+    }
   });
   queue.add('cronJob', {}, {
     repeat: {
       cron: '0 0 * * *', // Run once 00:00 UTC
-      // cron: '* * * * *', // Run every minute
-      // every: 10000
     },
     jobId: 'cronJob', // Optional: Provide a unique ID for the job
     attempts: 0, // Number of times to retry the job if it fails
@@ -184,6 +182,7 @@ async function app() {
       type: 'exponential',
       delay: 1000, // Initial delay between retries in milliseconds
     },
+
   } as never);
 
   // Create a worker to process the job
@@ -202,6 +201,7 @@ async function app() {
         port: config.redis.port,
         password: config.redis.password,
       },
+      lockDuration: 7200000, // 2 hour
     }
   );
 
