@@ -1,4 +1,5 @@
-import { Channel, ChannelType, Client, GatewayIntentBits, Snowflake, TextChannel, REST, Routes, WebhookClient, MessagePayload } from 'discord.js';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Channel, ChannelType, Client, GatewayIntentBits, Snowflake, TextChannel, REST, Routes } from 'discord.js';
 import config from './config';
 import * as Sentry from '@sentry/node';
 import loadEvents from './functions/loaders//loadEvents';
@@ -17,6 +18,8 @@ import fetchChannels from './functions/fetchData/fetchChannels';
 import fetchRoles from './functions/fetchData/fetchRoles';
 import { closeConnection } from './database/connection';
 import parentLogger from './config/logger';
+import { createFollowUpMessage, createInteractionResponse, deleteOriginalInteractionResponse, editOriginalInteractionResponse } from './functions/interactions/responses'
+import { ChatInputCommandInteraction_broker, InteractionResponse, FollowUpMessageData, InteractionResponseEditData } from './interfaces/Hivemind.interfaces';
 
 const logger = parentLogger.child({ module: 'App' });
 
@@ -169,97 +172,95 @@ async function app() {
 
 
   RabbitMQ.onEvent(Event.DISCORD_BOT.INTERACTION_RESPONSE.CREATE, async msg => {
-    logger.info(1)
-    logger.info(msg)
+    const interaction: ChatInputCommandInteraction_broker = JSON.parse(msg?.content.interaction);
+    const data: InteractionResponse = JSON.parse(msg?.content.data);
+    await createInteractionResponse(interaction, data);
+
   });
 
   RabbitMQ.onEvent(Event.DISCORD_BOT.INTERACTION_RESPONSE.EDIT, async msg => {
-    logger.info(2)
-    logger.info(msg)
+    const interaction: ChatInputCommandInteraction_broker = JSON.parse(msg?.content.interaction);
+    const data: InteractionResponseEditData = JSON.parse(msg?.content.data);
+    await editOriginalInteractionResponse(interaction, data)
   });
 
   RabbitMQ.onEvent(Event.DISCORD_BOT.INTERACTION_RESPONSE.DELETE, async msg => {
-    logger.info(3)
-    logger.info(msg)
+    const interaction: ChatInputCommandInteraction_broker = JSON.parse(msg?.content.interaction);
+    await deleteOriginalInteractionResponse(interaction)
   });
 
   RabbitMQ.onEvent(Event.DISCORD_BOT.FOLLOWUP_MESSAGE.CREATE, async msg => {
-    logger.info(4)
-    logger.info(msg)
+    const interaction: ChatInputCommandInteraction_broker = JSON.parse(msg?.content.interaction);
+    const data: FollowUpMessageData = JSON.parse(msg?.content.data);
+    await createFollowUpMessage(interaction, data)
   });
 
   // *****************************BULLMQ
   // Create a queue instance with the Redis connection
-  // const queue = new Queue('cronJobQueue', {
-  //   connection: {
-  //     host: config.redis.host,
-  //     port: config.redis.port,
-  //     password: config.redis.password,
-  //   },
-  // });
-  // queue.add('cronJob', {}, {
-  //   repeat: {
-  //     cron: '0 0 * * *', // Run once 00:00 UTC
-  //     // cron: '* * * * *', // Run every minute
-  //     // every: 10000
-  //   },
-  //   jobId: 'cronJob', // Optional: Provide a unique ID for the job
-  //   attempts: 1, // Number of times to retry the job if it fails
-  //   backoff: {
-  //     type: 'exponential',
-  //     delay: 1000, // Initial delay between retries in milliseconds
-  //   },
-  // } as never);
+  const queue = new Queue('cronJobQueue', {
+    connection: {
+      host: config.redis.host,
+      port: config.redis.port,
+      password: config.redis.password,
+    },
+  });
+  queue.add('cronJob', {}, {
+    repeat: {
+      cron: '0 0 * * *', // Run once 00:00 UTC
+      // cron: '* * * * *', // Run every minute
+      // every: 10000
+    },
+    jobId: 'cronJob', // Optional: Provide a unique ID for the job
+    attempts: 0, // Number of times to retry the job if it fails
+    backoff: {
+      type: 'exponential',
+      delay: 1000, // Initial delay between retries in milliseconds
+    },
+  } as never);
 
-  // // Create a worker to process the job
-  // // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // const worker = new Worker(
-  //   'cronJobQueue',
-  //   async (job: Job<any, any, string> | undefined) => {
-  //     if (job) {
-  //       // Call the extractMessagesDaily function
-  //       await cronJob(client);
-  //     }
-  //   },
-  //   {
-  //     connection: {
-  //       host: config.redis.host,
-  //       port: config.redis.port,
-  //       password: config.redis.password,
-  //     },
-  //   }
-  // );
+  // Create a worker to process the job
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const worker = new Worker(
+    'cronJobQueue',
+    async (job: Job<any, any, string> | undefined) => {
+      if (job) {
+        // Call the extractMessagesDaily function
+        await cronJob(client);
+      }
+    },
+    {
+      connection: {
+        host: config.redis.host,
+        port: config.redis.port,
+        password: config.redis.password,
+      },
+    }
+  );
 
-  // // Listen for completed and failed events to log the job status
-  // worker.on('completed', job => {
-  //   logger.info({ job }, 'Job is done');
-  // });
+  // Listen for completed and failed events to log the job status
+  worker.on('completed', job => {
+    logger.info({ job }, 'Job is done');
+  });
 
-  // worker.on('failed', (job, error) => {
-  //   logger.error({ job, error }, 'Job failed');
-  // });
+  worker.on('failed', (job, error) => {
+    logger.error({ job, error }, 'Job failed');
+  });
 }
 
 
 async function registerCommand() {
   try {
-    console.log('*******')
-    console.log({ commands: client.commands })
-
-    console.log('*******')
-
     const rest = new REST().setToken(config.discord.botToken)
     const commandData = [...client.commands.values()].map(command => command.data.toJSON());
 
-    const data = await rest.put(
+    await rest.put(
       Routes.applicationGuildCommands(config.discord.clientId, "980858613587382322"),
       { body: commandData },
     );
   } catch (err) {
-    console.log(err)
+    logger.info({ err }, 'Failed to register the slash command');
   }
 }
 app();
-
 
 

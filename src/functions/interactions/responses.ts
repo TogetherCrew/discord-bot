@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
 import parentLogger from '../../config/logger';
-import { ChatInputCommandInteraction } from 'discord.js';
+import { ChatInputCommandInteraction_broker, InteractionResponse, InteractionResponseEditData } from '../../interfaces/Hivemind.interfaces';
 
 const logger = parentLogger.child({ module: 'InteractionResponses' });
 
@@ -11,20 +11,23 @@ const logger = parentLogger.child({ module: 'InteractionResponses' });
    @param {string} redirect_uri
  * @returns {Promise<IDiscordOathBotCallback>}
  */
-export async function createInteractionResponse(interaction: ChatInputCommandInteraction, type: number, data: object) {
+export async function createInteractionResponse(interaction: ChatInputCommandInteraction_broker, data: InteractionResponse) {
     try {
         // {4, 5, 9, 10, 11}
+        const { type, ...rest } = data;
         const body = {
-            type,
-            data
+            type: type,
+            data: rest.data
         };
+
+
         const response = await fetch(`https://discord.com/api/interactions/${interaction.id}/${interaction.token}/callback`, {
             method: 'POST',
             body: JSON.stringify(body),
             headers: { 'Content-Type': 'application/json' }
         })
         if (!response.ok) {
-            throw new Error(await response.json());
+            throw new Error();
         }
     } catch (error) {
         logger.error({ interaction_id: interaction.id, interaction_token: interaction.token, error }, 'Failed to send interaction response');
@@ -37,7 +40,7 @@ export async function createInteractionResponse(interaction: ChatInputCommandInt
    @param {string} redirect_uri
  * @returns {Promise<IDiscordOathBotCallback>}
  */
-export async function getOriginalInteractionResponse(interaction: ChatInputCommandInteraction) {
+export async function getOriginalInteractionResponse(interaction: ChatInputCommandInteraction_broker) {
     try {
         const response = await fetch(`https://discord.com/api/webhooks/${interaction.applicationId}/${interaction.token}/messages/@original`, {
             method: 'GET',
@@ -60,7 +63,7 @@ export async function getOriginalInteractionResponse(interaction: ChatInputComma
    @param {string} redirect_uri
  * @returns {Promise<IDiscordOathBotCallback>}
  */
-export async function editOriginalInteractionResponse(interaction: ChatInputCommandInteraction, data: object) {
+export async function editOriginalInteractionResponse(interaction: ChatInputCommandInteraction_broker, data: InteractionResponseEditData) {
     try {
         const response = await fetch(`https://discord.com/api/webhooks/${interaction.applicationId}/${interaction.token}/messages/@original`, {
             method: 'PATCH',
@@ -85,7 +88,7 @@ export async function editOriginalInteractionResponse(interaction: ChatInputComm
    @param {string} redirect_uri
  * @returns {Promise<IDiscordOathBotCallback>}
  */
-export async function deleteOriginalInteractionResponse(interaction: ChatInputCommandInteraction) {
+export async function deleteOriginalInteractionResponse(interaction: ChatInputCommandInteraction_broker) {
     try {
         const response = await fetch(`https://discord.com/api/webhooks/${interaction.applicationId}/${interaction.token}/messages/@original`, {
             method: 'DELETE',
@@ -106,7 +109,7 @@ export async function deleteOriginalInteractionResponse(interaction: ChatInputCo
    @param {string} redirect_uri
  * @returns {Promise<IDiscordOathBotCallback>}
  */
-export async function createFollowUpMessage(interaction: ChatInputCommandInteraction, data: object) {
+export async function createFollowUpMessage(interaction: ChatInputCommandInteraction_broker, data: object) {
     try {
         const response = await fetch(`https://discord.com/api/webhooks/${interaction.applicationId}/${interaction.token}`, {
             method: 'POST',
