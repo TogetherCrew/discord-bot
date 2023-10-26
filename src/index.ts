@@ -201,7 +201,7 @@ async function app() {
         port: config.redis.port,
         password: config.redis.password,
       },
-      lockDuration: 7200000, // 2 hour
+      lockDuration: 79200000, // 22 hours
     }
   );
 
