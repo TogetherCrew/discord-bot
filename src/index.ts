@@ -203,6 +203,7 @@ async function app() {
       port: config.redis.port,
       password: config.redis.password,
     },
+
   });
   queue.add('cronJob', {}, {
     repeat: {
@@ -216,6 +217,7 @@ async function app() {
       type: 'exponential',
       delay: 1000, // Initial delay between retries in milliseconds
     },
+    lockDuration: 79200000, // 22 hours
   } as never);
 
   // Create a worker to process the job

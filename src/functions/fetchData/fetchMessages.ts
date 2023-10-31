@@ -170,9 +170,9 @@ async function fetchMessages(
         })
         : await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()]);
       options[fetchDirection] = boundaryMessage.id;
+      await rawInfoService.createRawInfos(connection, messagesToStore);
       fetchedMessages = await channel.messages.fetch(options);
     }
-    await rawInfoService.createRawInfos(connection, messagesToStore);
   } catch (err) {
     logger.error(
       { guild_id: connection.name, channel_id: channel.id, fetchDirection, err },
