@@ -1,19 +1,47 @@
-import { Connection } from 'mongoose';
-import parentLogger from '../config/logger';
+import mongoose, { Connection } from 'mongoose';
+import {
+  heatMapSchema,
+  rawInfoSchema,
+  MemberActivitySchema,
+  guildMemberSchema,
+  channelSchema,
+  roleSchema,
+  type IHeatMap,
+  type IRawInfo,
+  type IMemberActivity,
+  type IGuildMember,
+  type IChannel,
+  type IRole,
+} from '@togethercrew.dev/db';
+import { type Snowflake } from 'discord.js';
 
-const logger = parentLogger.child({ module: 'Connection' });
+export default class DatabaseManager {
+  private static instance: DatabaseManager;
+  private modelCache: Record<string, boolean> = {};
+  public static getInstance(): DatabaseManager {
+    if (typeof DatabaseManager.instance === 'undefined') {
+      DatabaseManager.instance = new DatabaseManager();
+    }
+    return DatabaseManager.instance;
+  }
 
-/**
- * Closes a given Mongoose connection.
- * @param {Connection} connection - The Mongoose connection object to be closed.
- * @returns {Promise<void>} - A promise that resolves when the connection has been successfully closed.
- * @throws {MongooseError} - If there is an error closing the connection, it is logged to the console and the error is thrown.
- */
-export async function closeConnection(connection: Connection) {
-  try {
-    await connection.close();
-    logger.info({ database: connection.name }, 'The connection to database has been successfully closed');
-  } catch (error) {
-    logger.fatal({ database: connection.name, error }, 'Failed to close the connection to the database');
+  public getTenantDb(tenantId: Snowflake): Connection {
+    const dbName = tenantId;
+    const db = mongoose.connection.useDb(dbName, { useCache: true });
+    this.setupModels(db);
+    return db;
+  }
+
+  private setupModels(db: Connection): void {
+    if (!this.modelCache[db.name]) {
+      db.model<IHeatMap>('HeatMap', heatMapSchema);
+      db.model<IRawInfo>('RawInfo', rawInfoSchema);
+      db.model<IMemberActivity>('MemberActivity', MemberActivitySchema);
+      db.model<IGuildMember>('GuildMember', guildMemberSchema);
+      db.model<IChannel>('Channel', channelSchema);
+      db.model<IRole>('Role', roleSchema);
+      this.modelCache[db.name] = true;
+
+    }
   }
 }

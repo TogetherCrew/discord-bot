@@ -1,8 +1,6 @@
 import { Events, User } from 'discord.js';
 import { guildMemberService, guildService } from '../../database/services';
-import { databaseService } from '@togethercrew.dev/db';
-import config from '../../config';
-import { closeConnection } from '../../database/connection';
+import DatabaseManager from '../../database/connection';
 import parentLogger from '../../config/logger';
 
 const logger = parentLogger.child({ event: 'UserUpdate' });
@@ -15,7 +13,7 @@ export default {
     try {
       const guilds = await guildService.getGuilds({});
       for (let i = 0; i < guilds.length; i++) {
-        const connection = databaseService.connectionFactory(guilds[i].guildId, config.mongoose.dbURL);
+        const connection = DatabaseManager.getInstance().getTenantDb(guilds[i].guildId);
         await guildMemberService.updateGuildMember(
           connection,
           { discordId: newUser.id },
@@ -24,7 +22,6 @@ export default {
             globalName: newUser.globalName,
           }
         );
-        await closeConnection(connection);
       }
     } catch (err) {
       logger.error({ ...logFields, err }, 'Failed to handle user changes');

@@ -1,8 +1,6 @@
 import { Events, Channel, TextChannel, VoiceChannel, CategoryChannel } from 'discord.js';
 import { channelService } from '../../database/services';
-import { databaseService } from '@togethercrew.dev/db';
-import config from '../../config';
-import { closeConnection } from '../../database/connection';
+import DatabaseManager from '../../database/connection';
 import parentLogger from '../../config/logger';
 
 const logger = parentLogger.child({ event: 'ChannelUpdate' });
@@ -18,14 +16,13 @@ export default {
     ) {
       const logFields = { guild_id: newChannel.guild.id, channel_id: newChannel.id };
       logger.info(logFields, 'event is running');
-      const connection = databaseService.connectionFactory(newChannel.guild.id, config.mongoose.dbURL);
+      const connection = DatabaseManager.getInstance().getTenantDb(newChannel.guild.id);
       try {
         await channelService.handelChannelChanges(connection, newChannel);
       } catch (err) {
         logger.error({ ...logFields, err }, 'Failed to handle channel changes');
-      } finally {
-        await closeConnection(connection);
         logger.info(logFields, 'event is done');
+
       }
     }
   },
