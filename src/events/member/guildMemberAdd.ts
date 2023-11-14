@@ -1,8 +1,6 @@
 import { Events, GuildMember } from 'discord.js';
 import { guildMemberService } from '../../database/services';
-import { databaseService } from '@togethercrew.dev/db';
-import config from '../../config';
-import { closeConnection } from '../../database/connection';
+import DatabaseManager from '../../database/connection';
 import parentLogger from '../../config/logger';
 
 const logger = parentLogger.child({ event: 'GuildMemberAdd' });
@@ -13,14 +11,12 @@ export default {
   async execute(member: GuildMember) {
     const logFields = { guild_id: member.guild.id, guild_member_id: member.user.id };
     logger.info(logFields, 'event is running');
-    const connection = databaseService.connectionFactory(member.guild.id, config.mongoose.dbURL);
+    const connection = DatabaseManager.getInstance().getTenantDb(member.guild.id);
     try {
       await guildMemberService.handelGuildMemberChanges(connection, member);
+      logger.info(logFields, 'event is done');
     } catch (err) {
       logger.error({ ...logFields, err }, 'Failed to handle guild member changes');
-    } finally {
-      await closeConnection(connection);
-      logger.info(logFields, 'event is done');
     }
   },
 };
