@@ -2,10 +2,9 @@ import 'dotenv/config';
 import { Client, GatewayIntentBits, } from 'discord.js';
 import { guildService } from '../../database/services';
 import { connectDB } from '../../database';
-import { databaseService } from '@togethercrew.dev/db';
 import config from '../../config';
-import { closeConnection } from '../../database/connection';
 import webhookLogic from '../utils/webhookLogic';
+import DatabaseManager from '../../database/connection';
 
 const {
     Guilds,
@@ -25,9 +24,8 @@ export const up = async () => {
     await connectDB();
     const guilds = await guildService.getGuilds({});
     for (let i = 0; i < guilds.length; i++) {
-        const connection = databaseService.connectionFactory(guilds[i].guildId, config.mongoose.dbURL);
+        const connection = DatabaseManager.getInstance().getTenantDb(guilds[i].guildId);
         await webhookLogic(connection, client, guilds[i].guildId);
-        await closeConnection(connection);
     }
 };
 
