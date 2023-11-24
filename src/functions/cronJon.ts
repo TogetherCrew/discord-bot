@@ -3,7 +3,7 @@ import { guildService } from '../database/services';
 import { ChoreographyDict, MBConnection, Status } from '@togethercrew.dev/tc-messagebroker';
 import guildExtraction from './guildExtraction';
 import parentLogger from '../config/logger';
-import DatabaseManager from '../database/connection';
+import { DatabaseManager } from '@togethercrew.dev/db';
 
 const logger = parentLogger.child({ event: 'CronJob' });
 

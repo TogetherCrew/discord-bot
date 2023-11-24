@@ -1,6 +1,6 @@
 import { Events, User } from 'discord.js';
 import { guildMemberService, guildService } from '../../database/services';
-import DatabaseManager from '../../database/connection';
+import { DatabaseManager } from '@togethercrew.dev/db';
 import parentLogger from '../../config/logger';
 
 const logger = parentLogger.child({ event: 'UserUpdate' });

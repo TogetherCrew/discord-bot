@@ -7,7 +7,7 @@ import { Queue, Worker, Job } from 'bullmq';
 import RabbitMQ, { Event, MBConnection, Queue as RabbitMQQueue } from '@togethercrew.dev/tc-messagebroker';
 // import './rabbitmqEvents' // we need this import statement here to initialize RabbitMQ events
 import { connectDB } from './database';
-import { databaseService } from '@togethercrew.dev/db';
+import { DatabaseManager } from '@togethercrew.dev/db';
 import guildExtraction from './functions/guildExtraction';
 import sendDirectMessage from './functions/sendDirectMessage';
 import { createPrivateThreadAndSendMessage } from './functions/thread';
@@ -15,7 +15,6 @@ import fetchMembers from './functions/fetchMembers';
 import fetchChannels from './functions/fetchChannels';
 import fetchRoles from './functions/fetchRoles';
 import parentLogger from './config/logger';
-import DatabaseManager from './database/connection';
 
 
 const logger = parentLogger.child({ module: 'App' });

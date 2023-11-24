@@ -4,7 +4,7 @@ import { guildService } from '../../database/services';
 import { connectDB } from '../../database';
 import config from '../../config';
 import webhookLogic from '../utils/webhookLogic';
-import DatabaseManager from '../../database/connection';
+import { DatabaseManager } from '@togethercrew.dev/db';
 
 const {
     Guilds,

@@ -1,6 +1,6 @@
 import { connectDB } from '../../database';
 import 'dotenv/config';
-import DatabaseManager from '../../database/connection';
+import { DatabaseManager } from '@togethercrew.dev/db';
 
 export const up = async () => {
     await connectDB();

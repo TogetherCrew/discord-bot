@@ -1,6 +1,6 @@
 import { Events, Channel, TextChannel, VoiceChannel, CategoryChannel } from 'discord.js';
 import { channelService } from '../../database/services';
-import DatabaseManager from '../../database/connection';
+import { DatabaseManager } from '@togethercrew.dev/db';
 import parentLogger from '../../config/logger';
 
 const logger = parentLogger.child({ event: 'ChannelCreate' });

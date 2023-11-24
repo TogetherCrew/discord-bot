@@ -3,7 +3,7 @@ import { guildService } from '../../database/services';
 import fetchMembers from '../../functions/fetchMembers';
 import fetchChannels from '../../functions/fetchChannels';
 import fetchRoles from '../../functions/fetchRoles';
-import DatabaseManager from '../../database/connection';
+import { DatabaseManager } from '@togethercrew.dev/db';
 import parentLogger from '../../config/logger';
 
 const logger = parentLogger.child({ event: 'ClientReady' });
