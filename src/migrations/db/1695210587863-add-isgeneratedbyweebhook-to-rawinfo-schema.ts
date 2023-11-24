@@ -1,24 +1,17 @@
 import 'dotenv/config';
-import { Client, GatewayIntentBits, } from 'discord.js';
+import { Client, GatewayIntentBits } from 'discord.js';
 import { guildService } from '../../database/services';
 import { connectDB } from '../../database';
 import config from '../../config';
 import webhookLogic from '../utils/webhookLogic';
 import DatabaseManager from '../../database/connection';
 
-const {
-    Guilds,
-    GuildMembers,
-    GuildMessages,
-    GuildPresences,
-    DirectMessages
-} = GatewayIntentBits;
-
+const { Guilds, GuildMembers, GuildMessages, GuildPresences, DirectMessages } = GatewayIntentBits;
 
 export const up = async () => {
-    const client = new Client({
-        intents: [Guilds, GuildMembers, GuildMessages, GuildPresences, DirectMessages],
-    });
+  const client = new Client({
+    intents: [Guilds, GuildMembers, GuildMessages, GuildPresences, DirectMessages],
+  });
 
     await client.login(config.discord.botToken);
     await connectDB();
@@ -30,7 +23,5 @@ export const up = async () => {
 };
 
 export const down = async () => {
-    // TODO: Implement rollback logic if needed
+  // TODO: Implement rollback logic if needed
 };
-
-
