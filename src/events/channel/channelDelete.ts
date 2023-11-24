@@ -1,8 +1,9 @@
 import { Events, Channel, TextChannel, VoiceChannel, CategoryChannel } from 'discord.js';
-import { channelService, guildService } from '../../database/services';
+import { channelService, platformService } from '../../database/services';
 import { DatabaseManager } from '@togethercrew.dev/db';
 import parentLogger from '../../config/logger';
 
+console.log('FLAG')
 const logger = parentLogger.child({ event: 'ChannelDelete' });
 
 export default {
@@ -16,11 +17,12 @@ export default {
       try {
         const channelDoc = await channelService.getChannel(connection, { channelId: channel.id });
         await channelDoc?.softDelete();
-        const guildDoc = await guildService.getGuild({ guildId: channel.guild.id });
-        const updatedSelecetdChannels = guildDoc?.selectedChannels?.filter(
-          selectedChannel => selectedChannel.channelId !== channel.id
+        const platformDoc = await platformService.getPlatform({ 'metadata.id': channel.guild.id });
+        const updatedSelecetdChannels = platformDoc?.metadata?.selectedChannels?.filter(
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (selectedChannel: any) => selectedChannel.channelId !== channel.id
         );
-        await guildService.updateGuild({ guildId: channel.guild.id }, { selectedChannels: updatedSelecetdChannels });
+        await platformService.updatePlatform({ 'metadata.id': channel.guild.id }, { metadata: { selectedChannels: updatedSelecetdChannels } });
         logger.info(logFields, 'event is done');
 
       } catch (err) {

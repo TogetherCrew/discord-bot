@@ -1,10 +1,13 @@
 import { Events, Client } from 'discord.js';
-import { guildService } from '../../database/services';
+import { platformService } from '../../database/services';
 import fetchMembers from '../../functions/fetchMembers';
 import fetchChannels from '../../functions/fetchChannels';
 import fetchRoles from '../../functions/fetchRoles';
 import { DatabaseManager } from '@togethercrew.dev/db';
 import parentLogger from '../../config/logger';
+
+console.log('FLAG')
+
 
 const logger = parentLogger.child({ event: 'ClientReady' });
 
@@ -13,17 +16,17 @@ export default {
   once: true,
   async execute(client: Client) {
     logger.info('event is running');
-    const guilds = await guildService.getGuilds({ isDisconnected: false });
-    for (let i = 0; i < guilds.length; i++) {
-      const connection = DatabaseManager.getInstance().getTenantDb(guilds[i].guildId);
+    const platforms = await platformService.getPlatforms({ disconnectedAt: null });
+    for (let i = 0; i < platforms.length; i++) {
+      const connection = DatabaseManager.getInstance().getTenantDb(platforms[i].metadata?.id);
       try {
-        logger.info({ guild_id: guilds[i].guildId }, 'Fetching guild members, roles,and channels');
-        await fetchMembers(connection, client, guilds[i].guildId);
-        await fetchRoles(connection, client, guilds[i].guildId);
-        await fetchChannels(connection, client, guilds[i].guildId);
-        logger.info({ guild_id: guilds[i].guildId }, 'Fetching guild members, roles, channels is done');
+        logger.info({ platform_id: platforms[i].metadata?.id }, 'Fetching guild members, roles,and channels');
+        await fetchMembers(connection, client, platforms[i].metadata?.id);
+        await fetchRoles(connection, client, platforms[i].metadata?.id);
+        await fetchChannels(connection, client, platforms[i].metadata?.id);
+        logger.info({ platform_id: platforms[i].metadata?.id }, 'Fetching guild members, roles, channels is done');
       } catch (err) {
-        logger.error({ guild_id: guilds[i].guildId, err }, 'Fetching guild members, roles,and channels failed');
+        logger.error({ platform_id: platforms[i].metadata?.id, err }, 'Fetching guild members, roles,and channels failed');
         logger.info('event is done');
       }
     }

@@ -30,14 +30,22 @@ async function getPlatforms(filter: object): Promise<IPlatform[]> {
  */
 async function updatePlatform(filter: object, updateBody: IPlatformUpdateBody): Promise<IPlatform | null> {
   try {
-    const platofrm = await Platform.findOne(filter);
-    if (!platofrm) {
+    const platform = await Platform.findOne(filter);
+    if (!platform) {
       return null;
     }
-    Object.assign(platofrm, updateBody);
-    return await platofrm.save();
+
+    if (updateBody.metadata) {
+      updateBody.metadata = {
+        ...platform.metadata,
+        ...updateBody.metadata
+      };
+    }
+
+    Object.assign(platform, updateBody);
+    return await platform.save();
   } catch (error) {
-    logger.error({ database: 'Core', filter, updateBody, error }, 'Failed to update platofrm');
+    logger.error({ database: 'Core', filter, updateBody, error }, 'Failed to update platform');
     return null;
   }
 }
@@ -54,7 +62,7 @@ async function updateManyPlatforms(filter: object, updateBody: IPlatformUpdateBo
     const modifiedCount = updateResult.modifiedCount;
     return modifiedCount;
   } catch (error) {
-    logger.error({ database: 'Core', filter, updateBody, error }, 'Failed to update platofrms');
+    logger.error({ database: 'Core', filter, updateBody, error }, 'Failed to update platforms');
     return 0;
   }
 }
