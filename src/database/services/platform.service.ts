@@ -1,3 +1,4 @@
+import { HydratedDocument } from 'mongoose';
 import { Platform, IPlatform, IPlatformUpdateBody } from '@togethercrew.dev/db';
 import { Snowflake, Client } from 'discord.js';
 import parentLogger from '../../config/logger';
@@ -9,7 +10,7 @@ const logger = parentLogger.child({ module: 'PlatformService' });
  * @param {Object} filter
  * @returns {Promise<IGuild | null>}
  */
-async function getPlatform(filter: object): Promise<IPlatform | null> {
+async function getPlatform(filter: object): Promise<HydratedDocument<IPlatform> | null> {
   return Platform.findOne(filter);
 }
 
@@ -18,7 +19,7 @@ async function getPlatform(filter: object): Promise<IPlatform | null> {
  * @param {object} filter - Filter criteria to match the desired platform entries.
  * @returns {Promise<object[]>} - A promise that resolves to an array of matching platform entries.
  */
-async function getPlatforms(filter: object): Promise<IPlatform[]> {
+async function getPlatforms(filter: object): Promise<HydratedDocument<IPlatform>[]> {
   return await Platform.find(filter);
 }
 
@@ -28,7 +29,7 @@ async function getPlatforms(filter: object): Promise<IPlatform[]> {
  * @param {IPlatformUpdateBody} updateBody - Updated information for the platform entry.
  * @returns {Promise<object|null>} - A promise that resolves to the updated platform entry, or null if not found.
  */
-async function updatePlatform(filter: object, updateBody: IPlatformUpdateBody): Promise<IPlatform | null> {
+async function updatePlatform(filter: object, updateBody: IPlatformUpdateBody): Promise<HydratedDocument<IPlatform> | null> {
   try {
     const platform = await Platform.findOne(filter);
     if (!platform) {
