@@ -1,7 +1,6 @@
 import { Client, TextChannel, VoiceChannel, CategoryChannel } from 'discord.js';
 import { Connection, HydratedDocument } from 'mongoose';
-import { IPlatform } from '@togethercrew.dev/db';
-import { IChannel } from '@togethercrew.dev/db';
+import { IPlatform, IChannel } from '@togethercrew.dev/db';
 import { channelService, platformService } from '../database/services';
 import parentLogger from '../config/logger';
 console.log('FLAG')
