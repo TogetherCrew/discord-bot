@@ -1,8 +1,11 @@
-import { Client, Snowflake } from 'discord.js';
-import { guildService } from '../database/services';
+import { Client } from 'discord.js';
+import { Connection, HydratedDocument } from 'mongoose';
+import { IPlatform } from '@togethercrew.dev/db';
+import { platformService } from '../database/services';
 import handleFetchChannelMessages from './fetchMessages';
-import { Connection } from 'mongoose';
 import parentLogger from '../config/logger';
+
+console.log('FLAG - isInProgress Update?? || selectedChannels array of object to string')
 
 const logger = parentLogger.child({ module: 'GuildExtraction' });
 /**
@@ -11,28 +14,27 @@ const logger = parentLogger.child({ module: 'GuildExtraction' });
  * @param {Client} client - The discord.js client object used to fetch the guild.
  * @param {Snowflake} guildId - The identifier of the guild to extract information from.
  */
-export default async function guildExtraction(connection: Connection, client: Client, guildId: Snowflake) {
-  logger.info({ guild_id: guildId }, 'Guild extraction for guild is running');
+export default async function guildExtraction(connection: Connection, client: Client, platform: HydratedDocument<IPlatform>) {
+  logger.info({ guild_id: platform.metadata?.id }, 'Guild extraction for guild is running');
   try {
-    const hasBotAccessToGuild = await guildService.checkBotAccessToGuild(client, guildId);
+    const hasBotAccessToGuild = await platformService.checkBotAccessToGuild(client, platform.metadata?.id);
     if (!hasBotAccessToGuild) {
       return;
     }
-    const guild = await client.guilds.fetch(guildId);
-    const guildDoc = await guildService.getGuild({ guildId });
-    if (guildDoc && guildDoc.selectedChannels && guildDoc.period) {
-      await guildService.updateGuild({ guildId }, { isInProgress: true });
-      const selectedChannelsIds = guildDoc.selectedChannels.map(selectedChannel => selectedChannel.channelId);
-      for (const channelId of selectedChannelsIds) {
-        const channel = await guild.channels.fetch(channelId);
+    const guild = await client.guilds.fetch(platform.metadata?.id);
+    if (platform.metadata?.selectedChannels && platform.metadata?.period) {
+      await platformService.updatePlatform({ _id: platform.id }, { metadata: { isInProgress: true } });
+
+      for (let i = 0; i < platform.metadata?.selectedChannels.length; i++) {
+        const channel = await guild.channels.fetch(platform.metadata?.selectedChannels[i]);
         if (channel) {
           if (channel.type !== 0) continue;
-          await handleFetchChannelMessages(connection, channel, guildDoc?.period);
+          await handleFetchChannelMessages(connection, channel, platform.metadata?.period);
         }
       }
     }
   } catch (err) {
-    logger.error({ guild_id: guildId, err }, 'Guild extraction CronJob failed for guild');
+    logger.error({ guild_id: platform.metadata?.id, err }, 'Guild extraction CronJob failed for guild');
   }
-  logger.info({ guild_id: guildId }, 'Guild extraction for guild is done');
+  logger.info({ guild_id: platform.metadata?.id }, 'Guild extraction for guild is done');
 }
