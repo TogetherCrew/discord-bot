@@ -4,6 +4,7 @@ src/config/*.env
 
 # compiled output
 /dist
+/lib
 /node_modules
 /lib    
 
