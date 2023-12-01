@@ -1,4 +1,4 @@
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, ObjectId } from 'mongoose';
 import { Platform, IPlatform, IPlatformUpdateBody } from '@togethercrew.dev/db';
 import { Snowflake, Client } from 'discord.js';
 import parentLogger from '../../config/logger';

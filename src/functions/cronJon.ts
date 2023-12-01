@@ -34,7 +34,7 @@ export default async function cronJob(client: Client) {
     try {
       logger.info({ platform_Id: platforms[i].metadata?.id }, 'is running cronJob for platform');
       await guildExtraction(connection, client, platforms[i]);
-      await createAndStartCronJobSaga(platforms[i].metadata?.id);
+      await createAndStartCronJobSaga(platforms[i].id);
       logger.info({ platform_Id: platforms[i].metadata?.id }, 'cronJob is done for platform');
     } catch (err) {
       logger.error({ platform_Id: platforms[i].metadata?.id, err }, 'CronJob Failed for platform');
