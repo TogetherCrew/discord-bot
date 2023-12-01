@@ -6,6 +6,7 @@ src/config/*.env
 /dist
 /lib
 /node_modules
+/lib    
 
 #migration
 migrate.json
