@@ -1,4 +1,6 @@
 import { Channel, ChannelType, Client, GatewayIntentBits, Snowflake, TextChannel } from 'discord.js';
+import { HydratedDocument } from 'mongoose';
+import { IPlatform } from '@togethercrew.dev/db'
 import config from './config';
 import * as Sentry from '@sentry/node';
 import loadEvents from './functions/loadEvents';
@@ -7,7 +9,7 @@ import { Queue, Worker, Job } from 'bullmq';
 import RabbitMQ, { Event, MBConnection, Queue as RabbitMQQueue } from '@togethercrew.dev/tc-messagebroker';
 // import './rabbitmqEvents' // we need this import statement here to initialize RabbitMQ events
 import { connectDB } from './database';
-import { databaseService } from '@togethercrew.dev/db';
+import { DatabaseManager } from '@togethercrew.dev/db';
 import guildExtraction from './functions/guildExtraction';
 import sendDirectMessage from './functions/sendDirectMessage';
 import { createPrivateThreadAndSendMessage } from './functions/thread';
@@ -15,7 +17,7 @@ import fetchMembers from './functions/fetchMembers';
 import fetchChannels from './functions/fetchChannels';
 import fetchRoles from './functions/fetchRoles';
 import parentLogger from './config/logger';
-import DatabaseManager from './database/connection';
+import { platformService } from './database/services';
 
 
 const logger = parentLogger.child({ module: 'App' });
@@ -47,16 +49,22 @@ const fetchMethod = async (msg: any) => {
   const { content } = msg;
   const saga = await MBConnection.models.Saga.findOne({ sagaId: content.uuid });
   logger.info({ saga: saga.data }, 'the saga info');
-  const guildId = saga.data['guildId'];
-  const isGuildCreated = saga.data['created'];
-  const connection = DatabaseManager.getInstance().getTenantDb(guildId);
-  if (isGuildCreated) {
-    await fetchMembers(connection, client, guildId);
-    await fetchRoles(connection, client, guildId);
-    await fetchChannels(connection, client, guildId);
-  } else {
-    await guildExtraction(connection, client, guildId);
+  const platformId = saga.data['platformId'];
+  const platform = await platformService.getPlatform({ _id: platformId });
+  console.log(platform)
+
+  if (platform) {
+    const isPlatformCreated = saga.data['created'];
+    const connection = DatabaseManager.getInstance().getTenantDb(platform.metadata?.id);
+    if (isPlatformCreated) {
+      await fetchMembers(connection, client, platform);
+      await fetchRoles(connection, client, platform);
+      await fetchChannels(connection, client, platform);
+    } else {
+      await guildExtraction(connection, client, platform);
+    }
   }
+
   logger.info({ msg }, 'fetchMethod is done');
 };
 
@@ -90,11 +98,11 @@ const notifyUserAboutAnalysisFinish = async (
   }
 };
 
-const fetchInitialData = async (guildId: Snowflake) => {
-  const connection = DatabaseManager.getInstance().getTenantDb(guildId);
-  await fetchRoles(connection, client, guildId);
-  await fetchChannels(connection, client, guildId);
-  await fetchMembers(connection, client, guildId);
+const fetchInitialData = async (platform: HydratedDocument<IPlatform>) => {
+  const connection = DatabaseManager.getInstance().getTenantDb(platform.metadata?.id);
+  await fetchRoles(connection, client, platform);
+  await fetchChannels(connection, client, platform);
+  await fetchMembers(connection, client, platform);
 };
 
 // APP
@@ -138,13 +146,16 @@ async function app() {
     const { content } = msg;
     const saga = await MBConnection.models.Saga.findOne({ sagaId: content.uuid });
 
-    const guildId = saga.data['guildId'];
-    const discordId = saga.data['discordId'];
+    const platformId = saga.data['platformId'];
+    const platform = await platformService.getPlatform({ _id: platformId }); const discordId = saga.data['discordId'];
     const message = saga.data['message'];
     const useFallback = saga.data['useFallback'];
 
-    const fn = notifyUserAboutAnalysisFinish.bind({}, discordId, { guildId, message, useFallback });
-    await saga.next(fn);
+    if (platform) {
+      const fn = notifyUserAboutAnalysisFinish.bind({}, discordId, { guildId: platform.metadata?.id, message, useFallback });
+      await saga.next(fn);
+    }
+
     logger.info({ msg, event: Event.DISCORD_BOT.SEND_MESSAGE }, 'is done');
   });
 
@@ -155,10 +166,14 @@ async function app() {
     const { content } = msg;
     const saga = await MBConnection.models.Saga.findOne({ sagaId: content.uuid });
 
-    const guildId = saga.data['guildId'];
+    const platformId = saga.data['platformId'];
 
-    const fn = fetchInitialData.bind({}, guildId);
-    await saga.next(fn);
+    const platform = await platformService.getPlatform({ _id: platformId });
+
+    if (platform) {
+      const fn = fetchInitialData.bind({}, platform.metadata?.id);
+      await saga.next(fn);
+    }
     logger.info({ msg, event: Event.DISCORD_BOT.FETCH_MEMBERS }, 'is done');
   });
 

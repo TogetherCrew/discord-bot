@@ -1,8 +1,10 @@
-import { Client, Snowflake, Role } from 'discord.js';
-import { Connection } from 'mongoose';
-import { IRole } from '@togethercrew.dev/db';
-import { roleService, guildService } from '../database/services';
+import { Client, Role } from 'discord.js';
+import { Connection, HydratedDocument } from 'mongoose';
+import { IPlatform, IRole } from '@togethercrew.dev/db';
+import { roleService, platformService } from '../database/services';
 import parentLogger from '../config/logger';
+
+console.log('FLAG')
 
 const logger = parentLogger.child({ module: 'FetchRoles' });
 
@@ -25,17 +27,17 @@ function pushRolesToArray(arr: IRole[], roleArray: Role[]): IRole[] {
  * @param {Client} client - The discord.js client object used to fetch the guild.
  * @param {Snowflake} guildId - The identifier of the guild to extract roles from.
  */
-export default async function fetchGuildRoles(connection: Connection, client: Client, guildId: Snowflake) {
+export default async function fetchGuildRoles(connection: Connection, client: Client, platform: HydratedDocument<IPlatform>) {
   try {
-    if (!client.guilds.cache.has(guildId)) {
-      await guildService.updateGuild({ guildId }, { isDisconnected: false });
+    const hasBotAccessToGuild = await platformService.checkBotAccessToGuild(client, platform.metadata?.id);
+    if (!hasBotAccessToGuild) {
       return;
     }
-    const guild = await client.guilds.fetch(guildId);
+    const guild = await client.guilds.fetch(platform.metadata?.id);
     const rolesToStore: IRole[] = [];
     pushRolesToArray(rolesToStore, [...guild.roles.cache.values()]);
-    await roleService.createRoles(connection, rolesToStore); // assuming a 'roleService'
+    await roleService.createRoles(connection, rolesToStore);
   } catch (error) {
-    logger.error({ guildId, error }, 'Failed to fetch roles');
+    logger.error({ guild_id: platform.metadata?.id, error }, 'Failed to fetch roles');
   }
 }

@@ -1,8 +1,9 @@
-import { Client, Snowflake, TextChannel, VoiceChannel, CategoryChannel } from 'discord.js';
-import { Connection } from 'mongoose';
-import { IChannel } from '@togethercrew.dev/db';
-import { channelService, guildService } from '../database/services';
+import { Client, TextChannel, VoiceChannel, CategoryChannel } from 'discord.js';
+import { Connection, HydratedDocument } from 'mongoose';
+import { IPlatform, IChannel } from '@togethercrew.dev/db';
+import { channelService, platformService } from '../database/services';
 import parentLogger from '../config/logger';
+console.log('FLAG')
 
 const logger = parentLogger.child({ module: 'FetchChannels' });
 
@@ -28,13 +29,13 @@ function pushChannelsToArray(
  * @param {Client} client - The discord.js client object used to fetch the guild.
  * @param {Snowflake} guildId - The identifier of the guild to extract text and voice channels from.
  */
-export default async function fetchGuildChannels(connection: Connection, client: Client, guildId: Snowflake) {
+export default async function fetchGuildChannels(connection: Connection, client: Client, platform: HydratedDocument<IPlatform>) {
   try {
-    if (!client.guilds.cache.has(guildId)) {
-      await guildService.updateGuild({ guildId }, { isDisconnected: false });
+    const hasBotAccessToGuild = await platformService.checkBotAccessToGuild(client, platform.metadata?.id);
+    if (!hasBotAccessToGuild) {
       return;
     }
-    const guild = await client.guilds.fetch(guildId);
+    const guild = await client.guilds.fetch(platform.metadata?.id);
     const channelsToStore: IChannel[] = [];
     const textAndVoiceChannels = [...guild.channels.cache.values()].filter(
       channel => channel.type === 0 || channel.type === 2 || channel.type === 4
@@ -42,6 +43,6 @@ export default async function fetchGuildChannels(connection: Connection, client:
     pushChannelsToArray(channelsToStore, textAndVoiceChannels);
     await channelService.createChannels(connection, channelsToStore); // assuming a 'channelService'
   } catch (error) {
-    logger.error({ guildId, error }, 'Failed to fetch channels');
+    logger.error({ guild_id: platform.metadata?.id, error }, 'Failed to fetch channels');
   }
 }

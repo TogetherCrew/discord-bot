@@ -1,7 +1,10 @@
 import { Events, User } from 'discord.js';
-import { guildMemberService, guildService } from '../../database/services';
-import DatabaseManager from '../../database/connection';
+import { guildMemberService, platformService } from '../../database/services';
+import { DatabaseManager } from '@togethercrew.dev/db';
 import parentLogger from '../../config/logger';
+
+console.log('FLAG')
+
 
 const logger = parentLogger.child({ event: 'UserUpdate' });
 export default {
@@ -11,9 +14,9 @@ export default {
     const logFields = { user_id: newUser.id };
     logger.info(logFields, 'event is running');
     try {
-      const guilds = await guildService.getGuilds({});
-      for (let i = 0; i < guilds.length; i++) {
-        const connection = DatabaseManager.getInstance().getTenantDb(guilds[i].guildId);
+      const platforms = await platformService.getPlatforms({ disconnectedAt: null });
+      for (let i = 0; i < platforms.length; i++) {
+        const connection = DatabaseManager.getInstance().getTenantDb(platforms[i].metadata?.id);
         await guildMemberService.updateGuildMember(
           connection,
           { discordId: newUser.id },

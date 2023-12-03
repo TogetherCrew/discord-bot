@@ -1,7 +1,6 @@
 import { Events, Role } from 'discord.js';
 import { roleService } from '../../database/services';
-import DatabaseManager from '../../database/connection';
-
+import { DatabaseManager } from '@togethercrew.dev/db';
 import parentLogger from '../../config/logger';
 
 const logger = parentLogger.child({ event: 'GuildRoleDelete' });
