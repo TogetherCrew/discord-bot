@@ -51,7 +51,6 @@ const fetchMethod = async (msg: any) => {
   logger.info({ saga: saga.data }, 'the saga info');
   const platformId = saga.data['platformId'];
   const platform = await platformService.getPlatform({ _id: platformId });
-  console.log(platform)
 
   if (platform) {
     const isPlatformCreated = saga.data['created'];
