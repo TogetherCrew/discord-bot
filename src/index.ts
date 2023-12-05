@@ -51,7 +51,6 @@ const fetchMethod = async (msg: any) => {
   logger.info({ saga: saga.data }, 'the saga info');
   const platformId = saga.data['platformId'];
   const platform = await platformService.getPlatform({ _id: platformId });
-  console.log(platform)
 
   if (platform) {
     const isPlatformCreated = saga.data['created'];
@@ -160,21 +159,26 @@ async function app() {
   });
 
   RabbitMQ.onEvent(Event.DISCORD_BOT.FETCH_MEMBERS, async msg => {
-    logger.info({ msg, event: Event.DISCORD_BOT.FETCH_MEMBERS }, 'is running');
-    if (!msg) return;
+    try {
+      logger.info({ msg, event: Event.DISCORD_BOT.FETCH_MEMBERS }, 'is running');
+      if (!msg) return;
 
-    const { content } = msg;
-    const saga = await MBConnection.models.Saga.findOne({ sagaId: content.uuid });
+      const { content } = msg;
+      const saga = await MBConnection.models.Saga.findOne({ sagaId: content.uuid });
 
-    const platformId = saga.data['platformId'];
+      const platformId = saga.data['platformId'];
 
-    const platform = await platformService.getPlatform({ _id: platformId });
+      const platform = await platformService.getPlatform({ _id: platformId });
 
-    if (platform) {
-      const fn = fetchInitialData.bind({}, platform.metadata?.id);
-      await saga.next(fn);
+      if (platform) {
+        const fn = fetchInitialData.bind({}, platform);
+        await saga.next(fn);
+      }
+      logger.info({ msg, event: Event.DISCORD_BOT.FETCH_MEMBERS }, 'is done');
+    } catch (error) {
+      logger.error({ msg, event: Event.DISCORD_BOT.FETCH_MEMBERS, error }, 'is failed');
     }
-    logger.info({ msg, event: Event.DISCORD_BOT.FETCH_MEMBERS }, 'is done');
+
   });
 
   // *****************************BULLMQ

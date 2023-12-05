@@ -3,7 +3,6 @@ import { Connection, HydratedDocument } from 'mongoose';
 import { IPlatform, IChannel } from '@togethercrew.dev/db';
 import { channelService, platformService } from '../database/services';
 import parentLogger from '../config/logger';
-console.log('FLAG')
 
 const logger = parentLogger.child({ module: 'FetchChannels' });
 
