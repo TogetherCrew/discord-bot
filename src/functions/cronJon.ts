@@ -5,7 +5,6 @@ import { ChoreographyDict, MBConnection, Status } from '@togethercrew.dev/tc-mes
 import guildExtraction from './guildExtraction';
 import parentLogger from '../config/logger';
 import { DatabaseManager } from '@togethercrew.dev/db';
-console.log('FLAG')
 
 const logger = parentLogger.child({ event: 'CronJob' });
 

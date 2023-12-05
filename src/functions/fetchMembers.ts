@@ -5,7 +5,6 @@ import { IGuildMember, } from '@togethercrew.dev/db';
 import { guildMemberService, platformService } from '../database/services';
 
 import parentLogger from '../config/logger';
-console.log('FLAG')
 
 const logger = parentLogger.child({ module: 'FetchMembers' });
 

@@ -4,7 +4,6 @@ import { IPlatform, IRole } from '@togethercrew.dev/db';
 import { roleService, platformService } from '../database/services';
 import parentLogger from '../config/logger';
 
-console.log('FLAG')
 
 const logger = parentLogger.child({ module: 'FetchRoles' });
 

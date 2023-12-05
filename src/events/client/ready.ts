@@ -6,9 +6,6 @@ import fetchRoles from '../../functions/fetchRoles';
 import { DatabaseManager } from '@togethercrew.dev/db';
 import parentLogger from '../../config/logger';
 
-console.log('FLAG')
-
-
 const logger = parentLogger.child({ event: 'ClientReady' });
 
 export default {
