@@ -29,12 +29,16 @@ function pushRolesToArray(arr: IRole[], roleArray: Role[]): IRole[] {
 export default async function fetchGuildRoles(connection: Connection, client: Client, platform: HydratedDocument<IPlatform>) {
   try {
     const hasBotAccessToGuild = await platformService.checkBotAccessToGuild(client, platform.metadata?.id);
+    logger.info({ hasBotAccessToGuild, guildId: platform.metadata?.id, type: 'role' })
+
     if (!hasBotAccessToGuild) {
       return;
     }
     const guild = await client.guilds.fetch(platform.metadata?.id);
     const rolesToStore: IRole[] = [];
     pushRolesToArray(rolesToStore, [...guild.roles.cache.values()]);
+    logger.info({ roles: rolesToStore })
+
     await roleService.createRoles(connection, rolesToStore);
   } catch (error) {
     logger.error({ guild_id: platform.metadata?.id, error }, 'Failed to fetch roles');
