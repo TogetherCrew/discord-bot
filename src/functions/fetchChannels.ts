@@ -30,7 +30,10 @@ function pushChannelsToArray(
  */
 export default async function fetchGuildChannels(connection: Connection, client: Client, platform: HydratedDocument<IPlatform>) {
   try {
+
     const hasBotAccessToGuild = await platformService.checkBotAccessToGuild(client, platform.metadata?.id);
+    logger.info({ hasBotAccessToGuild, guildId: platform.metadata?.id, type: 'channel' })
+
     if (!hasBotAccessToGuild) {
       return;
     }
@@ -40,6 +43,8 @@ export default async function fetchGuildChannels(connection: Connection, client:
       channel => channel.type === 0 || channel.type === 2 || channel.type === 4
     ) as Array<TextChannel | VoiceChannel>;
     pushChannelsToArray(channelsToStore, textAndVoiceChannels);
+    logger.info({ channels: channelsToStore })
+
     await channelService.createChannels(connection, channelsToStore); // assuming a 'channelService'
   } catch (error) {
     logger.error({ guild_id: platform.metadata?.id, error }, 'Failed to fetch channels');
