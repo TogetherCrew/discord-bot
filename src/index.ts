@@ -60,9 +60,9 @@ const fetchMethod = async (msg: any) => {
     const isPlatformCreated = saga.data['created'];
     const connection = DatabaseManager.getInstance().getTenantDb(platform.metadata?.id);
     if (isPlatformCreated) {
+      await fetchChannels(connection, client, platform);
       await fetchMembers(connection, client, platform);
       await fetchRoles(connection, client, platform);
-      await fetchChannels(connection, client, platform);
     } else {
       await guildExtraction(connection, client, platform);
     }
@@ -104,13 +104,12 @@ const notifyUserAboutAnalysisFinish = async (
 const fetchInitialData = async (platform: HydratedDocument<IPlatform>) => {
   try {
     const connection = DatabaseManager.getInstance().getTenantDb(platform.metadata?.id);
-    await fetchRoles(connection, client, platform);
     await fetchChannels(connection, client, platform);
+    await fetchRoles(connection, client, platform);
     await fetchMembers(connection, client, platform);
   } catch (error) {
     logger.error({ error }, 'fetchInitialData is failed');
   }
-
 };
 
 // APP
@@ -184,9 +183,7 @@ async function app() {
 
       const platform = await platformService.getPlatform({ _id: platformId });
 
-      logger.info({ msg, event: Event.DISCORD_BOT.FETCH_MEMBERS, platform, platformId })
       if (platform) {
-        logger.info({ event: "FETCHING Initial DATA" })
         const fn = fetchInitialData.bind({}, platform);
         await saga.next(fn);
       }

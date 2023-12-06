@@ -44,7 +44,6 @@ export default async function fetchGuildChannels(connection: Connection, client:
     ) as Array<TextChannel | VoiceChannel>;
     pushChannelsToArray(channelsToStore, textAndVoiceChannels);
     logger.info({ channels: channelsToStore })
-
     await channelService.createChannels(connection, channelsToStore); // assuming a 'channelService'
   } catch (error) {
     logger.error({ guild_id: platform.metadata?.id, error }, 'Failed to fetch channels');

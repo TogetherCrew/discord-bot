@@ -37,8 +37,6 @@ export default async function fetchGuildRoles(connection: Connection, client: Cl
     const guild = await client.guilds.fetch(platform.metadata?.id);
     const rolesToStore: IRole[] = [];
     pushRolesToArray(rolesToStore, [...guild.roles.cache.values()]);
-    logger.info({ roles: rolesToStore })
-
     await roleService.createRoles(connection, rolesToStore);
   } catch (error) {
     logger.error({ guild_id: platform.metadata?.id, error }, 'Failed to fetch roles');
