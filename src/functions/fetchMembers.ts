@@ -40,8 +40,6 @@ export default async function fetchGuildMembers(connection: Connection, client: 
     const membersToStore: IGuildMember[] = [];
     const fetchMembers = await guild.members.fetch();
     pushMembersToArray(membersToStore, [...fetchMembers.values()]);
-    logger.info({ members: membersToStore })
-
     await guildMemberService.createGuildMembers(connection, membersToStore);
   } catch (error) {
     logger.error({ guild_id: platform.metadata?.id, error }, 'Failed to fetch guild members');
