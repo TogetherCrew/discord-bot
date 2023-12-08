@@ -45,7 +45,6 @@ const partial =
 
 const fetchMethod = async (msg: any) => {
 
-  console.log(11)
   logger.info({ msg }, 'fetchMethod is running');
   if (!msg) return;
   const { content } = msg;
@@ -53,8 +52,6 @@ const fetchMethod = async (msg: any) => {
   logger.info({ saga: saga.data }, 'the saga info');
   const platformId = saga.data['platformId'];
   const platform = await platformService.getPlatform({ _id: platformId });
-  console.log(saga)
-  console.log(platform)
 
   if (platform) {
     const isPlatformCreated = saga.data['created'];
@@ -67,7 +64,6 @@ const fetchMethod = async (msg: any) => {
       await guildExtraction(connection, client, platform);
     }
   }
-
   logger.info({ msg }, 'fetchMethod is done');
 };
 
