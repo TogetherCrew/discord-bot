@@ -1,10 +1,10 @@
 import 'dotenv/config';
-import { Client, GatewayIntentBits } from 'discord.js';
-import { guildService } from '../../database/services';
+import { Client, GatewayIntentBits, } from 'discord.js';
+import { platformService } from '../../database/services';
 import { connectDB } from '../../database';
 import config from '../../config';
 import webhookLogic from '../utils/webhookLogic';
-import DatabaseManager from '../../database/connection';
+import { DatabaseManager } from '@togethercrew.dev/db';
 
 const { Guilds, GuildMembers, GuildMessages, GuildPresences, DirectMessages } = GatewayIntentBits;
 
@@ -15,10 +15,10 @@ export const up = async () => {
 
     await client.login(config.discord.botToken);
     await connectDB();
-    const guilds = await guildService.getGuilds({});
-    for (let i = 0; i < guilds.length; i++) {
-        const connection = DatabaseManager.getInstance().getTenantDb(guilds[i].guildId);
-        await webhookLogic(connection, client, guilds[i].guildId);
+    const platforms = await platformService.getPlatforms({});
+    for (let i = 0; i < platforms.length; i++) {
+        const connection = DatabaseManager.getInstance().getTenantDb(platforms[i].metadata?.id);
+        await webhookLogic(connection, client, platforms[i].metadata?.id);
     }
 };
 

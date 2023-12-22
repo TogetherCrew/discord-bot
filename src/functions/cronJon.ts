@@ -1,22 +1,23 @@
-import { Client, Snowflake } from 'discord.js';
-import { guildService } from '../database/services';
+import { Client } from 'discord.js';
+import { Types } from 'mongoose';
+import { platformService } from '../database/services';
 import { ChoreographyDict, MBConnection, Status } from '@togethercrew.dev/tc-messagebroker';
 import guildExtraction from './guildExtraction';
 import parentLogger from '../config/logger';
-import DatabaseManager from '../database/connection';
+import { DatabaseManager } from '@togethercrew.dev/db';
 
 const logger = parentLogger.child({ event: 'CronJob' });
 
-async function createAndStartCronJobSaga(guildId: Snowflake) {
+async function createAndStartCronJobSaga(platformId: Types.ObjectId) {
   try {
     const saga = await MBConnection.models.Saga.create({
       status: Status.NOT_STARTED,
-      data: { guildId },
+      data: { platformId },
       choreography: ChoreographyDict.DISCORD_SCHEDULED_JOB,
     });
     await saga.start();
   } catch (err) {
-    logger.error({ guild_Id: guildId, err }, 'Faield to create saga');
+    logger.error({ platform_Id: platformId, err }, 'Failed to create saga');
   }
 }
 
@@ -26,16 +27,16 @@ async function createAndStartCronJobSaga(guildId: Snowflake) {
  */
 export default async function cronJob(client: Client) {
   logger.info('event is running');
-  const guilds = await guildService.getGuilds({ isDisconnected: false });
-  for (let i = 0; i < guilds.length; i++) {
-    const connection = DatabaseManager.getInstance().getTenantDb(guilds[i].guildId);
+  const platforms = await platformService.getPlatforms({ disconnectedAt: null });
+  for (let i = 0; i < platforms.length; i++) {
+    const connection = DatabaseManager.getInstance().getTenantDb(platforms[i].metadata?.id);
     try {
-      logger.info({ guild_id: guilds[i].guildId }, 'is running cronJob for guild');
-      await guildExtraction(connection, client, guilds[i].guildId);
-      await createAndStartCronJobSaga(guilds[i].guildId);
-      logger.info({ guild_id: guilds[i].guildId }, 'cronJob is done for guild');
+      logger.info({ platform_Id: platforms[i].metadata?.id }, 'is running cronJob for platform');
+      await guildExtraction(connection, client, platforms[i]);
+      await createAndStartCronJobSaga(platforms[i].id);
+      logger.info({ platform_Id: platforms[i].metadata?.id }, 'cronJob is done for platform');
     } catch (err) {
-      logger.error({ guild_id: guilds[i].guildId, err }, 'CronJob faield for guild');
+      logger.error({ platform_Id: platforms[i].metadata?.id, err }, 'CronJob Failed for platform');
     }
 
   }
