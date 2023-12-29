@@ -1,8 +1,9 @@
-import { GuildMember, Client } from 'discord.js';
+import { GuildMember } from 'discord.js';
 import { Connection, HydratedDocument } from 'mongoose';
 import { IPlatform } from '@togethercrew.dev/db';
 import { IGuildMember, } from '@togethercrew.dev/db';
 import { guildMemberService, platformService } from '../database/services';
+import { DiscordBotManager } from '../utils/discord';
 
 import parentLogger from '../config/logger';
 
@@ -25,12 +26,13 @@ function pushMembersToArray(arr: IGuildMember[], guildMembersArray: GuildMember[
 /**
  * Extracts information from a given guild.
  * @param {Connection} connection - Mongoose connection object for the database.
- * @param {Client} client - The discord.js client object used to fetch the guild.
  * @param {Snowflake} guildId - The identifier of the guild to extract information from.
  */
-export default async function fetchGuildMembers(connection: Connection, client: Client, platform: HydratedDocument<IPlatform>) {
+export default async function fetchGuildMembers(connection: Connection, platform: HydratedDocument<IPlatform>) {
   try {
-    const hasBotAccessToGuild = await platformService.checkBotAccessToGuild(client, platform.metadata?.id);
+    const client = await DiscordBotManager.getClient();
+
+    const hasBotAccessToGuild = await platformService.checkBotAccessToGuild(platform.metadata?.id);
     logger.info({ hasBotAccessToGuild, guildId: platform.metadata?.id, type: 'guild member' })
 
     if (!hasBotAccessToGuild) {

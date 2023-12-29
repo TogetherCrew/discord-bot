@@ -1,8 +1,9 @@
-import { TextChannel, Message, ThreadChannel, Snowflake, Client } from 'discord.js';
+import { TextChannel, Message, ThreadChannel, Snowflake } from 'discord.js';
 import { IRawInfo } from '@togethercrew.dev/db';
 import { Connection } from 'mongoose';
 import parentLogger from '../../config/logger';
 import { rawInfoService, channelService } from '../../database/services';
+import { DiscordBotManager } from '../../utils/discord';
 
 const logger = parentLogger.child({ module: 'Migration' });
 
@@ -180,10 +181,11 @@ async function migrateIsGeneratedByWebhook(connection: Connection, channel: Text
 /**
  *
  * @param {Connection} connection - Mongoose connection object for the database.
- * @param {Client} client - The discord.js client object used to fetch the guild.
  * @param {Snowflake} guildId - The identifier of the guild to extract information from.
  */
-async function runRawInfoMigration(connection: Connection, client: Client, guildId: Snowflake) {
+async function runRawInfoMigration(connection: Connection, guildId: Snowflake) {
+  const client = await DiscordBotManager.getClient();
+
   logger.info({ guild_id: guildId }, 'Migration is running');
   try {
     const guild = await client.guilds.fetch(guildId);

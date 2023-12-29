@@ -1,4 +1,4 @@
-import { Channel, ChannelType, Client, GatewayIntentBits, Snowflake, TextChannel } from 'discord.js';
+import { Channel, ChannelType, Snowflake, TextChannel } from 'discord.js';
 import { HydratedDocument } from 'mongoose';
 import { IPlatform } from '@togethercrew.dev/db'
 import config from './config';
@@ -18,7 +18,7 @@ import fetchChannels from './functions/fetchChannels';
 import fetchRoles from './functions/fetchRoles';
 import parentLogger from './config/logger';
 import { platformService } from './database/services';
-
+import { DiscordBotManager } from './utils/discord';
 
 const logger = parentLogger.child({ module: 'App' });
 
@@ -28,15 +28,6 @@ Sentry.init({
   tracesSampleRate: 1.0,
 });
 
-const client = new Client({
-  intents: [
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMembers,
-    GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.GuildPresences,
-    GatewayIntentBits.DirectMessages,
-  ],
-});
 
 const partial =
   (func: any, ...args: any) =>
@@ -57,11 +48,11 @@ const fetchMethod = async (msg: any) => {
     const isPlatformCreated = saga.data['created'];
     const connection = DatabaseManager.getInstance().getTenantDb(platform.metadata?.id);
     if (isPlatformCreated) {
-      await fetchChannels(connection, client, platform);
-      await fetchMembers(connection, client, platform);
-      await fetchRoles(connection, client, platform);
+      await fetchChannels(connection, platform);
+      await fetchMembers(connection, platform);
+      await fetchRoles(connection, platform);
     } else {
-      await guildExtraction(connection, client, platform);
+      await guildExtraction(connection, platform);
     }
   }
   logger.info({ msg }, 'fetchMethod is done');
@@ -71,6 +62,8 @@ const notifyUserAboutAnalysisFinish = async (
   discordId: string,
   info: { guildId: Snowflake; message: string; useFallback: boolean }
 ) => {
+  const client = await DiscordBotManager.getClient();
+
   // related issue https://github.com/RnDAO/tc-discordBot/issues/68
   const { guildId, message, useFallback } = info;
 
@@ -85,7 +78,7 @@ const notifyUserAboutAnalysisFinish = async (
   const upperTextChannel = rawPositionBasedSortedTextChannels[0];
 
   try {
-    sendDirectMessage(client, { discordId, message });
+    sendDirectMessage({ discordId, message });
   } catch (error) {
     // can not send DM to the user
     // Will create a private thread and notify him/her about the status if useFallback is true
@@ -100,9 +93,9 @@ const notifyUserAboutAnalysisFinish = async (
 const fetchInitialData = async (platform: HydratedDocument<IPlatform>) => {
   try {
     const connection = DatabaseManager.getInstance().getTenantDb(platform.metadata?.id);
-    await fetchChannels(connection, client, platform);
-    await fetchRoles(connection, client, platform);
-    await fetchMembers(connection, client, platform);
+    await fetchChannels(connection, platform);
+    await fetchRoles(connection, platform);
+    await fetchMembers(connection, platform);
   } catch (error) {
     logger.error({ error }, 'fetchInitialData is failed');
   }
@@ -110,10 +103,10 @@ const fetchInitialData = async (platform: HydratedDocument<IPlatform>) => {
 
 // APP
 async function app() {
-  await loadEvents(client);
-  await client.login(config.discord.botToken);
+  await loadEvents();
+  await DiscordBotManager.LoginClient();
   await connectDB();
-  // *****************************RABBITMQ
+
   try {
     await MBConnection.connect(config.mongoose.dbURL);
   } catch (error) {
@@ -219,7 +212,7 @@ async function app() {
     async (job: Job<any, any, string> | undefined) => {
       if (job) {
         // Call the extractMessagesDaily function
-        await cronJob(client);
+        await cronJob();
       }
     },
     {
