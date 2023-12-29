@@ -4,8 +4,6 @@ import { IPlatform } from '@togethercrew.dev/db'
 import config from './config';
 import * as Sentry from '@sentry/node';
 import loadEvents from './functions/loadEvents';
-import cronJob from './functions/cronJon';
-import { Queue, Worker, Job } from 'bullmq';
 import RabbitMQ, { Event, MBConnection, Queue as RabbitMQQueue } from '@togethercrew.dev/tc-messagebroker';
 // import './rabbitmqEvents' // we need this import statement here to initialize RabbitMQ events
 import { connectDB } from './database';
@@ -19,6 +17,8 @@ import fetchRoles from './functions/fetchRoles';
 import parentLogger from './config/logger';
 import { platformService } from './database/services';
 import { DiscordBotManager } from './utils/discord';
+import { addCronJob } from './queue/jobs/cronJob';
+import './queue/workers/cronJob';
 
 const logger = parentLogger.child({ module: 'App' });
 
@@ -106,6 +106,7 @@ async function app() {
   await loadEvents();
   await DiscordBotManager.LoginClient();
   await connectDB();
+  addCronJob();
 
   try {
     await MBConnection.connect(config.mongoose.dbURL);
@@ -183,55 +184,5 @@ async function app() {
 
   });
 
-  // *****************************BULLMQ
-  // Create a queue instance with the Redis connection
-  const queue = new Queue('cronJobQueue', {
-    connection: {
-      host: config.redis.host,
-      port: config.redis.port,
-      password: config.redis.password,
-    }
-  });
-  queue.add('cronJob', {}, {
-    repeat: {
-      cron: '0 0 * * *', // Run once 00:00 UTC
-    },
-    jobId: 'cronJob', // Optional: Provide a unique ID for the job
-    attempts: 0, // Number of times to retry the job if it fails
-    backoff: {
-      type: 'exponential',
-      delay: 1000, // Initial delay between retries in milliseconds
-    },
-
-  } as never);
-
-  // Create a worker to process the job
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const worker = new Worker(
-    'cronJobQueue',
-    async (job: Job<any, any, string> | undefined) => {
-      if (job) {
-        // Call the extractMessagesDaily function
-        await cronJob();
-      }
-    },
-    {
-      connection: {
-        host: config.redis.host,
-        port: config.redis.port,
-        password: config.redis.password,
-      },
-      lockDuration: 79200000, // 22 hours
-    }
-  );
-
-  // Listen for completed and failed events to log the job status
-  worker.on('completed', job => {
-    logger.info({ job }, 'Job is done');
-  });
-
-  worker.on('failed', (job, error) => {
-    logger.error({ job, error }, 'Job failed');
-  });
 }
 app();

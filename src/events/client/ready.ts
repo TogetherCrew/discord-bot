@@ -12,11 +12,8 @@ export default {
   name: Events.ClientReady,
   once: true,
   async execute(client: Client) {
-    console.log('HELLLO?')
     logger.info('event is running');
     const platforms = await platformService.getPlatforms({ disconnectedAt: null });
-    console.log(platforms)
-
     for (let i = 0; i < platforms.length; i++) {
       const connection = DatabaseManager.getInstance().getTenantDb(platforms[i].metadata?.id);
       try {
