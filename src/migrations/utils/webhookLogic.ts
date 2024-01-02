@@ -3,7 +3,7 @@ import { IRawInfo } from '@togethercrew.dev/db';
 import { Connection } from 'mongoose';
 import parentLogger from '../../config/logger';
 import { rawInfoService, channelService } from '../../database/services';
-import { DiscordBotManager } from '../../utils/discord';
+import { DiscordBotManager } from '../../utils/discord/core';
 
 const logger = parentLogger.child({ module: 'Migration' });
 

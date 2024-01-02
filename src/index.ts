@@ -1,6 +1,6 @@
 import loadEvents from './functions/loadEvents';
 import { connectToMongoDB, connectToMB } from './database/connection';
-import { DiscordBotManager } from './utils/discord';
+import { DiscordBotManager } from './utils/discord/core';
 import { addCronJob } from './queue/jobs/cronJob';
 import { connectToRabbitMQ } from './rabbitmq/RabbitMQConnection';
 import { setupRabbitMQHandlers } from './rabbitmq/RabbitMQHandler';
@@ -15,4 +15,5 @@ async function app() {
   setupRabbitMQHandlers();
   addCronJob();
 }
+
 app();

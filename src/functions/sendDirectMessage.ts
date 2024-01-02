@@ -1,5 +1,5 @@
 import { Snowflake } from 'discord.js';
-import { DiscordBotManager } from '../utils/discord';
+import { DiscordBotManager } from '../utils/discord/core';
 
 /**
  *

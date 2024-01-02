@@ -3,7 +3,7 @@ import { Connection, HydratedDocument } from 'mongoose';
 import { IPlatform } from '@togethercrew.dev/db';
 import { IGuildMember, } from '@togethercrew.dev/db';
 import { guildMemberService, platformService } from '../database/services';
-import { DiscordBotManager } from '../utils/discord';
+import { DiscordBotManager } from '../utils/discord/core';
 
 import parentLogger from '../config/logger';
 

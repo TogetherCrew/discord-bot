@@ -4,7 +4,7 @@ import { IPlatform } from '@togethercrew.dev/db';
 import { platformService } from '../database/services';
 import handleFetchChannelMessages from './fetchMessages';
 import parentLogger from '../config/logger';
-import { DiscordBotManager } from '../utils/discord';
+import { DiscordBotManager } from '../utils/discord/core';
 
 const logger = parentLogger.child({ module: 'GuildExtraction' });
 /**

@@ -1,6 +1,6 @@
 import { Channel, ChannelType, Snowflake, TextChannel } from 'discord.js';
 import { Event, MBConnection } from '@togethercrew.dev/tc-messagebroker';
-import { DiscordBotManager } from '../../utils/discord';
+import { DiscordBotManager } from '../../utils/discord/core';
 import { createPrivateThreadAndSendMessage } from '../../functions/thread';
 import parentLogger from '../../config/logger';
 import { platformService } from '../../database/services';

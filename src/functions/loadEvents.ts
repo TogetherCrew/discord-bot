@@ -1,6 +1,6 @@
 import path from 'path';
 import { readdir } from 'node:fs/promises';
-import { DiscordBotManager } from '../utils/discord';
+import { DiscordBotManager } from '../utils/discord/core';
 
 export default async function loadEvents() {
   const client = await DiscordBotManager.initClient();

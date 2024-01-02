@@ -3,7 +3,7 @@ import { Connection, HydratedDocument } from 'mongoose';
 import { IPlatform, IRole } from '@togethercrew.dev/db';
 import { roleService, platformService } from '../database/services';
 import parentLogger from '../config/logger';
-import { DiscordBotManager } from '../utils/discord';
+import { DiscordBotManager } from '../utils/discord/core';
 
 
 const logger = parentLogger.child({ module: 'FetchRoles' });

@@ -2,7 +2,7 @@ import { TextChannel, VoiceChannel, CategoryChannel } from 'discord.js';
 import { Connection, HydratedDocument } from 'mongoose';
 import { IPlatform, IChannel } from '@togethercrew.dev/db';
 import { channelService, platformService } from '../database/services';
-import { DiscordBotManager } from '../utils/discord';
+import { DiscordBotManager } from '../utils/discord/core';
 import parentLogger from '../config/logger';
 
 const logger = parentLogger.child({ module: 'FetchChannels' });

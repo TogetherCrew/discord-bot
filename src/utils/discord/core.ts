@@ -1,5 +1,5 @@
 import { Client, GatewayIntentBits } from 'discord.js';
-import config from '../config';
+import config from '../../config';
 
 class DiscordBotManager {
     public static client: Client;

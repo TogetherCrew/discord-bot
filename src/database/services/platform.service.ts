@@ -1,7 +1,7 @@
 import { HydratedDocument } from 'mongoose';
 import { Platform, IPlatform, IPlatformUpdateBody } from '@togethercrew.dev/db';
 import { Snowflake } from 'discord.js';
-import { DiscordBotManager } from '../../utils/discord';
+import { DiscordBotManager } from '../../utils/discord/core';
 import parentLogger from '../../config/logger';
 
 const logger = parentLogger.child({ module: 'PlatformService' });
