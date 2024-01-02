@@ -4,7 +4,7 @@ import { IPlatform } from '@togethercrew.dev/db';
 import { platformService } from '../database/services';
 import handleFetchChannelMessages from './fetchMessages';
 import parentLogger from '../config/logger';
-import { DiscordBotManager } from '../utils/discord/core';
+import { coreService } from '../services';
 
 const logger = parentLogger.child({ module: 'GuildExtraction' });
 /**
@@ -13,7 +13,7 @@ const logger = parentLogger.child({ module: 'GuildExtraction' });
  * @param {Snowflake} guildId - The identifier of the guild to extract information from.
  */
 export default async function guildExtraction(connection: Connection, platform: HydratedDocument<IPlatform>) {
-  const client = await DiscordBotManager.getClient();
+  const client = await coreService.DiscordBotManager.getClient();
 
   logger.info({ guild_id: platform.metadata?.id }, 'Guild extraction for guild is running');
   try {

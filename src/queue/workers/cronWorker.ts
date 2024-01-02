@@ -1,8 +1,7 @@
+import { WorkerFactory } from './index';
 import { Worker, Job } from 'bullmq';
 import { redisConfig } from '../../config/queue';
 import cronJob from '../../functions/cronJon';
-import parentLogger from '../../config/logger';
-const logger = parentLogger.child({ module: 'Queue' });
 
 export const cronWorker = new Worker(
     'cronJobQueue',
@@ -17,11 +16,4 @@ export const cronWorker = new Worker(
     }
 );
 
-// Event listeners
-cronWorker.on('completed', job => {
-    logger.info({ job }, 'Job is done');
-});
-
-cronWorker.on('failed', (job, error) => {
-    logger.error({ job, error }, 'Job failed');
-});
+WorkerFactory.attachEventListeners(cronWorker)

@@ -1,6 +1,6 @@
 import { Channel, ChannelType, Snowflake, TextChannel } from 'discord.js';
 import { Event, MBConnection } from '@togethercrew.dev/tc-messagebroker';
-import { DiscordBotManager } from '../../utils/discord/core';
+import { coreService } from '../../services';
 import { createPrivateThreadAndSendMessage } from '../../functions/thread';
 import parentLogger from '../../config/logger';
 import { platformService } from '../../database/services';
@@ -13,7 +13,7 @@ const notifyUserAboutAnalysisFinish = async (
     discordId: string,
     info: { guildId: Snowflake; message: string; useFallback: boolean }
 ) => {
-    const client = await DiscordBotManager.getClient();
+    const client = await coreService.DiscordBotManager.getClient();
 
     // related issue https://github.com/RnDAO/tc-discordBot/issues/68
     const { guildId, message, useFallback } = info;

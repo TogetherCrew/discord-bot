@@ -3,7 +3,7 @@ import { IRawInfo } from '@togethercrew.dev/db';
 import { Connection } from 'mongoose';
 import parentLogger from '../../config/logger';
 import { rawInfoService, channelService } from '../../database/services';
-import { DiscordBotManager } from '../../utils/discord/core';
+import { coreService } from '../../services';
 
 const logger = parentLogger.child({ module: 'Migration' });
 
@@ -184,7 +184,7 @@ async function migrateIsGeneratedByWebhook(connection: Connection, channel: Text
  * @param {Snowflake} guildId - The identifier of the guild to extract information from.
  */
 async function runRawInfoMigration(connection: Connection, guildId: Snowflake) {
-  const client = await DiscordBotManager.getClient();
+  const client = await coreService.DiscordBotManager.getClient();
 
   logger.info({ guild_id: guildId }, 'Migration is running');
   try {

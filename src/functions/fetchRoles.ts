@@ -3,7 +3,7 @@ import { Connection, HydratedDocument } from 'mongoose';
 import { IPlatform, IRole } from '@togethercrew.dev/db';
 import { roleService, platformService } from '../database/services';
 import parentLogger from '../config/logger';
-import { DiscordBotManager } from '../utils/discord/core';
+import { coreService } from '../services';
 
 
 const logger = parentLogger.child({ module: 'FetchRoles' });
@@ -28,7 +28,7 @@ function pushRolesToArray(arr: IRole[], roleArray: Role[]): IRole[] {
  */
 export default async function fetchGuildRoles(connection: Connection, platform: HydratedDocument<IPlatform>) {
   try {
-    const client = await DiscordBotManager.getClient();
+    const client = await coreService.DiscordBotManager.getClient();
     const hasBotAccessToGuild = await platformService.checkBotAccessToGuild(platform.metadata?.id);
     logger.info({ hasBotAccessToGuild, guildId: platform.metadata?.id, type: 'role' })
 

@@ -3,7 +3,7 @@ import { Connection, HydratedDocument } from 'mongoose';
 import { IPlatform } from '@togethercrew.dev/db';
 import { IGuildMember, } from '@togethercrew.dev/db';
 import { guildMemberService, platformService } from '../database/services';
-import { DiscordBotManager } from '../utils/discord/core';
+import { coreService } from '../services';
 
 import parentLogger from '../config/logger';
 
@@ -28,7 +28,7 @@ function pushMembersToArray(arr: IGuildMember[], guildMembersArray: GuildMember[
  */
 export default async function fetchGuildMembers(connection: Connection, platform: HydratedDocument<IPlatform>) {
   try {
-    const client = await DiscordBotManager.getClient();
+    const client = await coreService.DiscordBotManager.getClient();
 
     const hasBotAccessToGuild = await platformService.checkBotAccessToGuild(platform.metadata?.id);
     logger.info({ hasBotAccessToGuild, guildId: platform.metadata?.id, type: 'guild member' })

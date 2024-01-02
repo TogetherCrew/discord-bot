@@ -1,5 +1,5 @@
 import { Snowflake } from 'discord.js';
-import { DiscordBotManager } from '../utils/discord/core';
+import { coreService } from '../services';
 
 /**
  *
@@ -7,7 +7,7 @@ import { DiscordBotManager } from '../utils/discord/core';
  * @returns throw error if User has DMs closed or has no mutual servers with the bot
  */
 export default async function sendDirectMessage(info: { discordId: Snowflake; message: string }) {
-  const client = await DiscordBotManager.getClient();
+  const client = await coreService.DiscordBotManager.getClient();
 
   const { discordId, message } = info;
 

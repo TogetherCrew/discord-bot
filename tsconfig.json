@@ -18,7 +18,8 @@
     },
     "include": [
         "src/**/*",
-        "__tests__/**/*"
+        "__tests__/**/*",
+        "src/queue/queues/.ts"
     ],
     "ts-node": {
         "transpileOnly": true,

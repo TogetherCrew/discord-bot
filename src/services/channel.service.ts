@@ -1,5 +1,5 @@
 import { Snowflake } from 'discord.js';
-import { DiscordBotManager } from '../core';
+import coreService from './core.service';
 
 /**
  * send message to channel
@@ -7,13 +7,13 @@ import { DiscordBotManager } from '../core';
  * @param {string[]} message - message string.
  */
 async function sendChannelMessage(discordId: Snowflake, message: string) {
-    const client = await DiscordBotManager.getClient();
+    const client = await coreService.DiscordBotManager.getClient();
     const channel = await client.channels.fetch(discordId);
     if (channel && channel.isTextBased()) {
         return await channel.send(message);
     }
 }
 
-export {
+export default {
     sendChannelMessage
 }

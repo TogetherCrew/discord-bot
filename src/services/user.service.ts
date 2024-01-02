@@ -1,5 +1,5 @@
 import { Snowflake } from 'discord.js';
-import { DiscordBotManager } from '../core';
+import coreService from './core.service';
 
 /**
  * send direct message to user
@@ -8,13 +8,13 @@ import { DiscordBotManager } from '../core';
  * @returns 
  */
 async function sendDirectMessage(discordId: Snowflake, message: string) {
-    const client = await DiscordBotManager.getClient();
+    const client = await coreService.DiscordBotManager.getClient();
     const user = await client.users.fetch(discordId);
     if (user) {
         return await user.send(message);
     }
 }
 
-export {
+export default {
     sendDirectMessage
 }

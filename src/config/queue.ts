@@ -15,3 +15,8 @@ export const cronJobConfig = {
         delay: 1000,
     },
 };
+
+export const rateLimitConfig = {
+    max: 20,
+    duration: 10000,
+};

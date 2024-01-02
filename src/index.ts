@@ -1,19 +1,25 @@
 import loadEvents from './functions/loadEvents';
 import { connectToMongoDB, connectToMB } from './database/connection';
-import { DiscordBotManager } from './utils/discord/core';
-import { addCronJob } from './queue/jobs/cronJob';
+import { coreService } from './services';
+import { addCronJob } from './queue/queues/cronJob';
+import { addSendChannelMessage } from './queue/queues/sendChannelMessage';
+
 import { connectToRabbitMQ } from './rabbitmq/RabbitMQConnection';
 import { setupRabbitMQHandlers } from './rabbitmq/RabbitMQHandler';
 import './queue/workers/cronWorker';
+import './queue/workers/sendChannelMessageWorker';
 
 async function app() {
   await loadEvents();
-  await DiscordBotManager.LoginClient();
+  await coreService.DiscordBotManager.LoginClient();
   await connectToMongoDB();
   await connectToMB();
   await connectToRabbitMQ()
   setupRabbitMQHandlers();
   addCronJob();
+
+
+  addSendChannelMessage("980858613587382325", "Hi")
 }
 
 app();

@@ -1,9 +1,9 @@
 import path from 'path';
 import { readdir } from 'node:fs/promises';
-import { DiscordBotManager } from '../utils/discord/core';
+import { coreService } from '../services';
 
 export default async function loadEvents() {
-  const client = await DiscordBotManager.initClient();
+  const client = await coreService.DiscordBotManager.initClient();
   const foldersPath: string = path.join(__dirname, '../events');
   const eventFolders: string[] = await readdir(foldersPath);
   for (const folder of eventFolders) {

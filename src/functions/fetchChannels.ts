@@ -2,7 +2,7 @@ import { TextChannel, VoiceChannel, CategoryChannel } from 'discord.js';
 import { Connection, HydratedDocument } from 'mongoose';
 import { IPlatform, IChannel } from '@togethercrew.dev/db';
 import { channelService, platformService } from '../database/services';
-import { DiscordBotManager } from '../utils/discord/core';
+import { coreService } from '../services';
 import parentLogger from '../config/logger';
 
 const logger = parentLogger.child({ module: 'FetchChannels' });
@@ -30,7 +30,7 @@ function pushChannelsToArray(
  */
 export default async function fetchGuildChannels(connection: Connection, platform: HydratedDocument<IPlatform>) {
   try {
-    const client = await DiscordBotManager.getClient();
+    const client = await coreService.DiscordBotManager.getClient();
     const hasBotAccessToGuild = await platformService.checkBotAccessToGuild(platform.metadata?.id);
     logger.info({ hasBotAccessToGuild, guildId: platform.metadata?.id, type: 'channel' })
 
