@@ -1,11 +1,10 @@
 import { connectDB } from '../../database';
-import { databaseService } from '@togethercrew.dev/db';
+import DatabaseManager from '../../database/connection';
 import 'dotenv/config';
-import config from '../../config';
 
 export const up = async () => {
     await connectDB();
-    const connection = databaseService.connectionFactory("681946187490000803", config.mongoose.dbURL);
+    const connection = DatabaseManager.getInstance().getTenantDb("681946187490000803");
     await connection.createCollection('my_collection');
 };
 

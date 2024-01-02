@@ -16,10 +16,10 @@ import { createPrivateThreadAndSendMessage } from './functions/thread';
 import fetchMembers from './functions/fetchData/fetchMembers';
 import fetchChannels from './functions/fetchData/fetchChannels';
 import fetchRoles from './functions/fetchData/fetchRoles';
-import { closeConnection } from './database/connection';
 import parentLogger from './config/logger';
 import { createFollowUpMessage, createInteractionResponse, deleteOriginalInteractionResponse, editOriginalInteractionResponse } from './functions/interactions/responses'
 import { ChatInputCommandInteraction_broker, InteractionResponse, FollowUpMessageData, InteractionResponseEditData } from './interfaces/Hivemind.interfaces';
+import DatabaseManager from './database/connection';
 
 const logger = parentLogger.child({ module: 'App' });
 
@@ -52,7 +52,7 @@ const fetchMethod = async (msg: any) => {
   logger.info({ saga: saga.data }, 'the saga info');
   const guildId = saga.data['guildId'];
   const isGuildCreated = saga.data['created'];
-  const connection = await databaseService.connectionFactory(guildId, config.mongoose.dbURL);
+  const connection = DatabaseManager.getInstance().getTenantDb(guildId);
   if (isGuildCreated) {
     await fetchMembers(connection, client, guildId);
     await fetchRoles(connection, client, guildId);
@@ -60,7 +60,6 @@ const fetchMethod = async (msg: any) => {
   } else {
     await guildExtraction(connection, client, guildId);
   }
-  await closeConnection(connection);
   logger.info({ msg }, 'fetchMethod is done');
 };
 
@@ -95,11 +94,10 @@ const notifyUserAboutAnalysisFinish = async (
 };
 
 const fetchInitialData = async (guildId: Snowflake) => {
-  const connection = await databaseService.connectionFactory(guildId, config.mongoose.dbURL);
+  const connection = DatabaseManager.getInstance().getTenantDb(guildId);
   await fetchRoles(connection, client, guildId);
   await fetchChannels(connection, client, guildId);
   await fetchMembers(connection, client, guildId);
-  await closeConnection(connection);
 };
 
 // APP
