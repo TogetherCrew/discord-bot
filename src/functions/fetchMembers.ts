@@ -11,8 +11,6 @@ const logger = parentLogger.child({ module: 'FetchMembers' });
 
 /**
  * Iterates over a list of guild members and pushes extracted data from each guild member to an array.
- * @param {Connection} connection - Mongoose connection object for the database.
- * @param {IRawInfo[]} arr - The array to which extracted data will be pushed.
  * @param {GuildMember[]} guildMembersArray - An array of guild members from which data is to be extracted.
  * @returns {Promise<IGuildMember[]>} - A promise that resolves to the updated array containing the extracted data.
  */
