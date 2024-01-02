@@ -2,12 +2,11 @@ import loadEvents from './functions/loadEvents';
 import { connectToMongoDB, connectToMB } from './database/connection';
 import { coreService } from './services';
 import { addCronJob } from './queue/queues/cronJob';
-import { addSendChannelMessage } from './queue/queues/sendChannelMessage';
-
+import { addChannelMessage } from './queue/queues/channelMessage';
 import { connectToRabbitMQ } from './rabbitmq/RabbitMQConnection';
 import { setupRabbitMQHandlers } from './rabbitmq/RabbitMQHandler';
 import './queue/workers/cronWorker';
-import './queue/workers/sendChannelMessageWorker';
+import './queue/workers/channelMessageWorker';
 
 async function app() {
   await loadEvents();
@@ -19,7 +18,7 @@ async function app() {
   addCronJob();
 
 
-  addSendChannelMessage("980858613587382325", "Hi")
+  addChannelMessage("980858613587382325", "Hi")
 }
 
 app();
