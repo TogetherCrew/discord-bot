@@ -123,7 +123,7 @@ async function createFollowUpMessage(interaction: ChatInputCommandInteraction_br
             throw new Error(await response.json());
         }
     } catch (error) {
-        logger.error({ interaction_id: interaction.id, interaction_token: interaction.token, error }, 'Failed to send interaction response');
+        logger.error({ interaction_id: interaction.id, interaction_token: interaction.token, error }, 'Failed to create followip message');
     }
 }
 

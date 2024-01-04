@@ -34,7 +34,8 @@ async function registerCommand() {
         const rest = new REST().setToken(config.discord.botToken)
         const commandData = [...client.commands.values()].map(command => command.data.toJSON());
         await rest.put(
-            Routes.applicationGuildCommands(config.discord.clientId, "980858613587382322"),
+            // RnDAO: 915914985140531240
+            Routes.applicationGuildCommands(config.discord.clientId, "915914985140531240"),
             { body: commandData },
         );
         logger.info('Commands Registerd');
