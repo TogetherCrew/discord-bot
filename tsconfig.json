@@ -19,7 +19,7 @@
     "include": [
         "src/**/*",
         "__tests__/**/*",
-        "src/queue/queues/.ts"
+        "types/**/*"
     ],
     "ts-node": {
         "transpileOnly": true,
