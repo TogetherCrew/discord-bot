@@ -11,7 +11,7 @@ export default {
   async execute(oldRole: Role, newRole: Role) {
     const logFields = { guild_id: newRole.guild.id, role_id: newRole.id };
     logger.info(logFields, 'event is running');
-    const connection = DatabaseManager.getInstance().getTenantDb(newRole.guild.id);
+    const connection = await DatabaseManager.getInstance().getTenantDb(newRole.guild.id);
     try {
       await roleService.handelRoleChanges(connection, newRole);
       logger.info(logFields, 'event is done');
