@@ -4,6 +4,7 @@ import { interactionService } from '../../services'
 import RabbitMQ, { Event, Queue as RabbitMQQueue } from '@togethercrew.dev/tc-messagebroker';
 import { ChatInputCommandInteraction_broker } from '../../interfaces/Hivemind.interface';
 import { handleBigInts, removeCircularReferences } from '../../utils/obj';
+import logger from 'src/config/logger';
 export default {
     data: new SlashCommandBuilder()
         .setName('question')
@@ -14,14 +15,22 @@ export default {
                 .setRequired(true)),
 
     async execute(interaction: ChatInputCommandInteraction_broker) {
-        // TogetherCrew-Leads: 983364577096003604  TogetherCrew-Contributors: 983364691692748832
-        if (!(interaction.member?.roles.cache.has("983364577096003604") || interaction.member?.roles.cache.has("983364691692748832"))) {
-            return await interactionService.createInteractionResponse(interaction, { type: 4, data: { content: 'You do not have the required role to use this command!', flags: 64 } })
+        try {
+            logger.debug('Question!!!!!!!!!!!')
+            // TogetherCrew-Leads: 983364577096003604  TogetherCrew-Contributors: 983364691692748832
+            if (!(interaction.member?.roles.cache.has("983364577096003604") || interaction.member?.roles.cache.has("983364691692748832"))) {
+                return await interactionService.createInteractionResponse(interaction, { type: 4, data: { content: 'You do not have the required role to use this command!', flags: 64 } })
+            }
+            const serializedInteraction = interactionService.constructSerializableInteraction(interaction);
+            const processedInteraction = handleBigInts(serializedInteraction);
+            const cleanInteraction = removeCircularReferences(processedInteraction); // Pass processedInteraction here
+            const serializedData = JSON.stringify(cleanInteraction, null, 2);
+            logger.debug({ serializedData })
+            RabbitMQ.publish(RabbitMQQueue.HIVEMIND, Event.HIVEMIND.INTERACTION_CREATED, { interaction: serializedData });
+        } catch (error) {
+            logger.error({ command: 'question', error }, 'is failed');
+
         }
-        const serializedInteraction = interactionService.constructSerializableInteraction(interaction);
-        const processedInteraction = handleBigInts(serializedInteraction);
-        const cleanInteraction = removeCircularReferences(processedInteraction); // Pass processedInteraction here
-        const serializedData = JSON.stringify(cleanInteraction, null, 2);
-        RabbitMQ.publish(RabbitMQQueue.HIVEMIND, Event.HIVEMIND.INTERACTION_CREATED, { interaction: serializedData });
+
     },
 };
