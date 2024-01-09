@@ -4,6 +4,7 @@ import { interactionService } from '../../services'
 import RabbitMQ, { Event, Queue as RabbitMQQueue } from '@togethercrew.dev/tc-messagebroker';
 import { ChatInputCommandInteraction_broker } from '../../interfaces/Hivemind.interface';
 import { handleBigInts, removeCircularReferences } from '../../utils/obj';
+import logger from 'src/config/logger';
 export default {
     data: new SlashCommandBuilder()
         .setName('question')
@@ -22,6 +23,7 @@ export default {
         const processedInteraction = handleBigInts(serializedInteraction);
         const cleanInteraction = removeCircularReferences(processedInteraction); // Pass processedInteraction here
         const serializedData = JSON.stringify(cleanInteraction, null, 2);
+        logger.debug({ serializedData })
         RabbitMQ.publish(RabbitMQQueue.HIVEMIND, Event.HIVEMIND.INTERACTION_CREATED, { interaction: serializedData });
     },
 };
