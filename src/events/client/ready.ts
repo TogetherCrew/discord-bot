@@ -1,4 +1,4 @@
-import { Events, Client } from 'discord.js';
+import { Client, Events } from 'discord.js';
 import { platformService } from '../../database/services';
 import fetchMembers from '../../functions/fetchMembers';
 import fetchChannels from '../../functions/fetchChannels';
@@ -18,9 +18,9 @@ export default {
       const connection = DatabaseManager.getInstance().getTenantDb(platforms[i].metadata?.id);
       try {
         logger.info({ platform_id: platforms[i].id }, 'Fetching guild members, roles,and channels');
-        await fetchMembers(connection, client, platforms[i]);
-        await fetchRoles(connection, client, platforms[i]);
-        await fetchChannels(connection, client, platforms[i]);
+        await fetchMembers(connection, platforms[i]);
+        await fetchRoles(connection, platforms[i]);
+        await fetchChannels(connection, platforms[i]);
         logger.info({ platform_id: platforms[i].metadata?.id }, 'Fetching guild members, roles, channels is done');
       } catch (err) {
         logger.error({ platform_id: platforms[i].metadata?.id, err }, 'Fetching guild members, roles,and channels failed');

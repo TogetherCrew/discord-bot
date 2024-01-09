@@ -1,7 +1,8 @@
-import { Client, TextChannel, VoiceChannel, CategoryChannel } from 'discord.js';
+import { TextChannel, VoiceChannel, CategoryChannel } from 'discord.js';
 import { Connection, HydratedDocument } from 'mongoose';
 import { IPlatform, IChannel } from '@togethercrew.dev/db';
 import { channelService, platformService } from '../database/services';
+import { coreService } from '../services';
 import parentLogger from '../config/logger';
 
 const logger = parentLogger.child({ module: 'FetchChannels' });
@@ -25,13 +26,12 @@ function pushChannelsToArray(
 /**
  * Fetches and saves text and voice channel information from a given guild.
  * @param {Connection} connection - Mongoose connection object for the database.
- * @param {Client} client - The discord.js client object used to fetch the guild.
  * @param {Snowflake} guildId - The identifier of the guild to extract text and voice channels from.
  */
-export default async function fetchGuildChannels(connection: Connection, client: Client, platform: HydratedDocument<IPlatform>) {
+export default async function fetchGuildChannels(connection: Connection, platform: HydratedDocument<IPlatform>) {
   try {
-
-    const hasBotAccessToGuild = await platformService.checkBotAccessToGuild(client, platform.metadata?.id);
+    const client = await coreService.DiscordBotManager.getClient();
+    const hasBotAccessToGuild = await platformService.checkBotAccessToGuild(platform.metadata?.id);
     logger.info({ hasBotAccessToGuild, guildId: platform.metadata?.id, type: 'channel' })
 
     if (!hasBotAccessToGuild) {
