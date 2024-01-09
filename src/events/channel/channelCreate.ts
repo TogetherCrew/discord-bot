@@ -12,7 +12,7 @@ export default {
     if (channel instanceof TextChannel || channel instanceof VoiceChannel || channel instanceof CategoryChannel) {
       const logFields = { guild_id: channel.guild.id, channel_id: channel.id };
       logger.info(logFields, 'event is running');
-      const connection = DatabaseManager.getInstance().getTenantDb(channel.guild.id);
+      const connection = await DatabaseManager.getInstance().getTenantDb(channel.guild.id);
       try {
         await channelService.handelChannelChanges(connection, channel);
         logger.info(logFields, 'event is done');

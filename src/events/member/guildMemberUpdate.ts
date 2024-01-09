@@ -11,7 +11,7 @@ export default {
   async execute(oldMember: GuildMember, newMember: GuildMember) {
     const logFields = { guild_id: newMember.guild.id, guild_member_id: newMember.user.id };
     logger.info(logFields, 'event is running');
-    const connection = DatabaseManager.getInstance().getTenantDb(newMember.guild.id);
+    const connection = await DatabaseManager.getInstance().getTenantDb(newMember.guild.id);
     try {
       await guildMemberService.handelGuildMemberChanges(connection, newMember);
       logger.info(logFields, 'event is done');

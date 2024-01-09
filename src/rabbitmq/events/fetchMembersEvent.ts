@@ -11,7 +11,7 @@ const logger = parentLogger.child({ module: `${Event.DISCORD_BOT.FETCH_MEMBERS}`
 
 const fetchInitialData = async (platform: HydratedDocument<IPlatform>) => {
   try {
-    const connection = DatabaseManager.getInstance().getTenantDb(platform.metadata?.id);
+    const connection = await DatabaseManager.getInstance().getTenantDb(platform.metadata?.id);
     await fetchChannels(connection, platform);
     await fetchRoles(connection, platform);
     await fetchMembers(connection, platform);

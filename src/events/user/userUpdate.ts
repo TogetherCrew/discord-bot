@@ -13,7 +13,7 @@ export default {
     try {
       const platforms = await platformService.getPlatforms({ disconnectedAt: null });
       for (let i = 0; i < platforms.length; i++) {
-        const connection = DatabaseManager.getInstance().getTenantDb(platforms[i].metadata?.id);
+        const connection = await DatabaseManager.getInstance().getTenantDb(platforms[i].metadata?.id);
         await guildMemberService.updateGuildMember(
           connection,
           { discordId: newUser.id },

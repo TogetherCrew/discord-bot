@@ -21,7 +21,7 @@ const fetchMethod = async (msg: any) => {
 
     if (platform) {
         const isPlatformCreated = saga.data['created'];
-        const connection = DatabaseManager.getInstance().getTenantDb(platform.metadata?.id);
+        const connection = await DatabaseManager.getInstance().getTenantDb(platform.metadata?.id);
         if (isPlatformCreated) {
             await fetchChannels(connection, platform);
             await fetchMembers(connection, platform);

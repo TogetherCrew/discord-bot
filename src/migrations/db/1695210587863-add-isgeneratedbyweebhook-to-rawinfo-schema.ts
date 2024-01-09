@@ -9,7 +9,7 @@ export const up = async () => {
   await connectToMongoDB();
   const platforms = await platformService.getPlatforms({});
   for (let i = 0; i < platforms.length; i++) {
-    const connection = DatabaseManager.getInstance().getTenantDb(platforms[i].metadata?.id);
+    const connection = await DatabaseManager.getInstance().getTenantDb(platforms[i].metadata?.id);
     await webhookLogic(connection, platforms[i].metadata?.id);
   }
 };
