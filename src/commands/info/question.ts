@@ -25,6 +25,7 @@ export default {
             const cleanInteraction = removeCircularReferences(processedInteraction); // Pass processedInteraction here
             const serializedData = JSON.stringify(cleanInteraction, null, 2);
             RabbitMQ.publish(RabbitMQQueue.HIVEMIND, Event.HIVEMIND.INTERACTION_CREATED, { interaction: serializedData });
+            await interactionService.createInteractionResponse(interaction, { type: 5, data: { flags: 64 } })
         } catch (error) {
             logger.error({ command: 'question', error }, 'is failed');
 

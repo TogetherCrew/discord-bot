@@ -8,8 +8,12 @@ const logger = parentLogger.child({ module: `${Event.DISCORD_BOT.FOLLOWUP_MESSAG
 export async function handleFollowUpMessageCreate(msg: any) {
     try {
         logger.info({ msg, event: Event.DISCORD_BOT.FOLLOWUP_MESSAGE.CREATE }, 'is running');
-        const interaction: ChatInputCommandInteraction_broker = JSON.parse(msg?.content.interaction);
-        const data: FollowUpMessageData = JSON.parse(msg?.content.data);
+        // const interaction: ChatInputCommandInteraction_broker = JSON.parse(msg?.content.interaction);
+        // const data: FollowUpMessageData = JSON.parse(msg?.content.data);
+
+        const interaction = msg?.content.interaction;
+        const data = msg?.content.data;
+
         await interactionService.createFollowUpMessage(interaction, data)
         logger.info({ msg, event: Event.DISCORD_BOT.FOLLOWUP_MESSAGE.CREATE }, 'is done');
     } catch (error) {

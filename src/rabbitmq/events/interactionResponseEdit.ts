@@ -8,8 +8,12 @@ const logger = parentLogger.child({ module: `${Event.DISCORD_BOT.INTERACTION_RES
 export async function handleInteractionResponseEdit(msg: any) {
     try {
         logger.info({ msg, event: Event.DISCORD_BOT.INTERACTION_RESPONSE.EDIT }, 'is running');
-        const interaction: ChatInputCommandInteraction_broker = JSON.parse(msg?.content.interaction);
-        const data: InteractionResponseEditData = JSON.parse(msg?.content.data);
+        // const interaction: ChatInputCommandInteraction_broker = JSON.parse(msg?.content.interaction);
+        // const data: InteractionResponseEditData = JSON.parse(msg?.content.data);
+
+        const interaction = msg?.content.interaction;
+        const data = msg?.content.data;
+
         await interactionService.editOriginalInteractionResponse(interaction, data)
         logger.info({ msg, event: Event.DISCORD_BOT.INTERACTION_RESPONSE.EDIT }, 'is done');
     } catch (error) {

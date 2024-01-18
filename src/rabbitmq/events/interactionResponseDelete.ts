@@ -8,7 +8,9 @@ const logger = parentLogger.child({ module: `${Event.DISCORD_BOT.INTERACTION_RES
 export async function handleInteractionResponseDelete(msg: any) {
     try {
         logger.info({ msg, event: Event.DISCORD_BOT.INTERACTION_RESPONSE.DELETE }, 'is running');
-        const interaction: ChatInputCommandInteraction_broker = JSON.parse(msg?.content.interaction);
+        // const interaction: ChatInputCommandInteraction_broker = JSON.parse(msg?.content.interaction);
+
+        const interaction = msg?.content.interaction;
         await interactionService.deleteOriginalInteractionResponse(interaction)
         logger.info({ msg, event: Event.DISCORD_BOT.INTERACTION_RESPONSE.DELETE }, 'is done');
     } catch (error) {
