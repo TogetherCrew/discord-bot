@@ -10,13 +10,14 @@ export async function handleSendMessageToChannel(msg: any) {
 
         const { content } = msg;
         const saga = await MBConnection.models.Saga.findOne({ sagaId: content.uuid });
-
         const channels = saga.data['channels'];
         const message = saga.data['message'];
 
-        for (let i = 0; i < channels.length; i++) {
-            await channelService.sendChannelMessage(channels[i], message)
-        }
+        await saga.next(async () => {
+            for await (const channel of channels) {
+                await channelService.sendChannelMessage(channel, message)
+            }
+        });
 
         logger.info({ msg, event: Event.DISCORD_BOT.SEND_MESSAGE_TO_CHANNEL }, 'is done');
     } catch (error) {

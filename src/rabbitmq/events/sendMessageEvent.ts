@@ -48,12 +48,10 @@ export async function handleSendMessageEvent(msg: any) {
 
         const { content } = msg;
         const saga = await MBConnection.models.Saga.findOne({ sagaId: content.uuid });
-
         const platformId = saga.data['platformId'];
         const platform = await platformService.getPlatform({ _id: platformId }); const discordId = saga.data['discordId'];
         const message = saga.data['message'];
         const useFallback = saga.data['useFallback'];
-
         if (platform) {
             await saga.next(() => notifyUserAboutAnalysisFinish(discordId, { guildId: platform.metadata?.id, message, useFallback }));
         }
