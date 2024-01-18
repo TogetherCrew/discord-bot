@@ -8,8 +8,12 @@ const logger = parentLogger.child({ module: `${Event.DISCORD_BOT.INTERACTION_RES
 export async function handleInteractionResponseCreate(msg: any) {
     try {
         logger.info({ msg, event: Event.DISCORD_BOT.INTERACTION_RESPONSE.CREATE, }, 'is running');
-        const interaction: ChatInputCommandInteraction_broker = JSON.parse(msg?.content.interaction);
-        const data: InteractionResponse = JSON.parse(msg?.content.data);
+        // const interaction: ChatInputCommandInteraction_broker = JSON.parse(msg?.content.interaction);
+        // const data: InteractionResponse = JSON.parse(msg?.content.data);
+
+
+        const interaction = msg?.content.interaction;
+        const data = msg?.content.data;
 
         console.log(interaction)
 
