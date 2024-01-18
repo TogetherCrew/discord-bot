@@ -5,7 +5,7 @@ const logger = parentLogger.child({ module: `${Event.DISCORD_BOT.SEND_MESSAGE}` 
 
 export async function handleSendMessageToChannel(msg: any) {
     try {
-        logger.info({ msg, event: Event.DISCORD_BOT.SEND_MESSAGE_TO_CHANNEL }, 'is running');
+        logger.info({ msg, event: Event.DISCORD_BOT.SEND_MESSAGE_TO_CHANNEL, sagaId: msg.content.uuid }, 'is running');
         if (!msg) return;
 
         const { content } = msg;
@@ -19,9 +19,9 @@ export async function handleSendMessageToChannel(msg: any) {
             }
         });
 
-        logger.info({ msg, event: Event.DISCORD_BOT.SEND_MESSAGE_TO_CHANNEL }, 'is done');
+        logger.info({ msg, event: Event.DISCORD_BOT.SEND_MESSAGE_TO_CHANNEL, sagaId: msg.content.uuid }, 'is done');
     } catch (error) {
-        logger.error({ msg, event: Event.DISCORD_BOT.SEND_MESSAGE_TO_CHANNEL, error }, 'is failed');
+        logger.error({ msg, event: Event.DISCORD_BOT.SEND_MESSAGE_TO_CHANNEL, sagaId: msg.content.uuid, error }, 'is failed');
 
     }
 }

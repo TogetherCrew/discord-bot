@@ -22,7 +22,7 @@ const fetchInitialData = async (platform: HydratedDocument<IPlatform>) => {
 
 export async function handleFetchMembersEvent(msg: any) {
   try {
-    logger.info({ msg, event: Event.DISCORD_BOT.FETCH_MEMBERS }, 'is running');
+    logger.info({ msg, event: Event.DISCORD_BOT.FETCH_MEMBERS, sagaId: msg.content.uuid }, 'is running');
     if (!msg) return;
 
     const { content } = msg;
@@ -36,9 +36,9 @@ export async function handleFetchMembersEvent(msg: any) {
       const fn = fetchInitialData.bind({}, platform);
       await saga.next(fn);
     }
-    logger.info({ msg, event: Event.DISCORD_BOT.FETCH_MEMBERS }, 'is done');
+    logger.info({ msg, event: Event.DISCORD_BOT.FETCH_MEMBERS, sagaId: msg.content.uuid }, 'is done');
   } catch (error) {
-    logger.error({ msg, event: Event.DISCORD_BOT.FETCH_MEMBERS, error }, 'is failed');
+    logger.error({ msg, event: Event.DISCORD_BOT.FETCH_MEMBERS, sagaId: msg.content.uuid, error }, 'is failed');
 
   }
 }
