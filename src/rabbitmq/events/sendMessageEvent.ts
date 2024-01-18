@@ -43,7 +43,7 @@ const notifyUserAboutAnalysisFinish = async (
 
 export async function handleSendMessageEvent(msg: any) {
     try {
-        logger.info({ msg, event: Event.DISCORD_BOT.SEND_MESSAGE }, 'is running');
+        logger.info({ msg, event: Event.DISCORD_BOT.SEND_MESSAGE, sagaId: msg.content.uuid }, 'is running');
         if (!msg) return;
 
         const { content } = msg;
@@ -56,9 +56,9 @@ export async function handleSendMessageEvent(msg: any) {
             await saga.next(() => notifyUserAboutAnalysisFinish(discordId, { guildId: platform.metadata?.id, message, useFallback }));
         }
 
-        logger.info({ msg, event: Event.DISCORD_BOT.SEND_MESSAGE }, 'is done');
+        logger.info({ msg, event: Event.DISCORD_BOT.SEND_MESSAGE, sagaId: msg.content.uuid }, 'is done');
     } catch (error) {
-        logger.error({ msg, event: Event.DISCORD_BOT.SEND_MESSAGE, error }, 'is failed');
+        logger.error({ msg, event: Event.DISCORD_BOT.SEND_MESSAGE, sagaId: msg.content.uuid, error }, 'is failed');
 
     }
 }
