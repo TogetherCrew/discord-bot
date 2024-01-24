@@ -27,16 +27,12 @@ function pushMembersToArray(arr: IGuildMember[], guildMembersArray: GuildMember[
 export default async function isBotLogic(connection: Connection, client: Client, guildId: Snowflake) {
     logger.info({ guild_id: guildId }, 'add-isBot-to-guilbMember-schema migration is running');
     try {
-        console.log(guildId)
         const botGuildMembers = [];
         const noneBotGuildMembers = [];
 
         const guild = await client.guilds.fetch(guildId);
-        console.log(guild.id)
         const membersToStore: IGuildMember[] = [];
-        console.log(1)
         const fetchedMembers = await guild.members.fetch();
-        console.log(2)
         const guildMembers = pushMembersToArray(membersToStore, [...fetchedMembers.values()]);
 
         console.log(guildMembers.length, guildId)
