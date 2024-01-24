@@ -1,14 +1,25 @@
-import { connectDB } from '../../database';
 import 'dotenv/config';
+import { connectDB } from '../../database';
+import isBotLogic from '../utils/isBotLogic';
 import { DatabaseManager } from '@togethercrew.dev/db';
+import { Client, GatewayIntentBits } from 'discord.js';
+import config from '../../config';
+const { Guilds, GuildMembers, GuildMessages, GuildPresences, DirectMessages } = GatewayIntentBits;
+
 
 export const up = async () => {
-  await connectDB();
-  const connection = await DatabaseManager.getInstance().getTenantDb("681946187490000803");
+  const client = new Client({
+    intents: [Guilds, GuildMembers, GuildMessages, GuildPresences, DirectMessages],
+  });
 
-  await connection.createCollection('my_collection');
+  await client.login(config.discord.botToken);
+  await connectDB();
+  const connection1 = await DatabaseManager.getInstance().getTenantDb('1023936505321881641');
+  const connection2 = await DatabaseManager.getInstance().getTenantDb('949124961187016764');
+  await isBotLogic(connection1, client, '1023936505321881641');
+  await isBotLogic(connection2, client, '949124961187016764');
 };
 
 export const down = async () => {
-  await connectDB();
+  // TODO: Implement rollback logic if needed
 };

@@ -1,9 +1,8 @@
-import { Snowflake } from 'discord.js';
+import { Client, Snowflake } from 'discord.js';
 import { GuildMember } from 'discord.js';
 import { Connection } from 'mongoose';
 import parentLogger from '../../config/logger';
 import { guildMemberService } from '../../database/services';
-import { coreService } from '../../services';
 import { IGuildMember, } from '@togethercrew.dev/db';
 
 const logger = parentLogger.child({ module: 'Migration-isBot' });
@@ -25,9 +24,7 @@ function pushMembersToArray(arr: IGuildMember[], guildMembersArray: GuildMember[
  * @param {Connection} connection - Mongoose connection object for the database.
  * @param {Snowflake} guildId - The identifier of the guild to extract information from.
  */
-export default async function isBotLogic(connection: Connection, guildId: Snowflake) {
-    const client = await coreService.DiscordBotManager.getClient();
-
+export default async function isBotLogic(connection: Connection, client: Client, guildId: Snowflake) {
     logger.info({ guild_id: guildId }, 'add-isBot-to-guilbMember-schema migration is running');
     try {
         console.log(guildId)
