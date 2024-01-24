@@ -16,7 +16,7 @@ export default {
     ) {
       const logFields = { guild_id: newChannel.guild.id, channel_id: newChannel.id };
       logger.info(logFields, 'event is running');
-      const connection = DatabaseManager.getInstance().getTenantDb(newChannel.guild.id);
+      const connection = await DatabaseManager.getInstance().getTenantDb(newChannel.guild.id);
       try {
         await channelService.handelChannelChanges(connection, newChannel);
         logger.info(logFields, 'event is done');

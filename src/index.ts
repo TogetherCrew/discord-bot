@@ -55,7 +55,7 @@ const fetchMethod = async (msg: any) => {
 
   if (platform) {
     const isPlatformCreated = saga.data['created'];
-    const connection = DatabaseManager.getInstance().getTenantDb(platform.metadata?.id);
+    const connection = await DatabaseManager.getInstance().getTenantDb(platform.metadata?.id);
     if (isPlatformCreated) {
       await fetchChannels(connection, client, platform);
       await fetchMembers(connection, client, platform);
@@ -99,7 +99,7 @@ const notifyUserAboutAnalysisFinish = async (
 
 const fetchInitialData = async (platform: HydratedDocument<IPlatform>) => {
   try {
-    const connection = DatabaseManager.getInstance().getTenantDb(platform.metadata?.id);
+    const connection = await DatabaseManager.getInstance().getTenantDb(platform.metadata?.id);
     await fetchChannels(connection, client, platform);
     await fetchRoles(connection, client, platform);
     await fetchMembers(connection, client, platform);

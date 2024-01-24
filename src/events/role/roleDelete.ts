@@ -11,7 +11,7 @@ export default {
   async execute(role: Role) {
     const logFields = { guild_id: role.guild.id, role_id: role.id };
     logger.info(logFields, 'event is running');
-    const connection = DatabaseManager.getInstance().getTenantDb(role.guild.id);
+    const connection = await DatabaseManager.getInstance().getTenantDb(role.guild.id);
     try {
       const roleDoc = await roleService.getRole(connection, { roleId: role.id });
       await roleDoc?.softDelete();
