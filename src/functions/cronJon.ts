@@ -29,7 +29,7 @@ export default async function cronJob(client: Client) {
   logger.info('event is running');
   const platforms = await platformService.getPlatforms({ disconnectedAt: null });
   for (let i = 0; i < platforms.length; i++) {
-    const connection = DatabaseManager.getInstance().getTenantDb(platforms[i].metadata?.id);
+    const connection = await DatabaseManager.getInstance().getTenantDb(platforms[i].metadata?.id);
     try {
       logger.info({ platform_Id: platforms[i].metadata?.id }, 'is running cronJob for platform');
       await guildExtraction(connection, client, platforms[i]);

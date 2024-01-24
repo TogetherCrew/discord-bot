@@ -13,13 +13,13 @@ export const up = async () => {
     intents: [Guilds, GuildMembers, GuildMessages, GuildPresences, DirectMessages],
   });
 
-    await client.login(config.discord.botToken);
-    await connectDB();
-    const platforms = await platformService.getPlatforms({});
-    for (let i = 0; i < platforms.length; i++) {
-        const connection = DatabaseManager.getInstance().getTenantDb(platforms[i].metadata?.id);
-        await webhookLogic(connection, client, platforms[i].metadata?.id);
-    }
+  await client.login(config.discord.botToken);
+  await connectDB();
+  const platforms = await platformService.getPlatforms({});
+  for (let i = 0; i < platforms.length; i++) {
+    const connection = await DatabaseManager.getInstance().getTenantDb(platforms[i].metadata?.id);
+    await webhookLogic(connection, client, platforms[i].metadata?.id);
+  }
 };
 
 export const down = async () => {
