@@ -5,6 +5,7 @@ import { createPrivateThreadAndSendMessage } from '../../functions/thread';
 import parentLogger from '../../config/logger';
 import { platformService } from '../../database/services';
 import sendDirectMessage from '../../functions/sendDirectMessage';
+import { addDirectMessage } from '../../queue/queues/directMessage';
 
 const logger = parentLogger.child({ module: `${Event.DISCORD_BOT.SEND_MESSAGE}` });
 
@@ -29,7 +30,7 @@ const notifyUserAboutAnalysisFinish = async (
     const upperTextChannel = rawPositionBasedSortedTextChannels[0];
 
     try {
-        sendDirectMessage({ discordId, message });
+        addDirectMessage(discordId, message)
     } catch (error) {
         // can not send DM to the user
         // Will create a private thread and notify him/her about the status if useFallback is true

@@ -1,6 +1,7 @@
 import { Event, MBConnection } from '@togethercrew.dev/tc-messagebroker';
 import parentLogger from '../../config/logger';
 import { channelService } from '../../services';
+import { addChannelMessage } from '../../queue/queues/channelMessage'
 const logger = parentLogger.child({ module: `${Event.DISCORD_BOT.SEND_MESSAGE}` });
 
 export async function handleSendMessageToChannel(msg: any) {
@@ -13,9 +14,10 @@ export async function handleSendMessageToChannel(msg: any) {
         const channels = saga.data['channels'];
         const message = saga.data['message'];
 
+        // IS THIS CORRECT WAY?
         await saga.next(async () => {
             for await (const channel of channels) {
-                await channelService.sendChannelMessage(channel, message)
+                addChannelMessage(channel, message)
             }
         });
 

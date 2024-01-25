@@ -6,6 +6,7 @@ import { setupRabbitMQHandlers } from './rabbitmq/RabbitMQHandler';
 import { commandService, eventService } from './services';
 import './queue/workers/cronWorker';
 import './queue/workers/channelMessageWorker';
+import './queue/workers/directMessageWorker';
 
 async function app() {
   await connectToMongoDB();
