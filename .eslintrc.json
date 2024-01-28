@@ -1,24 +1,25 @@
 {
     "env": {
-        "ES2017": true,
+        "es2021": true,
         "node": true
     },
     "extends": [
-        "eslint:recommended",
-        "plugin:@typescript-eslint/recommended",
-        "prettier",
-        "prettier/@typescript-eslint"
-    ],
-    "plugins": [
-        "@typescript-eslint",
+        "standard-with-typescript",
         "prettier"
     ],
+    "overrides": [],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
-        "ecmaVersion": 2018,
-        "sourceType": "module"
+        "ecmaVersion": "latest",
+        "sourceType": "module",
+        "project": "./tsconfig.json"
     },
-    "rules": {
-        "prettier/prettier": "error"
-    }
+    "rules": {},
+    "ignorePatterns": [
+        "coverage",
+        "dist",
+        "__tests__/",
+        "jest.config.ts",
+        "*.yml"
+    ]
 }
