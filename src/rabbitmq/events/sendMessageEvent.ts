@@ -1,4 +1,5 @@
-import { Channel, ChannelType, Snowflake, TextChannel } from 'discord.js';
+/* eslint-disable @typescript-eslint/consistent-type-assertions */
+import { type Channel, ChannelType, type Snowflake, type TextChannel } from 'discord.js';
 import { Event, MBConnection } from '@togethercrew.dev/tc-messagebroker';
 import { coreService } from '../../services';
 import { createPrivateThreadAndSendMessage } from '../../functions/thread';
@@ -11,7 +12,7 @@ const logger = parentLogger.child({ module: `${Event.DISCORD_BOT.SEND_MESSAGE}` 
 const notifyUserAboutAnalysisFinish = async (
   discordId: string,
   info: { guildId: Snowflake; message: string; useFallback: boolean },
-) => {
+): Promise<void> => {
   const client = await coreService.DiscordBotManager.getClient();
 
   // related issue https://github.com/RnDAO/tc-discordBot/issues/68
@@ -21,7 +22,7 @@ const notifyUserAboutAnalysisFinish = async (
   const channels = await guild.channels.fetch();
 
   const arrayChannels = Array.from(channels, ([name, value]) => ({ ...value } as Channel));
-  const textChannels = arrayChannels.filter((channel) => channel.type == ChannelType.GuildText) as TextChannel[];
+  const textChannels = arrayChannels.filter((channel) => channel.type === ChannelType.GuildText) as TextChannel[];
   const rawPositionBasedSortedTextChannels = textChannels.sort((textChannelA, textChannelB) =>
     textChannelA.rawPosition > textChannelB.rawPosition ? 1 : -1,
   );
@@ -33,27 +34,28 @@ const notifyUserAboutAnalysisFinish = async (
     // can not send DM to the user
     // Will create a private thread and notify him/her about the status if useFallback is true
     if (useFallback)
-      createPrivateThreadAndSendMessage(upperTextChannel, {
+      await createPrivateThreadAndSendMessage(upperTextChannel, {
         threadName: 'TogetherCrew Status',
         message: `<@${discordId}> ${message}`,
       });
   }
 };
 
-export async function handleSendMessageEvent(msg: any) {
+export async function handleSendMessageEvent(msg: any): Promise<void> {
   try {
     logger.info({ msg, event: Event.DISCORD_BOT.SEND_MESSAGE, sagaId: msg.content.uuid }, 'is running');
-    if (!msg) return;
+    if (msg === undefined || msg === null) return;
 
     const { content } = msg;
     const saga = await MBConnection.models.Saga.findOne({ sagaId: content.uuid });
-    const platformId = saga.data['platformId'];
+    const platformId = saga.data.platformId;
     const platform = await platformService.getPlatform({ _id: platformId });
-    const discordId = saga.data['discordId'];
-    const message = saga.data['message'];
-    const useFallback = saga.data['useFallback'];
-    if (platform) {
-      await saga.next(() =>
+    const discordId = saga.data.discordId;
+    const message = saga.data.message;
+    const useFallback = saga.data.useFallback;
+    if (platform !== null) {
+      await saga.next(async () =>
+        // eslint-disable-next-line @typescript-eslint/return-await
         notifyUserAboutAnalysisFinish(discordId, { guildId: platform.metadata?.id, message, useFallback }),
       );
     }

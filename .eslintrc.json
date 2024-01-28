@@ -20,6 +20,8 @@
         "dist",
         "__tests__/",
         "jest.config.js",
-        "*.yml"
+        "*.yml",
+        "mongo-init.js",
+        "bable.config.js",
     ]
 }
