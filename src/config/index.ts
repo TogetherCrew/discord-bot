@@ -8,7 +8,7 @@ const envVarsSchema = Joi.object()
     DB_PORT: Joi.string().required().description('Mongo DB port'),
     DB_USER: Joi.string().required().description('Mongo DB username'),
     DB_PASSWORD: Joi.string().required().description('Mongo DB password'),
-    DB_NAME: Joi.string().required().description('Mongo DB name'),
+    DB_NAME: Joi.string().required().description('Mongo DB name').allow(''),
     RABBIT_HOST: Joi.string().required().description('RabbitMQ url'),
     RABBIT_PORT: Joi.string().required().description('RabbitMQ port'),
     RABBIT_USER: Joi.string().required().description('RabbitMQ username'),
