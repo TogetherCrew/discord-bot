@@ -4,7 +4,6 @@ import { connectToMongoDB } from '../../database/connection';
 import webhookLogic from '../utils/webhookLogic';
 import { DatabaseManager } from '@togethercrew.dev/db';
 
-
 export const up = async () => {
   await connectToMongoDB();
   const platforms = await platformService.getPlatforms({});

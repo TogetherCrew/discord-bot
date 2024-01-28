@@ -1,47 +1,46 @@
 export function handleBigInts(obj: any, seen = new WeakSet()): any {
-    if (typeof obj === 'bigint') {
-        return obj.toString(); // Convert BigInt to a string
-    } else if (Array.isArray(obj)) {
-        return obj.map((item) => handleBigInts(item, seen)); // Process arrays element-wise
-    } else if (typeof obj === 'object' && obj !== null) {
-        if (seen.has(obj)) {
-            // If we've seen this object before, don't process it again
-            return;
-        }
-        seen.add(obj); // Mark this object as seen
-
-        const result: any = {};
-        for (const [key, value] of Object.entries(obj)) {
-            result[key] = handleBigInts(value, seen); // Recursively process nested objects
-        }
-        return result;
+  if (typeof obj === 'bigint') {
+    return obj.toString(); // Convert BigInt to a string
+  } else if (Array.isArray(obj)) {
+    return obj.map((item) => handleBigInts(item, seen)); // Process arrays element-wise
+  } else if (typeof obj === 'object' && obj !== null) {
+    if (seen.has(obj)) {
+      // If we've seen this object before, don't process it again
+      return;
     }
-    return obj; // Return the value unchanged if it's neither an object nor a BigInt
+    seen.add(obj); // Mark this object as seen
+
+    const result: any = {};
+    for (const [key, value] of Object.entries(obj)) {
+      result[key] = handleBigInts(value, seen); // Recursively process nested objects
+    }
+    return result;
+  }
+  return obj; // Return the value unchanged if it's neither an object nor a BigInt
 }
 
-
 export function removeCircularReferences(obj: any, parent = null) {
-    const seenObjects = new WeakMap();
+  const seenObjects = new WeakMap();
 
-    function detect(obj: any, parent: any) {
-        if (obj && typeof obj === 'object') {
-            if (seenObjects.has(obj)) {
-                return '[Circular]';
-            }
-            seenObjects.set(obj, true);
+  function detect(obj: any, parent: any) {
+    if (obj && typeof obj === 'object') {
+      if (seenObjects.has(obj)) {
+        return '[Circular]';
+      }
+      seenObjects.set(obj, true);
 
-            Object.keys(obj).forEach(key => {
-                if (typeof obj[key] === 'object' && obj[key] !== null) {
-                    if (parent === obj[key]) {
-                        obj[key] = '[Circular]';
-                    } else {
-                        detect(obj[key], obj);
-                    }
-                }
-            });
+      Object.keys(obj).forEach((key) => {
+        if (typeof obj[key] === 'object' && obj[key] !== null) {
+          if (parent === obj[key]) {
+            obj[key] = '[Circular]';
+          } else {
+            detect(obj[key], obj);
+          }
         }
+      });
     }
+  }
 
-    detect(obj, parent);
-    return obj;
+  detect(obj, parent);
+  return obj;
 }

@@ -30,7 +30,10 @@ async function getPlatforms(filter: object): Promise<HydratedDocument<IPlatform>
  * @param {IPlatformUpdateBody} updateBody - Updated information for the platform entry.
  * @returns {Promise<object|null>} - A promise that resolves to the updated platform entry, or null if not found.
  */
-async function updatePlatform(filter: object, updateBody: IPlatformUpdateBody): Promise<HydratedDocument<IPlatform> | null> {
+async function updatePlatform(
+  filter: object,
+  updateBody: IPlatformUpdateBody,
+): Promise<HydratedDocument<IPlatform> | null> {
   try {
     const platform = await Platform.findOne(filter);
     if (!platform) {
@@ -40,7 +43,7 @@ async function updatePlatform(filter: object, updateBody: IPlatformUpdateBody): 
     if (updateBody.metadata) {
       updateBody.metadata = {
         ...platform.metadata,
-        ...updateBody.metadata
+        ...updateBody.metadata,
       };
     }
 

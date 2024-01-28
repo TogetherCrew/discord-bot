@@ -36,7 +36,6 @@ export default async function cronJob() {
     } catch (err) {
       logger.error({ platform_Id: platforms[i].metadata?.id, err }, 'CronJob Failed for platform');
     }
-
   }
   logger.info('event is done');
 }

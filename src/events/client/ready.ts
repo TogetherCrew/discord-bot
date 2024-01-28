@@ -23,7 +23,10 @@ export default {
         await fetchChannels(connection, platforms[i]);
         logger.info({ platform_id: platforms[i].metadata?.id }, 'Fetching guild members, roles, channels is done');
       } catch (err) {
-        logger.error({ platform_id: platforms[i].metadata?.id, err }, 'Fetching guild members, roles,and channels failed');
+        logger.error(
+          { platform_id: platforms[i].metadata?.id, err },
+          'Fetching guild members, roles,and channels failed',
+        );
         logger.info('event is done');
       }
     }

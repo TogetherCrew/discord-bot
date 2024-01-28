@@ -39,6 +39,5 @@ export async function handleFetchMembersEvent(msg: any) {
     logger.info({ msg, event: Event.DISCORD_BOT.FETCH_MEMBERS, sagaId: msg.content.uuid }, 'is done');
   } catch (error) {
     logger.error({ msg, event: Event.DISCORD_BOT.FETCH_MEMBERS, sagaId: msg.content.uuid, error }, 'is failed');
-
   }
 }

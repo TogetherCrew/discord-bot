@@ -4,5 +4,5 @@ import { QueueFactory } from './index';
 export const channelMessageQueue = QueueFactory.createQueue('channelMessageQueue');
 
 export const addChannelMessage = (discordId: Snowflake, message: string) => {
-    channelMessageQueue.add('channelMessageQueue', { discordId, message });
+  channelMessageQueue.add('channelMessageQueue', { discordId, message });
 };

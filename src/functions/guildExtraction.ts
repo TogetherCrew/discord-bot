@@ -1,4 +1,3 @@
-
 import { Connection, HydratedDocument } from 'mongoose';
 import { IPlatform } from '@togethercrew.dev/db';
 import { platformService } from '../database/services';

@@ -19,11 +19,13 @@ export default {
         const platformDoc = await platformService.getPlatform({ 'metadata.id': channel.guild.id });
         const updatedSelecetdChannels = platformDoc?.metadata?.selectedChannels?.filter(
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (selectedChannel: any) => selectedChannel.channelId !== channel.id
+          (selectedChannel: any) => selectedChannel.channelId !== channel.id,
         );
-        await platformService.updatePlatform({ 'metadata.id': channel.guild.id }, { metadata: { selectedChannels: updatedSelecetdChannels } });
+        await platformService.updatePlatform(
+          { 'metadata.id': channel.guild.id },
+          { metadata: { selectedChannels: updatedSelecetdChannels } },
+        );
         logger.info(logFields, 'event is done');
-
       } catch (err) {
         logger.error({ ...logFields, err }, 'Failed to soft delete the channel');
       }

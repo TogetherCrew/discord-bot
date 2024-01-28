@@ -20,7 +20,6 @@ export default {
       try {
         await channelService.handelChannelChanges(connection, newChannel);
         logger.info(logFields, 'event is done');
-
       } catch (err) {
         logger.error({ ...logFields, err }, 'Failed to handle channel changes');
       }

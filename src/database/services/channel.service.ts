@@ -75,7 +75,7 @@ async function getChannels(connection: Connection, filter: object): Promise<ICha
 async function updateChannel(
   connection: Connection,
   filter: object,
-  updateBody: IChannelUpdateBody
+  updateBody: IChannelUpdateBody,
 ): Promise<IChannel | null> {
   try {
     const channel = await connection.models.Channel.findOne(filter);
@@ -116,7 +116,7 @@ async function updateChannels(connection: Connection, filter: object, updateBody
  */
 async function handelChannelChanges(
   connection: Connection,
-  channel: TextChannel | VoiceChannel | CategoryChannel
+  channel: TextChannel | VoiceChannel | CategoryChannel,
 ): Promise<void> {
   const commonFields = getNeededDateFromChannel(channel);
   try {
@@ -139,7 +139,7 @@ function getNeededDateFromChannel(channel: TextChannel | VoiceChannel | Category
     channelId: channel.id,
     name: channel.name, // cast to TextChannel for 'name'
     parentId: channel.parentId,
-    permissionOverwrites: Array.from(channel.permissionOverwrites.cache.values()).map(overwrite => ({
+    permissionOverwrites: Array.from(channel.permissionOverwrites.cache.values()).map((overwrite) => ({
       id: overwrite.id,
       type: overwrite.type,
       allow: overwrite.allow.bitfield.toString(),

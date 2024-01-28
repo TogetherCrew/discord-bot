@@ -18,13 +18,13 @@ async function createGuildMember(connection: Connection, guildMember: IGuildMemb
     if (error.code == 11000) {
       logger.warn(
         { database: connection.name, guild_member_id: guildMember.discordId },
-        'Failed to create duplicate guild member'
+        'Failed to create duplicate guild member',
       );
       return null;
     }
     logger.error(
       { database: connection.name, guild_member_id: guildMember.discordId, error },
-      'Failed to create guild member'
+      'Failed to create guild member',
     );
     return null;
   }
@@ -58,7 +58,7 @@ async function createGuildMembers(connection: Connection, guildMembers: IGuildMe
  */
 async function getGuildMember(
   connection: Connection,
-  filter: object
+  filter: object,
 ): Promise<(IGuildMember & IGuildMemberMethods) | null> {
   return await connection.models.GuildMember.findOne(filter);
 }
@@ -83,7 +83,7 @@ async function getGuildMembers(connection: Connection, filter: object): Promise<
 async function updateGuildMember(
   connection: Connection,
   filter: object,
-  updateBody: IGuildMemberUpdateBody
+  updateBody: IGuildMemberUpdateBody,
 ): Promise<IGuildMember | null> {
   try {
     const guildMember = await connection.models.GuildMember.findOne(filter);
@@ -108,7 +108,7 @@ async function updateGuildMember(
 async function updateGuildMembers(
   connection: Connection,
   filter: object,
-  updateBody: IGuildMemberUpdateBody
+  updateBody: IGuildMemberUpdateBody,
 ): Promise<number> {
   try {
     const updateResult = await connection.models.GuildMember.updateMany(filter, updateBody);
@@ -171,7 +171,7 @@ async function handelGuildMemberChanges(connection: Connection, guildMember: Gui
   } catch (error) {
     logger.error(
       { guild_id: connection.name, guild_member_id: guildMember.id, error },
-      'Failed to handle guild member changes'
+      'Failed to handle guild member changes',
     );
   }
 }
@@ -187,7 +187,7 @@ function getNeededDateFromGuildMember(guildMember: GuildMember): IGuildMember {
     username: guildMember.user.username,
     avatar: guildMember.user.avatar,
     joinedAt: guildMember.joinedAt,
-    roles: guildMember.roles.cache.map(role => role.id),
+    roles: guildMember.roles.cache.map((role) => role.id),
     discriminator: guildMember.user.discriminator,
     permissions: guildMember.permissions.bitfield.toString(),
     nickname: guildMember.nickname,

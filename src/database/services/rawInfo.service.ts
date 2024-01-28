@@ -17,13 +17,13 @@ async function createRawInfo(connection: Connection, rawInfo: IRawInfo): Promise
     if (error.code == 11000) {
       logger.warn(
         { database: connection.name, channel_id: rawInfo.channelId, message_id: rawInfo.messageId },
-        'Failed to create duplicate rawInfo'
+        'Failed to create duplicate rawInfo',
       );
       return null;
     }
     logger.error(
       { database: connection.name, channel_id: rawInfo.channelId, message_id: rawInfo.messageId },
-      'Failed to create rawInfo'
+      'Failed to create rawInfo',
     );
     return null;
   }
@@ -79,7 +79,7 @@ async function getRawInfos(connection: Connection, filter: object): Promise<IRaw
 async function updateRawInfo(
   connection: Connection,
   filter: object,
-  updateBody: IRawInfoUpdateBody
+  updateBody: IRawInfoUpdateBody,
 ): Promise<IRawInfo | null> {
   try {
     const rawInfo = await connection.models.RawInfo.findOne(filter);
@@ -104,7 +104,7 @@ async function updateRawInfo(
 async function updateManyRawInfo(
   connection: Connection,
   filter: object,
-  updateBody: IRawInfoUpdateBody
+  updateBody: IRawInfoUpdateBody,
 ): Promise<number> {
   try {
     const updateResult = await connection.models.RawInfo.updateMany(filter, updateBody);

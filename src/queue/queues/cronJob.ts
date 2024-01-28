@@ -4,5 +4,5 @@ import { cronJobConfig } from '../../config/queue';
 export const cronJobQueue = QueueFactory.createQueue('cronJobQueue');
 
 export const addCronJob = () => {
-    cronJobQueue.add('cronJob', {}, { repeat: cronJobConfig } as never);
+  cronJobQueue.add('cronJob', {}, { repeat: cronJobConfig } as never);
 };

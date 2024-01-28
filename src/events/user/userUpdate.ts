@@ -20,7 +20,7 @@ export default {
           {
             username: newUser.username,
             globalName: newUser.globalName,
-          }
+          },
         );
         logger.info(logFields, 'event is done');
       }

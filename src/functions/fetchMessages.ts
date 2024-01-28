@@ -32,7 +32,7 @@ async function getReactions(message: Message): Promise<string[]> {
     for (const reaction of reactionsArray) {
       const emoji = reaction.emoji;
       const users: Collection<string, User> = await reaction.users.fetch();
-      let usersString = users.map(user => `${user.id}`).join(',');
+      let usersString = users.map((user) => `${user.id}`).join(',');
       usersString += `,${emoji.name}`;
       reactionsArr.push(usersString);
     }
@@ -100,7 +100,7 @@ async function pushMessagesToArray(
   connection: Connection,
   arr: IRawInfo[],
   messagesArray: Message[],
-  threadInfo?: threadInfo
+  threadInfo?: threadInfo,
 ): Promise<IRawInfo[]> {
   const allowedTypes: number[] = [0, 18, 19];
   for (const message of messagesArray) {
@@ -129,12 +129,12 @@ async function fetchMessages(
   channel: TextChannel | ThreadChannel,
   rawInfo: IRawInfo | undefined = undefined,
   period: Date,
-  fetchDirection: 'before' | 'after' = 'before'
+  fetchDirection: 'before' | 'after' = 'before',
 ) {
   try {
     logger.info(
       { guild_id: connection.name, channel_id: channel.id, fetchDirection },
-      'Fetching channel messages is running'
+      'Fetching channel messages is running',
     );
     const messagesToStore: IRawInfo[] = [];
     const options: FetchOptions = { limit: 100 };
@@ -148,26 +148,26 @@ async function fetchMessages(
 
       if (!boundaryMessage || (period && boundaryMessage.createdAt < period)) {
         if (period) {
-          fetchedMessages = fetchedMessages.filter(msg => msg.createdAt > period);
+          fetchedMessages = fetchedMessages.filter((msg) => msg.createdAt > period);
         }
         channel instanceof ThreadChannel
           ? await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()], {
-            threadId: channel.id,
-            threadName: channel.name,
-            channelId: channel.parent?.id,
-            channelName: channel.parent?.name,
-          })
+              threadId: channel.id,
+              threadName: channel.name,
+              channelId: channel.parent?.id,
+              channelName: channel.parent?.name,
+            })
           : await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()]);
         break;
       }
 
       channel instanceof ThreadChannel
         ? await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()], {
-          threadId: channel.id,
-          threadName: channel.name,
-          channelId: channel.parent?.id,
-          channelName: channel.parent?.name,
-        })
+            threadId: channel.id,
+            threadName: channel.name,
+            channelId: channel.parent?.id,
+            channelName: channel.parent?.name,
+          })
         : await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()]);
       await rawInfoService.createRawInfos(connection, messagesToStore);
       options[fetchDirection] = boundaryMessage.id;
@@ -176,12 +176,12 @@ async function fetchMessages(
   } catch (err) {
     logger.error(
       { guild_id: connection.name, channel_id: channel.id, fetchDirection, err },
-      'Fetching channel messages failed'
+      'Fetching channel messages failed',
     );
   }
   logger.info(
     { guild_id: connection.name, channel_id: channel.id, fetchDirection },
-    'Fetching channel messages is done'
+    'Fetching channel messages is done',
   );
 }
 

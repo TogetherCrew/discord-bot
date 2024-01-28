@@ -1,15 +1,7 @@
 import mongoose, { Connection } from 'mongoose';
-import {
-  IGuildMember,
-  guildMemberSchema,
-  IGuildMemberUpdateBody,
-} from '@togethercrew.dev/db';
+import { IGuildMember, guildMemberSchema, IGuildMemberUpdateBody } from '@togethercrew.dev/db';
 import setupTestDB from '../../../utils/setupTestDB';
-import {
-  guildMember1,
-  guildMember2,
-  guildMember3,
-} from '../../../fixtures/guildMember.fixture';
+import { guildMember1, guildMember2, guildMember3 } from '../../../fixtures/guildMember.fixture';
 import { guildMemberService } from '../../../../src/database/services';
 import config from '../../../../src/config';
 setupTestDB();
@@ -34,17 +26,13 @@ describe('guildMember service', () => {
 
   describe('createGuidMember', () => {
     test('should create a guild member', async () => {
-      const result = await guildMemberService.createGuildMember(
-        connection,
-        guildMember1
-      );
+      const result = await guildMemberService.createGuildMember(connection, guildMember1);
       expect(result).toBeDefined();
       expect(result?.discordId).toEqual(guildMember1.discordId);
 
-      const guildMemberDoc1 = await guildMemberService.getGuildMember(
-        connection,
-        { discordId: guildMember1.discordId }
-      );
+      const guildMemberDoc1 = await guildMemberService.getGuildMember(connection, {
+        discordId: guildMember1.discordId,
+      });
 
       expect(guildMemberDoc1).toBeDefined();
       expect(guildMemberDoc1).toMatchObject({
@@ -56,21 +44,16 @@ describe('guildMember service', () => {
 
   describe('createGuidMembers', () => {
     test('should create guild members', async () => {
-      const result = await guildMemberService.createGuildMembers(connection, [
-        guildMember1,
-        guildMember2,
-      ]);
+      const result = await guildMemberService.createGuildMembers(connection, [guildMember1, guildMember2]);
       expect(result).toMatchObject([guildMember1, guildMember2]);
 
-      const guildMemberDoc1 = await guildMemberService.getGuildMember(
-        connection,
-        { discordId: guildMember1.discordId }
-      );
+      const guildMemberDoc1 = await guildMemberService.getGuildMember(connection, {
+        discordId: guildMember1.discordId,
+      });
 
-      const guildMemberDoc2 = await guildMemberService.getGuildMember(
-        connection,
-        { discordId: guildMember2.discordId }
-      );
+      const guildMemberDoc2 = await guildMemberService.getGuildMember(connection, {
+        discordId: guildMember2.discordId,
+      });
 
       expect(guildMemberDoc1).toBeDefined();
       expect(guildMemberDoc1).toMatchObject({
@@ -104,11 +87,7 @@ describe('guildMember service', () => {
 
   describe('getGuildMembers', () => {
     test('should retrieve guild members that match the filter criteria', async () => {
-      await guildMemberService.createGuildMembers(connection, [
-        guildMember1,
-        guildMember2,
-        guildMember3,
-      ]);
+      await guildMemberService.createGuildMembers(connection, [guildMember1, guildMember2, guildMember3]);
       const result = await guildMemberService.getGuildMembers(connection, {
         roles: guildMember2.roles,
       });
@@ -116,11 +95,7 @@ describe('guildMember service', () => {
     });
 
     test('should return an empty array when no guild members match the filter criteria', async () => {
-      await guildMemberService.createGuildMembers(connection, [
-        guildMember1,
-        guildMember2,
-        guildMember3,
-      ]);
+      await guildMemberService.createGuildMembers(connection, [guildMember1, guildMember2, guildMember3]);
       const result = await guildMemberService.getGuildMembers(connection, {
         roles: ['role8'],
       });
@@ -139,14 +114,13 @@ describe('guildMember service', () => {
       const result = await guildMemberService.updateGuildMember(
         connection,
         { discordId: guildMember1.discordId },
-        updateBody
+        updateBody,
       );
       expect(result).toMatchObject(updateBody);
 
-      const guildMember1Doc = await guildMemberService.getGuildMember(
-        connection,
-        { discordId: guildMember1.discordId }
-      );
+      const guildMember1Doc = await guildMemberService.getGuildMember(connection, {
+        discordId: guildMember1.discordId,
+      });
 
       expect(guildMember1Doc).toBeDefined();
       expect(guildMember1Doc).toMatchObject({
@@ -160,7 +134,7 @@ describe('guildMember service', () => {
       const result = await guildMemberService.updateGuildMember(
         connection,
         { discordId: guildMember1.discordId },
-        updateBody
+        updateBody,
       );
       expect(result).toEqual(null);
     });
@@ -171,35 +145,21 @@ describe('guildMember service', () => {
       avatar: 'new-avatar.png',
     };
     test('should update guild members that match the filter criteria', async () => {
-      await guildMemberService.createGuildMembers(connection, [
-        guildMember1,
-        guildMember2,
-        guildMember3,
-      ]);
-      const result = await guildMemberService.updateGuildMembers(
-        connection,
-        { roles: guildMember2.roles },
-        updateBody
-      );
+      await guildMemberService.createGuildMembers(connection, [guildMember1, guildMember2, guildMember3]);
+      const result = await guildMemberService.updateGuildMembers(connection, { roles: guildMember2.roles }, updateBody);
       expect(result).toEqual(2);
-      const guildMember1Doc = await guildMemberService.getGuildMember(
-        connection,
-        { discordId: guildMember1.discordId }
-      );
-      const guildMember2Doc = await guildMemberService.getGuildMember(
-        connection,
-        { discordId: guildMember2.discordId }
-      );
+      const guildMember1Doc = await guildMemberService.getGuildMember(connection, {
+        discordId: guildMember1.discordId,
+      });
+      const guildMember2Doc = await guildMemberService.getGuildMember(connection, {
+        discordId: guildMember2.discordId,
+      });
       expect(guildMember1Doc?.avatar).toBe(updateBody.avatar);
       expect(guildMember2Doc?.avatar).toBe(updateBody.avatar);
     });
 
     test('should return 0 when no guild members match the filter criteria', async () => {
-      const result = await guildMemberService.updateGuildMembers(
-        connection,
-        { roles: guildMember2.roles },
-        updateBody
-      );
+      const result = await guildMemberService.updateGuildMembers(connection, { roles: guildMember2.roles }, updateBody);
       expect(result).toEqual(0);
     });
   });
@@ -223,11 +183,7 @@ describe('guildMember service', () => {
 
   describe('deleteGuildMembers', () => {
     test('should delete guild members that match the filter criteria', async () => {
-      await guildMemberService.createGuildMembers(connection, [
-        guildMember1,
-        guildMember2,
-        guildMember3,
-      ]);
+      await guildMemberService.createGuildMembers(connection, [guildMember1, guildMember2, guildMember3]);
       const result = await guildMemberService.deleteGuildMembers(connection, {
         roles: guildMember2.roles,
       });

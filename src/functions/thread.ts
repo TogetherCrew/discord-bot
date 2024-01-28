@@ -8,7 +8,7 @@ import { ChannelType, TextChannel } from 'discord.js';
  */
 export async function createPrivateThreadAndSendMessage(
   channel: TextChannel,
-  info: { threadName: string; message: string; threadReason?: string }
+  info: { threadName: string; message: string; threadReason?: string },
 ) {
   const { threadName, message, threadReason } = info;
 

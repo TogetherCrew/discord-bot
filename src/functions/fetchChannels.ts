@@ -15,7 +15,7 @@ const logger = parentLogger.child({ module: 'FetchChannels' });
  */
 function pushChannelsToArray(
   arr: IChannel[],
-  channelArray: Array<TextChannel | VoiceChannel | CategoryChannel>
+  channelArray: Array<TextChannel | VoiceChannel | CategoryChannel>,
 ): IChannel[] {
   for (const channel of channelArray) {
     arr.push(channelService.getNeededDateFromChannel(channel));
@@ -32,7 +32,7 @@ export default async function fetchGuildChannels(connection: Connection, platfor
   try {
     const client = await coreService.DiscordBotManager.getClient();
     const hasBotAccessToGuild = await platformService.checkBotAccessToGuild(platform.metadata?.id);
-    logger.info({ hasBotAccessToGuild, guildId: platform.metadata?.id, type: 'channel' })
+    logger.info({ hasBotAccessToGuild, guildId: platform.metadata?.id, type: 'channel' });
 
     if (!hasBotAccessToGuild) {
       return;
@@ -40,10 +40,10 @@ export default async function fetchGuildChannels(connection: Connection, platfor
     const guild = await client.guilds.fetch(platform.metadata?.id);
     const channelsToStore: IChannel[] = [];
     const textAndVoiceChannels = [...guild.channels.cache.values()].filter(
-      channel => channel.type === 0 || channel.type === 2 || channel.type === 4
+      (channel) => channel.type === 0 || channel.type === 2 || channel.type === 4,
     ) as Array<TextChannel | VoiceChannel>;
     pushChannelsToArray(channelsToStore, textAndVoiceChannels);
-    logger.info({ channels: channelsToStore })
+    logger.info({ channels: channelsToStore });
     await channelService.createChannels(connection, channelsToStore); // assuming a 'channelService'
   } catch (error) {
     logger.error({ guild_id: platform.metadata?.id, error }, 'Failed to fetch channels');

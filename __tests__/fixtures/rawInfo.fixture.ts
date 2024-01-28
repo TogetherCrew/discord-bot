@@ -13,7 +13,7 @@ export const rawInfo1: IRawInfo = {
   messageId: 'message123',
   threadId: 'thread456',
   threadName: 'thread789',
-  channelName: 'c1'
+  channelName: 'c1',
 };
 
 export const rawInfo2: IRawInfo = {
@@ -29,7 +29,7 @@ export const rawInfo2: IRawInfo = {
   messageId: 'message012',
   threadId: 'thread345',
   threadName: 'Discussion Thread',
-  channelName: 'c2'
+  channelName: 'c2',
 };
 
 export const rawInfo3: IRawInfo = {
@@ -45,5 +45,5 @@ export const rawInfo3: IRawInfo = {
   messageId: 'message654',
   threadId: 'thread321',
   threadName: 'Important Announcement',
-  channelName: 'c3'
+  channelName: 'c3',
 };
