@@ -12,7 +12,7 @@ services:
       - DB_PORT=27017
       - DB_USER=root
       - DB_PASSWORD=pass
-      - DB_NAME=
+      - DB_NAME=RnDAO
       - DISCORD_CLIENT_ID=1
       - DISCORD_CLIENT_SECRET=1
       - SENTRY_DSN=1
@@ -40,6 +40,8 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=pass
+    volumes:
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
     healthcheck:
       test: echo 'db.stats().ok' | mongosh localhost:27017/test --quiet
       interval: 60s
