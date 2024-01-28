@@ -2,7 +2,7 @@ import path from 'path';
 import { readdir } from 'node:fs/promises';
 import { coreService } from '../services';
 
-async function loadEvents() {
+async function loadEvents(): Promise<void> {
   const client = await coreService.DiscordBotManager.getClient();
   const foldersPath: string = path.join(__dirname, '../events');
   const eventFolders: string[] = await readdir(foldersPath);
@@ -14,7 +14,7 @@ async function loadEvents() {
     for (const file of eventFiles) {
       const filePath: string = path.join(eventsPath, file);
       const event = (await import(filePath)).default;
-      if (event.once) {
+      if (event.once === true) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         client.once(event.name, (...args: any[]) => event.execute(...args));
       } else {

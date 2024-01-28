@@ -6,7 +6,7 @@ import { coreService } from '../services';
 import parentLogger from '../config/logger';
 const logger = parentLogger.child({ module: 'CommandService' });
 
-async function loadCommands() {
+async function loadCommands(): Promise<void> {
   const client = await coreService.DiscordBotManager.getClient();
   client.commands = new Collection();
   const foldersPath: string = path.join(__dirname, '../commands');
@@ -28,7 +28,7 @@ async function loadCommands() {
   }
 }
 
-async function registerCommand() {
+async function registerCommand(): Promise<void> {
   try {
     const client = await coreService.DiscordBotManager.getClient();
     const rest = new REST().setToken(config.discord.botToken);

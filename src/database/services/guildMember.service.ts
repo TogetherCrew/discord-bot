@@ -1,6 +1,6 @@
-import { Connection } from 'mongoose';
-import { IGuildMember, IGuildMemberMethods, IGuildMemberUpdateBody } from '@togethercrew.dev/db';
-import { GuildMember } from 'discord.js';
+import { type Connection } from 'mongoose';
+import { type IGuildMember, type IGuildMemberMethods, type IGuildMemberUpdateBody } from '@togethercrew.dev/db';
+import { type GuildMember } from 'discord.js';
 import parentLogger from '../../config/logger';
 
 const logger = parentLogger.child({ module: 'GuildMemberService' });
@@ -15,7 +15,7 @@ async function createGuildMember(connection: Connection, guildMember: IGuildMemb
     return await connection.models.GuildMember.create(guildMember);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    if (error.code == 11000) {
+    if (error.code === 11000) {
       logger.warn(
         { database: connection.name, guild_member_id: guildMember.discordId },
         'Failed to create duplicate guild member',
@@ -41,7 +41,7 @@ async function createGuildMembers(connection: Connection, guildMembers: IGuildMe
     return await connection.models.GuildMember.insertMany(guildMembers, { ordered: false });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    if (error.code == 11000) {
+    if (error.code === 11000) {
       logger.warn({ database: connection.name }, 'Failed to create duplicate guild members');
       return [];
     }
@@ -87,11 +87,12 @@ async function updateGuildMember(
 ): Promise<IGuildMember | null> {
   try {
     const guildMember = await connection.models.GuildMember.findOne(filter);
-    if (!guildMember) {
+    if (guildMember === null) {
       return null;
     }
     Object.assign(guildMember, updateBody);
-    return await guildMember.save();
+    await guildMember.save();
+    return guildMember;
   } catch (error) {
     logger.error({ database: connection.name, filter, updateBody, error }, 'Failed to update guild member');
     return null;
@@ -112,6 +113,7 @@ async function updateGuildMembers(
 ): Promise<number> {
   try {
     const updateResult = await connection.models.GuildMember.updateMany(filter, updateBody);
+    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     return updateResult.modifiedCount || 0;
   } catch (error) {
     logger.error({ database: connection.name, filter, updateBody, error }, 'Failed to update guild members');
@@ -162,7 +164,7 @@ async function handelGuildMemberChanges(connection: Connection, guildMember: Gui
   const commonFields = getNeededDateFromGuildMember(guildMember);
   try {
     const guildMemberDoc = await updateGuildMember(connection, { discordId: guildMember.user.id }, commonFields);
-    if (!guildMemberDoc) {
+    if (guildMemberDoc === null) {
       await createGuildMember(connection, {
         ...commonFields,
         isBot: guildMember.user.bot,

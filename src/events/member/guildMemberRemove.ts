@@ -1,4 +1,4 @@
-import { Events, GuildMember } from 'discord.js';
+import { Events, type GuildMember } from 'discord.js';
 import { guildMemberService } from '../../database/services';
 import { DatabaseManager } from '@togethercrew.dev/db';
 import parentLogger from '../../config/logger';
@@ -14,7 +14,7 @@ export default {
     const connection = await DatabaseManager.getInstance().getTenantDb(member.guild.id);
     try {
       const guildMemberDoc = await guildMemberService.getGuildMember(connection, { discordId: member.user.id });
-      await guildMemberDoc?.softDelete();
+      guildMemberDoc?.softDelete();
       logger.info(logFields, 'event is done');
     } catch (err) {
       logger.error({ ...logFields, err }, 'Failed to soft delete the guild member');

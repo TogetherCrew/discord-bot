@@ -1,7 +1,18 @@
-import { Message, TextChannel, Collection, User, Role, ThreadChannel, Snowflake } from 'discord.js';
-import { IRawInfo } from '@togethercrew.dev/db';
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable no-unneeded-ternary */
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
+import {
+  type Message,
+  TextChannel,
+  type Collection,
+  type User,
+  type Role,
+  ThreadChannel,
+  type Snowflake,
+} from 'discord.js';
+import { type IRawInfo } from '@togethercrew.dev/db';
 import { rawInfoService } from '../database/services';
-import { Connection } from 'mongoose';
+import { type Connection } from 'mongoose';
 import parentLogger from '../config/logger';
 
 const logger = parentLogger.child({ module: 'FetchMessages' });
@@ -33,6 +44,7 @@ async function getReactions(message: Message): Promise<string[]> {
       const emoji = reaction.emoji;
       const users: Collection<string, User> = await reaction.users.fetch();
       let usersString = users.map((user) => `${user.id}`).join(',');
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       usersString += `,${emoji.name}`;
       reactionsArr.push(usersString);
     }
@@ -109,7 +121,7 @@ async function pushMessagesToArray(
     }
 
     if (allowedTypes.includes(message.type)) {
-      await arr.push(await getNeedDataFromMessage(message, threadInfo));
+      arr.push(await getNeedDataFromMessage(message, threadInfo));
     }
   }
   return arr;

@@ -1,5 +1,6 @@
-import { Connection } from 'mongoose';
-import { IRawInfo, IRawInfoUpdateBody } from '@togethercrew.dev/db';
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
+import { type Connection } from 'mongoose';
+import { type IRawInfo, type IRawInfoUpdateBody } from '@togethercrew.dev/db';
 import parentLogger from '../../config/logger';
 
 const logger = parentLogger.child({ module: 'rawInfoService' });
@@ -14,7 +15,7 @@ async function createRawInfo(connection: Connection, rawInfo: IRawInfo): Promise
     return await connection.models.RawInfo.create(rawInfo);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    if (error.code == 11000) {
+    if (error.code === 11000) {
       logger.warn(
         { database: connection.name, channel_id: rawInfo.channelId, message_id: rawInfo.messageId },
         'Failed to create duplicate rawInfo',
@@ -40,7 +41,7 @@ async function createRawInfos(connection: Connection, rawInfos: IRawInfo[]): Pro
     return await connection.models.RawInfo.insertMany(rawInfos, { ordered: false });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    if (error.code == 11000) {
+    if (error.code === 11000) {
       logger.warn({ database: connection.name }, 'Failed to create duplicate rawInfos');
       return [];
     }
@@ -83,11 +84,12 @@ async function updateRawInfo(
 ): Promise<IRawInfo | null> {
   try {
     const rawInfo = await connection.models.RawInfo.findOne(filter);
-    if (!rawInfo) {
+    if (rawInfo === null) {
       return null;
     }
     Object.assign(rawInfo, updateBody);
-    return await rawInfo.save();
+    await rawInfo.save();
+    return rawInfo;
   } catch (error) {
     logger.error({ database: connection.name, filter, updateBody, error }, 'Failed to update rawInfo');
     return null;

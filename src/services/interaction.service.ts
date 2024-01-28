@@ -2,9 +2,9 @@
 import fetch from 'node-fetch';
 import parentLogger from '../config/logger';
 import {
-  ChatInputCommandInteraction_broker,
-  InteractionResponse,
-  InteractionResponseEditData,
+  type ChatInputCommandInteraction_broker,
+  type InteractionResponse,
+  type InteractionResponseEditData,
 } from '../interfaces/Hivemind.interface';
 
 const logger = parentLogger.child({ module: 'InteractionResponses' });
@@ -15,14 +15,21 @@ const logger = parentLogger.child({ module: 'InteractionResponses' });
    @param {string} redirect_uri
  * @returns {Promise<IDiscordOathBotCallback>}
  */
-async function createInteractionResponse(interaction: ChatInputCommandInteraction_broker, data: InteractionResponse) {
+async function createInteractionResponse(
+  interaction: ChatInputCommandInteraction_broker,
+  data: InteractionResponse,
+): Promise<any> {
   try {
     // {4, 5, 9, 10, 11}
     const { type, ...rest } = data;
     const body = {
-      type: type,
+      type,
       data: rest.data,
     };
+
+    if (interaction.token === null || interaction.token === undefined) {
+      throw new Error('InteractionToken is null or undefined');
+    }
 
     const response = await fetch(
       `https://discord.com/api/interactions/${interaction.id}/${interaction.token}/callback`,
@@ -49,8 +56,17 @@ async function createInteractionResponse(interaction: ChatInputCommandInteractio
    @param {string} redirect_uri
  * @returns {Promise<IDiscordOathBotCallback>}
  */
-async function getOriginalInteractionResponse(interaction: ChatInputCommandInteraction_broker) {
+async function getOriginalInteractionResponse(interaction: ChatInputCommandInteraction_broker): Promise<any> {
   try {
+    if (
+      interaction.token === null ||
+      interaction.token === undefined ||
+      interaction.applicationId === null ||
+      interaction.applicationId === undefined
+    ) {
+      throw new Error('InteractionToken or InteractionApplicationId is null or undefined');
+    }
+
     const response = await fetch(
       `https://discord.com/api/webhooks/${interaction.applicationId}/${interaction.token}/messages/@original`,
       {
@@ -77,8 +93,17 @@ async function getOriginalInteractionResponse(interaction: ChatInputCommandInter
 async function editOriginalInteractionResponse(
   interaction: ChatInputCommandInteraction_broker,
   data: InteractionResponseEditData,
-) {
+): Promise<any> {
   try {
+    if (
+      interaction.token === null ||
+      interaction.token === undefined ||
+      interaction.applicationId === null ||
+      interaction.applicationId === undefined
+    ) {
+      throw new Error('InteractionToken or InteractionApplicationId is null or undefined');
+    }
+
     const response = await fetch(
       `https://discord.com/api/webhooks/${interaction.applicationId}/${interaction.token}/messages/@original`,
       {
@@ -103,8 +128,17 @@ async function editOriginalInteractionResponse(
    @param {string} redirect_uri
  * @returns {Promise<IDiscordOathBotCallback>}
  */
-async function deleteOriginalInteractionResponse(interaction: ChatInputCommandInteraction_broker) {
+async function deleteOriginalInteractionResponse(interaction: ChatInputCommandInteraction_broker): Promise<void> {
   try {
+    if (
+      interaction.token === null ||
+      interaction.token === undefined ||
+      interaction.applicationId === null ||
+      interaction.applicationId === undefined
+    ) {
+      throw new Error('InteractionToken or InteractionApplicationId is null or undefined');
+    }
+
     const response = await fetch(
       `https://discord.com/api/webhooks/${interaction.applicationId}/${interaction.token}/messages/@original`,
       {
@@ -126,8 +160,17 @@ async function deleteOriginalInteractionResponse(interaction: ChatInputCommandIn
    @param {string} redirect_uri
  * @returns {Promise<IDiscordOathBotCallback>}
  */
-async function createFollowUpMessage(interaction: ChatInputCommandInteraction_broker, data: object) {
+async function createFollowUpMessage(interaction: ChatInputCommandInteraction_broker, data: object): Promise<any> {
   try {
+    if (
+      interaction.token === null ||
+      interaction.token === undefined ||
+      interaction.applicationId === null ||
+      interaction.applicationId === undefined
+    ) {
+      throw new Error('InteractionToken or InteractionApplicationId is null or undefined');
+    }
+
     const response = await fetch(`https://discord.com/api/webhooks/${interaction.applicationId}/${interaction.token}`, {
       method: 'POST',
       body: JSON.stringify(data),

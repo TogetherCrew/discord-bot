@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import RabbitMQ, { Event } from '@togethercrew.dev/tc-messagebroker';
 import { handleFetchEvent } from './events/fetchEvent';
 import { handleSendMessageEvent } from './events/sendMessageEvent';
@@ -8,7 +9,7 @@ import { handleInteractionResponseDelete } from './events/interactionResponseDel
 import { handleFollowUpMessageCreate } from './events/FollowUpMessageCreate';
 import { handleSendMessageToChannel } from './events/sendMessageToChannel';
 
-export function setupRabbitMQHandlers() {
+export function setupRabbitMQHandlers(): void {
   RabbitMQ.onEvent(Event.DISCORD_BOT.FETCH, handleFetchEvent);
   RabbitMQ.onEvent(Event.DISCORD_BOT.SEND_MESSAGE, handleSendMessageEvent);
   RabbitMQ.onEvent(Event.DISCORD_BOT.SEND_MESSAGE_TO_CHANNEL, handleSendMessageToChannel);

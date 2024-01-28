@@ -3,7 +3,7 @@ import config from '../config';
 import logger from '../config/logger';
 
 // Connect to RabbitMQ
-export const connectToRabbitMQ = async () => {
+export const connectToRabbitMQ = async (): Promise<void> => {
   try {
     await RabbitMQ.connect(config.rabbitMQ.url, Queue.DISCORD_BOT);
     logger.info({ url: config.rabbitMQ.url, queue: Queue.DISCORD_BOT }, 'Connected to RabbitMQ!');

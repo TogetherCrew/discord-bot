@@ -19,7 +19,7 @@
         "coverage",
         "dist",
         "__tests__/",
-        "jest.config.ts",
+        "jest.config.js",
         "*.yml"
     ]
 }

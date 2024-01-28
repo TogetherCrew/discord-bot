@@ -1,4 +1,4 @@
-import { Events, Channel, TextChannel, VoiceChannel, CategoryChannel } from 'discord.js';
+import { Events, type Channel, TextChannel, VoiceChannel, CategoryChannel } from 'discord.js';
 import { channelService, platformService } from '../../database/services';
 import { DatabaseManager } from '@togethercrew.dev/db';
 import parentLogger from '../../config/logger';
@@ -15,7 +15,7 @@ export default {
       const connection = await DatabaseManager.getInstance().getTenantDb(channel.guild.id);
       try {
         const channelDoc = await channelService.getChannel(connection, { channelId: channel.id });
-        await channelDoc?.softDelete();
+        channelDoc?.softDelete();
         const platformDoc = await platformService.getPlatform({ 'metadata.id': channel.guild.id });
         const updatedSelecetdChannels = platformDoc?.metadata?.selectedChannels?.filter(
           // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -1,6 +1,8 @@
-import { TextChannel, Message, ThreadChannel, Snowflake } from 'discord.js';
-import { IRawInfo } from '@togethercrew.dev/db';
-import { Connection } from 'mongoose';
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+import { type TextChannel, type Message, type ThreadChannel, type Snowflake } from 'discord.js';
+import { type IRawInfo } from '@togethercrew.dev/db';
+import { type Connection } from 'mongoose';
 import parentLogger from '../../config/logger';
 import { rawInfoService, channelService } from '../../database/services';
 import { coreService } from '../../services';

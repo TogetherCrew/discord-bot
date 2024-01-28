@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 import Joi from 'joi';
 
 const envVarsSchema = Joi.object()
@@ -26,7 +27,7 @@ const envVarsSchema = Joi.object()
 
 const { value: envVars, error } = envVarsSchema.prefs({ errors: { label: 'key' } }).validate(process.env);
 
-if (error) {
+if (error != null) {
   throw new Error(`Config validation error: ${error.message}`);
 }
 export default {

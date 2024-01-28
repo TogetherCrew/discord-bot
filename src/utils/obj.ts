@@ -19,13 +19,14 @@ export function handleBigInts(obj: any, seen = new WeakSet()): any {
   return obj; // Return the value unchanged if it's neither an object nor a BigInt
 }
 
-export function removeCircularReferences(obj: any, parent = null) {
-  const seenObjects = new WeakMap();
+export function removeCircularReferences<T>(obj: T): T {
+  const seenObjects = new WeakMap<object, boolean>();
 
-  function detect(obj: any, parent: any) {
-    if (obj && typeof obj === 'object') {
+  function detect(obj: any, parent: any): void {
+    // Explicitly check that obj is not null or undefined
+    if (obj !== null && obj !== undefined && typeof obj === 'object') {
       if (seenObjects.has(obj)) {
-        return '[Circular]';
+        return;
       }
       seenObjects.set(obj, true);
 
@@ -41,6 +42,6 @@ export function removeCircularReferences(obj: any, parent = null) {
     }
   }
 
-  detect(obj, parent);
+  detect(obj, null);
   return obj;
 }

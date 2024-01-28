@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { SlashCommandBuilder } from 'discord.js';
 import { interactionService } from '../../services';
 import RabbitMQ, { Event, Queue as RabbitMQQueue } from '@togethercrew.dev/tc-messagebroker';
-import { ChatInputCommandInteraction_broker } from '../../interfaces/Hivemind.interface';
+import { type ChatInputCommandInteraction_broker } from '../../interfaces/Hivemind.interface';
 import { handleBigInts, removeCircularReferences } from '../../utils/obj';
 import logger from '../../config/logger';
 export default {

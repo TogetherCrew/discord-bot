@@ -4,7 +4,6 @@ import { coreService } from '../../services';
 import { createPrivateThreadAndSendMessage } from '../../functions/thread';
 import parentLogger from '../../config/logger';
 import { platformService } from '../../database/services';
-import sendDirectMessage from '../../functions/sendDirectMessage';
 import { addDirectMessage } from '../../queue/queues/directMessage';
 
 const logger = parentLogger.child({ module: `${Event.DISCORD_BOT.SEND_MESSAGE}` });

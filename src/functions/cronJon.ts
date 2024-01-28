@@ -1,4 +1,4 @@
-import { Types } from 'mongoose';
+import { type Types } from 'mongoose';
 import { platformService } from '../database/services';
 import { ChoreographyDict, MBConnection, Status } from '@togethercrew.dev/tc-messagebroker';
 import guildExtraction from './guildExtraction';
@@ -7,7 +7,7 @@ import { DatabaseManager } from '@togethercrew.dev/db';
 
 const logger = parentLogger.child({ event: 'CronJob' });
 
-async function createAndStartCronJobSaga(platformId: Types.ObjectId) {
+async function createAndStartCronJobSaga(platformId: Types.ObjectId): Promise<void> {
   try {
     const saga = await MBConnection.models.Saga.create({
       status: Status.NOT_STARTED,
@@ -23,7 +23,7 @@ async function createAndStartCronJobSaga(platformId: Types.ObjectId) {
 /**
  * Runs the extraction process for multiple guilds.
  */
-export default async function cronJob() {
+export default async function cronJob(): Promise<void> {
   logger.info('event is running');
   const platforms = await platformService.getPlatforms({ disconnectedAt: null });
   for (let i = 0; i < platforms.length; i++) {

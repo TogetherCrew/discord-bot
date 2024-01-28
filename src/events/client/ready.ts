@@ -1,4 +1,4 @@
-import { Client, Events } from 'discord.js';
+import { type Client, Events } from 'discord.js';
 import { platformService } from '../../database/services';
 import fetchMembers from '../../functions/fetchMembers';
 import fetchChannels from '../../functions/fetchChannels';

@@ -1,4 +1,4 @@
-import { Events, GuildMember } from 'discord.js';
+import { Events, type GuildMember } from 'discord.js';
 import { guildMemberService } from '../../database/services';
 import { DatabaseManager } from '@togethercrew.dev/db';
 import parentLogger from '../../config/logger';

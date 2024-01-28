@@ -1,9 +1,11 @@
 import { Client, GatewayIntentBits } from 'discord.js';
 import config from '../config';
 
+// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 class DiscordBotManager {
   public static client: Client;
   public static async getClient(): Promise<Client> {
+    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     if (!DiscordBotManager.client) {
       DiscordBotManager.client = new Client({
         intents: [

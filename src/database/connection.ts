@@ -6,9 +6,9 @@ import logger from '../config/logger';
 mongoose.set('strictQuery', true);
 
 // Connect to Message Broker DB
-export const connectToMB = async () => {
+export const connectToMB = async (): Promise<void> => {
   try {
-    await MBConnection.connect(config.mongoose.dbURL);
+    MBConnection.connect(config.mongoose.dbURL);
     logger.info({ url: config.mongoose.dbURL }, 'Setuped Message Broker connection!');
   } catch (error) {
     logger.fatal({ url: config.mongoose.dbURL, error }, 'Failed to setup to Message Broker!!');
@@ -16,7 +16,7 @@ export const connectToMB = async () => {
 };
 
 // Connect to MongoDB
-export const connectToMongoDB = async () => {
+export const connectToMongoDB = async (): Promise<void> => {
   try {
     await mongoose.connect(config.mongoose.serverURL);
     logger.info({ url: config.mongoose.serverURL }, 'Connected to MongoDB!');

@@ -32,7 +32,7 @@ interface PermissionsBitField {
   bitfield?: number;
   allPermissions?: number;
   defaultPermissions?: number;
-  permissionFlags?: { [key: string]: boolean };
+  permissionFlags?: Record<string, boolean>;
   stageModerator?: number;
 }
 
@@ -141,7 +141,7 @@ interface Embed {
   video?: Record<string, any>;
   provider?: Record<string, any>;
   author?: Record<string, any>;
-  fields?: Record<string, any>[];
+  fields?: Array<Record<string, any>>;
 }
 
 // InteractionCallbackData
@@ -151,7 +151,7 @@ interface InteractionCallbackData {
   embeds?: Embed[] | null;
   allowed_mentions?: string | null;
   flags?: number | null;
-  components?: { [key: string]: any }[] | null;
+  components?: Array<Record<string, any>> | null;
   attachments?: Attachment[] | null;
 }
 
@@ -209,8 +209,8 @@ export interface InteractionResponseEditData {
   content?: string | null;
   embeds?: Embed[] | null;
   allowed_mentions?: AllowedMentions | null;
-  components?: { [key: string]: any }[][] | null;
-  files?: { [key: string]: any }[] | null;
+  components?: Array<Array<Record<string, any>>> | null;
+  files?: Array<Record<string, any>> | null;
   payload_json?: string | null;
   attachments?: Attachment[] | null;
 }

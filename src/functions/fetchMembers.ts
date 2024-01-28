@@ -1,7 +1,6 @@
-import { GuildMember } from 'discord.js';
-import { Connection, HydratedDocument } from 'mongoose';
-import { IPlatform } from '@togethercrew.dev/db';
-import { IGuildMember } from '@togethercrew.dev/db';
+import { type GuildMember } from 'discord.js';
+import { type Connection, type HydratedDocument } from 'mongoose';
+import { type IPlatform, type IGuildMember } from '@togethercrew.dev/db';
 import { guildMemberService, platformService } from '../database/services';
 import { coreService } from '../services';
 
@@ -26,6 +25,7 @@ function pushMembersToArray(arr: IGuildMember[], guildMembersArray: GuildMember[
  * @param {Connection} connection - Mongoose connection object for the database.
  * @param {Snowflake} guildId - The identifier of the guild to extract information from.
  */
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default async function fetchGuildMembers(connection: Connection, platform: HydratedDocument<IPlatform>) {
   try {
     const client = await coreService.DiscordBotManager.getClient();

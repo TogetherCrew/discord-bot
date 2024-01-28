@@ -1,6 +1,6 @@
-import { TextChannel, VoiceChannel, CategoryChannel } from 'discord.js';
-import { Connection, HydratedDocument } from 'mongoose';
-import { IPlatform, IChannel } from '@togethercrew.dev/db';
+import { type TextChannel, type VoiceChannel, type CategoryChannel } from 'discord.js';
+import { type Connection, type HydratedDocument } from 'mongoose';
+import { type IPlatform, type IChannel } from '@togethercrew.dev/db';
 import { channelService, platformService } from '../database/services';
 import { coreService } from '../services';
 import parentLogger from '../config/logger';
@@ -28,6 +28,7 @@ function pushChannelsToArray(
  * @param {Connection} connection - Mongoose connection object for the database.
  * @param {Snowflake} guildId - The identifier of the guild to extract text and voice channels from.
  */
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default async function fetchGuildChannels(connection: Connection, platform: HydratedDocument<IPlatform>) {
   try {
     const client = await coreService.DiscordBotManager.getClient();
