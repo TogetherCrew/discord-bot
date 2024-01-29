@@ -10,7 +10,6 @@ describe('rawInfo service', () => {
   let connection: Connection;
   beforeEach(async () => {
     connection = await DatabaseManager.getInstance().getTenantDb('connection');
-    await connection.dropDatabase();
   });
   describe('createRawInfo', () => {
     test('should create a rawInfo', async () => {

@@ -30,7 +30,6 @@ services:
       - ./coverage:/project/coverage
     depends_on:
       mongo:
-        condition: service_healthy
       redis:
         condition: service_healthy
       rabbitmq: 
@@ -41,12 +40,12 @@ services:
       - MONGO_INITDB_DATABASE=RnDAO
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=pass
-    healthcheck:
-      test: echo 'db.stats().ok' | mongosh localhost:27017/test --quiet
-      interval: 60s
-      timeout: 10s
-      retries: 2
-      start_period: 40s
+    # healthcheck:
+    #   test: echo 'db.stats().ok' | mongosh localhost:27017/test --quiet
+    #   interval: 60s
+    #   timeout: 10s
+    #   retries: 2
+    #   start_period: 40s
   rabbitmq:
     image: "rabbitmq:3-management-alpine"
     environment:
