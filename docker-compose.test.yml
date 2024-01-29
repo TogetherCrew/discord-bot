@@ -10,8 +10,8 @@ services:
       - NODE_ENV=test
       - DB_HOST=mongo
       - DB_PORT=27017
-      - DB_USER=root
-      - DB_PASSWORD=pass
+      - DB_USER=user
+      - DB_PASSWORD=password
       - DB_NAME=RnDAO
       - DISCORD_CLIENT_ID=1
       - DISCORD_CLIENT_SECRET=1
