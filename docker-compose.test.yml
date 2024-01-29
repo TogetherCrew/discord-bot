@@ -31,10 +31,6 @@ services:
     depends_on:
       mongo:
         condition: service_healthy
-      redis:
-        condition: service_healthy
-      rabbitmq: 
-        condition: service_healthy
   mongo:
     image: "mongo:5.0.10"
     environment:
@@ -47,25 +43,3 @@ services:
       timeout: 10s
       retries: 2
       start_period: 40s
-  rabbitmq:
-    image: "rabbitmq:3-management-alpine"
-    environment:
-      - RABBITMQ_DEFAULT_USER=root
-      - RABBITMQ_DEFAULT_PASS=pass
-    healthcheck:
-      test: rabbitmq-diagnostics -q ping
-      interval: 30s
-      timeout: 30s
-      retries: 2
-      start_period: 40s
-  redis:
-    image: redis:7.0.11
-    restart: unless-stopped
-    healthcheck:
-      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
-      interval: 10s
-      timeout: 10s
-      retries: 2
-      start_period: 10s
-    ports:
-      - 6379:6379
