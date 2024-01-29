@@ -10,7 +10,7 @@ describe('role service', () => {
   describe('createRole', () => {
     let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
       await connection.dropDatabase();
     });
     test('should create a role', async () => {
@@ -32,7 +32,7 @@ describe('role service', () => {
   describe('createRoles', () => {
     let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
       await connection.dropDatabase();
     });
     test('should create roles', async () => {
@@ -61,7 +61,7 @@ describe('role service', () => {
   describe('getRole', () => {
     let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
       await connection.dropDatabase();
     });
     test('should retrieve an existing role that match the filter criteria', async () => {
@@ -83,7 +83,7 @@ describe('role service', () => {
   describe('getRoles', () => {
     let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
       await connection.dropDatabase();
     });
     test('should retrieve roles that match the filter criteria', async () => {
@@ -106,7 +106,7 @@ describe('role service', () => {
   describe('updateRole', () => {
     let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
       await connection.dropDatabase();
     });
     const updateBody: IRoleUpdateBody = {
@@ -136,7 +136,7 @@ describe('role service', () => {
   describe('updateRoles', () => {
     let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
       await connection.dropDatabase();
     });
     const updateBody: IRoleUpdateBody = {

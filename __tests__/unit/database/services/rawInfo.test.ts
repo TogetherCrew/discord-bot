@@ -10,7 +10,7 @@ describe('rawInfo service', () => {
   describe('createRawInfo', () => {
     let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
       await connection.dropDatabase();
     });
     test('should create a rawInfo', async () => {
@@ -33,7 +33,7 @@ describe('rawInfo service', () => {
   describe('createRawInfos', () => {
     let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
       await connection.dropDatabase();
     });
     test('should create rawInfos (list of rawInfo)', async () => {
@@ -69,7 +69,7 @@ describe('rawInfo service', () => {
   describe('getRawInfo', () => {
     let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
       await connection.dropDatabase();
     });
     test('should retrieve an existing rawInfo that matches the filter criteria', async () => {
@@ -92,7 +92,7 @@ describe('rawInfo service', () => {
   describe('getRawInfos', () => {
     let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
       await connection.dropDatabase();
     });
     test('should retrieve rawInfo that matches the filter criteria', async () => {
@@ -116,7 +116,7 @@ describe('rawInfo service', () => {
   describe('updateRawInfo', () => {
     let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
       await connection.dropDatabase();
     });
     const updateBody: IRawInfoUpdateBody = {
@@ -151,7 +151,7 @@ describe('rawInfo service', () => {
   describe('updateRawInfos', () => {
     let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
       await connection.dropDatabase();
     });
     const updateBody: IRawInfoUpdateBody = {
@@ -190,7 +190,7 @@ describe('rawInfo service', () => {
   describe('deleteRawInfo', () => {
     let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
       await connection.dropDatabase();
     });
     test('should delete rawInfo that matches the filter criteria', async () => {
@@ -212,7 +212,7 @@ describe('rawInfo service', () => {
   describe('deleteRawInfos', () => {
     let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
       await connection.dropDatabase();
     });
     test('should delete rawInfo that matches the filter criteria', async () => {

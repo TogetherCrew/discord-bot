@@ -10,7 +10,7 @@ describe('channel service', () => {
   describe('createChannel', () => {
     let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
       await connection.dropDatabase();
     });
     test('should create a channel', async () => {
@@ -32,7 +32,7 @@ describe('channel service', () => {
   describe('createChannels', () => {
     let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
       await connection.dropDatabase();
     });
     test('should create channels', async () => {
@@ -61,7 +61,7 @@ describe('channel service', () => {
   describe('getChannel', () => {
     let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
       await connection.dropDatabase();
     });
     test('should retrieve an existing channel that match the filter criteria', async () => {
@@ -83,7 +83,7 @@ describe('channel service', () => {
   describe('getChannels', () => {
     let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
       await connection.dropDatabase();
     });
     test('should retrieve channels that match the filter criteria', async () => {
@@ -106,7 +106,7 @@ describe('channel service', () => {
   describe('updateChannel', () => {
     let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
       await connection.dropDatabase();
     });
     const updateBody: IChannelUpdateBody = {
@@ -136,7 +136,7 @@ describe('channel service', () => {
   describe('updateChannels', () => {
     let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
       await connection.dropDatabase();
     });
     const updateBody: IChannelUpdateBody = {

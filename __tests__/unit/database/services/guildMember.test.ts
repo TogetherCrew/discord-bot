@@ -10,7 +10,7 @@ describe('guildMember service', () => {
   describe('createGuidMember', () => {
     let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
       await connection.dropDatabase();
     });
     test('should create a guild member', async () => {
@@ -33,7 +33,7 @@ describe('guildMember service', () => {
   describe('createGuidMembers', () => {
     let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
       await connection.dropDatabase();
     });
     test('should create guild members', async () => {
@@ -64,7 +64,7 @@ describe('guildMember service', () => {
   describe('getGuildMember', () => {
     let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
       await connection.dropDatabase();
     });
     test('should retrieve an existing guild member that match the filter criteria', async () => {
@@ -86,7 +86,7 @@ describe('guildMember service', () => {
   describe('getGuildMembers', () => {
     let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
       await connection.dropDatabase();
     });
     test('should retrieve guild members that match the filter criteria', async () => {
@@ -110,7 +110,7 @@ describe('guildMember service', () => {
   describe('updateGuildMember', () => {
     let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
       await connection.dropDatabase();
     });
     const updateBody: IGuildMemberUpdateBody = {
@@ -155,7 +155,7 @@ describe('guildMember service', () => {
   describe('updateGuildMembers', () => {
     let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
       await connection.dropDatabase();
     });
     const updateBody: IGuildMemberUpdateBody = {
@@ -184,7 +184,7 @@ describe('guildMember service', () => {
   describe('deleteGuildMember', () => {
     let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
       await connection.dropDatabase();
     });
     test('should delete guild member that match the filter criteria', async () => {
@@ -206,7 +206,7 @@ describe('guildMember service', () => {
   describe('deleteGuildMembers', () => {
     let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
       await connection.dropDatabase();
     });
     test('should delete guild members that match the filter criteria', async () => {
