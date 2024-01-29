@@ -11,7 +11,7 @@ describe('guildMember service', () => {
     let connection: Connection;
     beforeEach(async () => {
       connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
-      await connection.dropDatabase();
+      await Promise.all(Object.values(mongoose.connection.collections).map(async (collection) => collection.deleteMany({})));
     });
     test('should create a guild member', async () => {
       const result = await guildMemberService.createGuildMember(connection, guildMember1);
@@ -34,7 +34,7 @@ describe('guildMember service', () => {
     let connection: Connection;
     beforeEach(async () => {
       connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
-      await connection.dropDatabase();
+      await Promise.all(Object.values(mongoose.connection.collections).map(async (collection) => collection.deleteMany({})));
     });
     test('should create guild members', async () => {
       const result = await guildMemberService.createGuildMembers(connection, [guildMember1, guildMember2]);
@@ -65,7 +65,7 @@ describe('guildMember service', () => {
     let connection: Connection;
     beforeEach(async () => {
       connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
-      await connection.dropDatabase();
+      await Promise.all(Object.values(mongoose.connection.collections).map(async (collection) => collection.deleteMany({})));
     });
     test('should retrieve an existing guild member that match the filter criteria', async () => {
       await guildMemberService.createGuildMember(connection, guildMember1);
@@ -87,7 +87,7 @@ describe('guildMember service', () => {
     let connection: Connection;
     beforeEach(async () => {
       connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
-      await connection.dropDatabase();
+      await Promise.all(Object.values(mongoose.connection.collections).map(async (collection) => collection.deleteMany({})));
     });
     test('should retrieve guild members that match the filter criteria', async () => {
       await guildMemberService.createGuildMembers(connection, [guildMember1, guildMember2, guildMember3]);
@@ -111,7 +111,7 @@ describe('guildMember service', () => {
     let connection: Connection;
     beforeEach(async () => {
       connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
-      await connection.dropDatabase();
+      await Promise.all(Object.values(mongoose.connection.collections).map(async (collection) => collection.deleteMany({})));
     });
     const updateBody: IGuildMemberUpdateBody = {
       username: 'userName',
@@ -156,7 +156,7 @@ describe('guildMember service', () => {
     let connection: Connection;
     beforeEach(async () => {
       connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
-      await connection.dropDatabase();
+      await Promise.all(Object.values(mongoose.connection.collections).map(async (collection) => collection.deleteMany({})));
     });
     const updateBody: IGuildMemberUpdateBody = {
       avatar: 'new-avatar.png',
@@ -185,7 +185,7 @@ describe('guildMember service', () => {
     let connection: Connection;
     beforeEach(async () => {
       connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
-      await connection.dropDatabase();
+      await Promise.all(Object.values(mongoose.connection.collections).map(async (collection) => collection.deleteMany({})));
     });
     test('should delete guild member that match the filter criteria', async () => {
       await guildMemberService.createGuildMember(connection, guildMember1);
@@ -207,7 +207,7 @@ describe('guildMember service', () => {
     let connection: Connection;
     beforeEach(async () => {
       connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
-      await connection.dropDatabase();
+      await Promise.all(Object.values(mongoose.connection.collections).map(async (collection) => collection.deleteMany({})));
     });
     test('should delete guild members that match the filter criteria', async () => {
       await guildMemberService.createGuildMembers(connection, [guildMember1, guildMember2, guildMember3]);

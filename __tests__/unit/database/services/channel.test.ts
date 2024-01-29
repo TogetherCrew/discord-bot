@@ -11,7 +11,7 @@ describe('channel service', () => {
     let connection: Connection;
     beforeEach(async () => {
       connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
-      await connection.dropDatabase();
+      await Promise.all(Object.values(mongoose.connection.collections).map(async (collection) => collection.deleteMany({})));
     });
     test('should create a channel', async () => {
       const result = await channelService.createChannel(connection, channel1);
@@ -33,7 +33,7 @@ describe('channel service', () => {
     let connection: Connection;
     beforeEach(async () => {
       connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
-      await connection.dropDatabase();
+      await Promise.all(Object.values(mongoose.connection.collections).map(async (collection) => collection.deleteMany({})));
     });
     test('should create channels', async () => {
       const result = await channelService.createChannels(connection, [channel1, channel2]);
@@ -62,7 +62,7 @@ describe('channel service', () => {
     let connection: Connection;
     beforeEach(async () => {
       connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
-      await connection.dropDatabase();
+      await Promise.all(Object.values(mongoose.connection.collections).map(async (collection) => collection.deleteMany({})));
     });
     test('should retrieve an existing channel that match the filter criteria', async () => {
       await insertChannels([channel1], connection);
@@ -84,7 +84,7 @@ describe('channel service', () => {
     let connection: Connection;
     beforeEach(async () => {
       connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
-      await connection.dropDatabase();
+      await Promise.all(Object.values(mongoose.connection.collections).map(async (collection) => collection.deleteMany({})));
     });
     test('should retrieve channels that match the filter criteria', async () => {
       await insertChannels([channel1, channel2, channel3], connection);
@@ -107,7 +107,7 @@ describe('channel service', () => {
     let connection: Connection;
     beforeEach(async () => {
       connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
-      await connection.dropDatabase();
+      await Promise.all(Object.values(mongoose.connection.collections).map(async (collection) => collection.deleteMany({})));
     });
     const updateBody: IChannelUpdateBody = {
       name: 'Channel 10',
@@ -137,7 +137,7 @@ describe('channel service', () => {
     let connection: Connection;
     beforeEach(async () => {
       connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
-      await connection.dropDatabase();
+      await Promise.all(Object.values(mongoose.connection.collections).map(async (collection) => collection.deleteMany({})));
     });
     const updateBody: IChannelUpdateBody = {
       parentId: '111111',
