@@ -10,3 +10,5 @@ jobs:
     uses: TogetherCrew/operations/.github/workflows/publish.ts.yml@main
     secrets:
       NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+    - name: Print MongoDB logs
+      run: docker logs discord-bot-mongo-1
