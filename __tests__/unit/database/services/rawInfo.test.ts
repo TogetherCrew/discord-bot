@@ -7,11 +7,19 @@ import { rawInfoService } from '../../../../src/database/services';
 setupTestDB();
 
 describe('rawInfo service', () => {
+  let connection: Connection;
+  beforeAll(async () => {
+    connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
+  });
+  afterAll(async () => {
+    await connection.close();
+  });
+  beforeEach(async () => {
+    await connection.collection('rawinfos').deleteMany({});
+  });
   describe('createRawInfo', () => {
-    let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
-      await Promise.all(Object.values(mongoose.connection.collections).map(async (collection) => collection.deleteMany({})));
+      await connection.collection('channels').deleteMany({});
     });
     test('should create a rawInfo', async () => {
       const result = await rawInfoService.createRawInfo(connection, rawInfo1);
@@ -31,10 +39,8 @@ describe('rawInfo service', () => {
   });
 
   describe('createRawInfos', () => {
-    let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
-      await Promise.all(Object.values(mongoose.connection.collections).map(async (collection) => collection.deleteMany({})));
+      await connection.collection('channels').deleteMany({});
     });
     test('should create rawInfos (list of rawInfo)', async () => {
       const result = await rawInfoService.createRawInfos(connection, [rawInfo1, rawInfo2, rawInfo3]);
@@ -67,10 +73,8 @@ describe('rawInfo service', () => {
   });
 
   describe('getRawInfo', () => {
-    let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
-      await Promise.all(Object.values(mongoose.connection.collections).map(async (collection) => collection.deleteMany({})));
+      await connection.collection('channels').deleteMany({});
     });
     test('should retrieve an existing rawInfo that matches the filter criteria', async () => {
       await rawInfoService.createRawInfo(connection, rawInfo3);
@@ -90,10 +94,8 @@ describe('rawInfo service', () => {
   });
 
   describe('getRawInfos', () => {
-    let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
-      await Promise.all(Object.values(mongoose.connection.collections).map(async (collection) => collection.deleteMany({})));
+      await connection.collection('channels').deleteMany({});
     });
     test('should retrieve rawInfo that matches the filter criteria', async () => {
       await rawInfoService.createRawInfos(connection, [rawInfo1, rawInfo2, rawInfo3]);
@@ -114,10 +116,8 @@ describe('rawInfo service', () => {
   });
 
   describe('updateRawInfo', () => {
-    let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
-      await Promise.all(Object.values(mongoose.connection.collections).map(async (collection) => collection.deleteMany({})));
+      await connection.collection('channels').deleteMany({});
     });
     const updateBody: IRawInfoUpdateBody = {
       channelId: 'channel1',
@@ -149,10 +149,8 @@ describe('rawInfo service', () => {
   });
 
   describe('updateRawInfos', () => {
-    let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
-      await Promise.all(Object.values(mongoose.connection.collections).map(async (collection) => collection.deleteMany({})));
+      await connection.collection('channels').deleteMany({});
     });
     const updateBody: IRawInfoUpdateBody = {
       channelId: 'channel1',
@@ -188,10 +186,8 @@ describe('rawInfo service', () => {
   });
 
   describe('deleteRawInfo', () => {
-    let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
-      await Promise.all(Object.values(mongoose.connection.collections).map(async (collection) => collection.deleteMany({})));
+      await connection.collection('channels').deleteMany({});
     });
     test('should delete rawInfo that matches the filter criteria', async () => {
       await rawInfoService.createRawInfo(connection, rawInfo1);
@@ -210,10 +206,8 @@ describe('rawInfo service', () => {
   });
 
   describe('deleteRawInfos', () => {
-    let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
-      await Promise.all(Object.values(mongoose.connection.collections).map(async (collection) => collection.deleteMany({})));
+      await connection.collection('channels').deleteMany({});
     });
     test('should delete rawInfo that matches the filter criteria', async () => {
       await rawInfoService.createRawInfos(connection, [rawInfo1, rawInfo2, rawInfo3]);

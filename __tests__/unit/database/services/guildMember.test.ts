@@ -7,11 +7,19 @@ import config from '../../../../src/config';
 setupTestDB();
 
 describe('guildMember service', () => {
+  let connection: Connection;
+  beforeAll(async () => {
+    connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
+  });
+  afterAll(async () => {
+    await connection.close();
+  });
+  beforeEach(async () => {
+    await connection.collection('guildmembers').deleteMany({});
+  });
   describe('createGuidMember', () => {
-    let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
-      await Promise.all(Object.values(mongoose.connection.collections).map(async (collection) => collection.deleteMany({})));
+      await connection.collection('channels').deleteMany({});
     });
     test('should create a guild member', async () => {
       const result = await guildMemberService.createGuildMember(connection, guildMember1);
@@ -31,10 +39,8 @@ describe('guildMember service', () => {
   });
 
   describe('createGuidMembers', () => {
-    let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
-      await Promise.all(Object.values(mongoose.connection.collections).map(async (collection) => collection.deleteMany({})));
+      await connection.collection('channels').deleteMany({});
     });
     test('should create guild members', async () => {
       const result = await guildMemberService.createGuildMembers(connection, [guildMember1, guildMember2]);
@@ -62,10 +68,8 @@ describe('guildMember service', () => {
   });
 
   describe('getGuildMember', () => {
-    let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
-      await Promise.all(Object.values(mongoose.connection.collections).map(async (collection) => collection.deleteMany({})));
+      await connection.collection('channels').deleteMany({});
     });
     test('should retrieve an existing guild member that match the filter criteria', async () => {
       await guildMemberService.createGuildMember(connection, guildMember1);
@@ -84,17 +88,14 @@ describe('guildMember service', () => {
   });
 
   describe('getGuildMembers', () => {
-    let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
-      await Promise.all(Object.values(mongoose.connection.collections).map(async (collection) => collection.deleteMany({})));
+      await connection.collection('channels').deleteMany({});
     });
     test('should retrieve guild members that match the filter criteria', async () => {
       await guildMemberService.createGuildMembers(connection, [guildMember1, guildMember2, guildMember3]);
       const result = await guildMemberService.getGuildMembers(connection, {
         roles: guildMember2.roles,
       });
-      console.log('MEMBER 75', await GuildMember.find({}))
       expect(result).toMatchObject([guildMember1, guildMember2]);
     });
 
@@ -108,10 +109,8 @@ describe('guildMember service', () => {
   });
 
   describe('updateGuildMember', () => {
-    let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
-      await Promise.all(Object.values(mongoose.connection.collections).map(async (collection) => collection.deleteMany({})));
+      await connection.collection('channels').deleteMany({});
     });
     const updateBody: IGuildMemberUpdateBody = {
       username: 'userName',
@@ -126,7 +125,6 @@ describe('guildMember service', () => {
         updateBody,
       );
 
-      console.log('MEMBER 75', await GuildMember.find({ discordId: guildMember1.discordId }))
 
       expect(result).toMatchObject(updateBody);
 
@@ -153,10 +151,8 @@ describe('guildMember service', () => {
   });
 
   describe('updateGuildMembers', () => {
-    let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
-      await Promise.all(Object.values(mongoose.connection.collections).map(async (collection) => collection.deleteMany({})));
+      await connection.collection('channels').deleteMany({});
     });
     const updateBody: IGuildMemberUpdateBody = {
       avatar: 'new-avatar.png',
@@ -182,10 +178,8 @@ describe('guildMember service', () => {
   });
 
   describe('deleteGuildMember', () => {
-    let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
-      await Promise.all(Object.values(mongoose.connection.collections).map(async (collection) => collection.deleteMany({})));
+      await connection.collection('channels').deleteMany({});
     });
     test('should delete guild member that match the filter criteria', async () => {
       await guildMemberService.createGuildMember(connection, guildMember1);
@@ -204,10 +198,8 @@ describe('guildMember service', () => {
   });
 
   describe('deleteGuildMembers', () => {
-    let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
-      await Promise.all(Object.values(mongoose.connection.collections).map(async (collection) => collection.deleteMany({})));
+      await connection.collection('channels').deleteMany({});
     });
     test('should delete guild members that match the filter criteria', async () => {
       await guildMemberService.createGuildMembers(connection, [guildMember1, guildMember2, guildMember3]);

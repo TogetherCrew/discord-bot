@@ -7,11 +7,19 @@ import config from '../../../../src/config';
 setupTestDB();
 
 describe('role service', () => {
+  let connection: Connection;
+  beforeAll(async () => {
+    connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
+  });
+  afterAll(async () => {
+    await connection.close();
+  });
+  beforeEach(async () => {
+    await connection.collection('roles').deleteMany({});
+  });
   describe('createRole', () => {
-    let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
-      await Promise.all(Object.values(mongoose.connection.collections).map(async (collection) => collection.deleteMany({})));
+      await connection.collection('channels').deleteMany({});
     });
     test('should create a role', async () => {
       const result = await roleService.createRole(connection, role1);
@@ -30,10 +38,8 @@ describe('role service', () => {
   });
 
   describe('createRoles', () => {
-    let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
-      await Promise.all(Object.values(mongoose.connection.collections).map(async (collection) => collection.deleteMany({})));
+      await connection.collection('channels').deleteMany({});
     });
     test('should create roles', async () => {
       const result = await roleService.createRoles(connection, [role1, role2]);
@@ -59,10 +65,8 @@ describe('role service', () => {
   });
 
   describe('getRole', () => {
-    let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
-      await Promise.all(Object.values(mongoose.connection.collections).map(async (collection) => collection.deleteMany({})));
+      await connection.collection('channels').deleteMany({});
     });
     test('should retrieve an existing role that match the filter criteria', async () => {
       await insertRoles([role1], connection);
@@ -81,10 +85,8 @@ describe('role service', () => {
   });
 
   describe('getRoles', () => {
-    let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
-      await Promise.all(Object.values(mongoose.connection.collections).map(async (collection) => collection.deleteMany({})));
+      await connection.collection('channels').deleteMany({});
     });
     test('should retrieve roles that match the filter criteria', async () => {
       await insertRoles([role1, role2, role3], connection);
@@ -104,10 +106,8 @@ describe('role service', () => {
   });
 
   describe('updateRole', () => {
-    let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
-      await Promise.all(Object.values(mongoose.connection.collections).map(async (collection) => collection.deleteMany({})));
+      await connection.collection('channels').deleteMany({});
     });
     const updateBody: IRoleUpdateBody = {
       name: 'Role 10',
@@ -134,10 +134,8 @@ describe('role service', () => {
   });
 
   describe('updateRoles', () => {
-    let connection: Connection;
     beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection-1');
-      await Promise.all(Object.values(mongoose.connection.collections).map(async (collection) => collection.deleteMany({})));
+      await connection.collection('channels').deleteMany({});
     });
     const updateBody: IRoleUpdateBody = {
       color: 111111,

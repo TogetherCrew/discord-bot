@@ -12,7 +12,6 @@ export async function handleInteractionResponseCreate(msg: any): Promise<void> {
     await interactionService.createInteractionResponse(interaction, data);
     logger.info({ msg, event: Event.DISCORD_BOT.INTERACTION_RESPONSE.CREATE }, 'is done');
   } catch (error) {
-    console.log(error);
     logger.error({ msg, event: Event.DISCORD_BOT.INTERACTION_RESPONSE.CREATE, error }, 'is failed');
   }
 }
