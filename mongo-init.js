@@ -1,4 +1,13 @@
-print('Started Adding the Users.');
-db = db.getSiblingDB('RnDAO');
-db.createUser({ user: 'user', pwd: 'password', roles: ['readWrite'] });
-print('End Adding the User Roles.');
+db.createUser(
+    {
+        user: "user",
+        pwd: "123456Pass",
+        roles: [
+            {
+                role: "readWrite",
+                db: "RnDAO"
+            }
+        ]
+    }
+);
+db.createCollection("test"); //MongoDB creates the database when you first store data in that database
