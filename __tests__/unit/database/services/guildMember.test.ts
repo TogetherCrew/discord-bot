@@ -1,5 +1,5 @@
 import mongoose, { Connection } from 'mongoose';
-import { IGuildMember, guildMemberSchema, IGuildMemberUpdateBody, DatabaseManager } from '@togethercrew.dev/db';
+import { IGuildMember, guildMemberSchema, IGuildMemberUpdateBody, DatabaseManager, GuildMember } from '@togethercrew.dev/db';
 import setupTestDB from '../../../utils/setupTestDB';
 import { guildMember1, guildMember2, guildMember3 } from '../../../fixtures/guildMember.fixture';
 import { guildMemberService } from '../../../../src/database/services';
@@ -79,6 +79,7 @@ describe('guildMember service', () => {
       const result = await guildMemberService.getGuildMembers(connection, {
         roles: guildMember2.roles,
       });
+      console.log('MEMBER 75', await GuildMember.find({}))
       expect(result).toMatchObject([guildMember1, guildMember2]);
     });
 
@@ -104,6 +105,9 @@ describe('guildMember service', () => {
         { discordId: guildMember1.discordId },
         updateBody,
       );
+
+      console.log('MEMBER 75', await GuildMember.find({ discordId: guildMember1.discordId }))
+
       expect(result).toMatchObject(updateBody);
 
       const guildMember1Doc = await guildMemberService.getGuildMember(connection, {
