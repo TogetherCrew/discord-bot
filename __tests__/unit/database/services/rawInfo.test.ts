@@ -1,31 +1,18 @@
-import mongoose, { Connection } from 'mongoose';
-import { IRawInfo, IRawInfoUpdateBody, rawInfoSchema } from '@togethercrew.dev/db';
+import { Connection } from 'mongoose';
+import { IRawInfoUpdateBody, DatabaseManager } from '@togethercrew.dev/db';
 import setupTestDB from '../../../utils/setupTestDB';
 import { rawInfo1, rawInfo2, rawInfo3 } from '../../../fixtures/rawInfo.fixture';
 import { rawInfoService } from '../../../../src/database/services';
-import config from '../../../../src/config';
 
 setupTestDB();
 
 describe('rawInfo service', () => {
-  let connection: Connection;
-
-  beforeAll(async () => {
-    connection = await mongoose.createConnection(config.mongoose.serverURL, {
-      dbName: 'connection',
-    });
-    connection.model<IRawInfo>('RawInfo', rawInfoSchema);
-  });
-
-  afterAll(async () => {
-    await connection.close();
-  });
-
-  beforeEach(async () => {
-    await connection.db.dropDatabase();
-  });
-
   describe('createRawInfo', () => {
+    let connection: Connection;
+    beforeEach(async () => {
+      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      await connection.dropDatabase();
+    });
     test('should create a rawInfo', async () => {
       const result = await rawInfoService.createRawInfo(connection, rawInfo1);
       expect(result).toBeDefined();
@@ -44,6 +31,11 @@ describe('rawInfo service', () => {
   });
 
   describe('createRawInfos', () => {
+    let connection: Connection;
+    beforeEach(async () => {
+      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      await connection.dropDatabase();
+    });
     test('should create rawInfos (list of rawInfo)', async () => {
       const result = await rawInfoService.createRawInfos(connection, [rawInfo1, rawInfo2, rawInfo3]);
       expect(result).toMatchObject([rawInfo1, rawInfo2, rawInfo3]);
@@ -75,6 +67,11 @@ describe('rawInfo service', () => {
   });
 
   describe('getRawInfo', () => {
+    let connection: Connection;
+    beforeEach(async () => {
+      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      await connection.dropDatabase();
+    });
     test('should retrieve an existing rawInfo that matches the filter criteria', async () => {
       await rawInfoService.createRawInfo(connection, rawInfo3);
       const result = await rawInfoService.getRawInfo(connection, {
@@ -93,6 +90,11 @@ describe('rawInfo service', () => {
   });
 
   describe('getRawInfos', () => {
+    let connection: Connection;
+    beforeEach(async () => {
+      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      await connection.dropDatabase();
+    });
     test('should retrieve rawInfo that matches the filter criteria', async () => {
       await rawInfoService.createRawInfos(connection, [rawInfo1, rawInfo2, rawInfo3]);
       const result = await rawInfoService.getRawInfos(connection, {
@@ -112,6 +114,11 @@ describe('rawInfo service', () => {
   });
 
   describe('updateRawInfo', () => {
+    let connection: Connection;
+    beforeEach(async () => {
+      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      await connection.dropDatabase();
+    });
     const updateBody: IRawInfoUpdateBody = {
       channelId: 'channel1',
       threadId: 'thread456',
@@ -142,6 +149,11 @@ describe('rawInfo service', () => {
   });
 
   describe('updateRawInfos', () => {
+    let connection: Connection;
+    beforeEach(async () => {
+      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      await connection.dropDatabase();
+    });
     const updateBody: IRawInfoUpdateBody = {
       channelId: 'channel1',
       threadId: 'thread100000',
@@ -176,6 +188,11 @@ describe('rawInfo service', () => {
   });
 
   describe('deleteRawInfo', () => {
+    let connection: Connection;
+    beforeEach(async () => {
+      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      await connection.dropDatabase();
+    });
     test('should delete rawInfo that matches the filter criteria', async () => {
       await rawInfoService.createRawInfo(connection, rawInfo1);
       const result = await rawInfoService.deleteRawInfo(connection, {
@@ -193,6 +210,11 @@ describe('rawInfo service', () => {
   });
 
   describe('deleteRawInfos', () => {
+    let connection: Connection;
+    beforeEach(async () => {
+      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      await connection.dropDatabase();
+    });
     test('should delete rawInfo that matches the filter criteria', async () => {
       await rawInfoService.createRawInfos(connection, [rawInfo1, rawInfo2, rawInfo3]);
       const result = await rawInfoService.deleteManyRawInfo(connection, {
