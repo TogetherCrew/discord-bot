@@ -7,12 +7,12 @@ import config from '../../../../src/config';
 setupTestDB();
 
 describe('channel service', () => {
+  let connection: Connection;
+  beforeEach(async () => {
+    connection = await DatabaseManager.getInstance().getTenantDb('connection');
+    await connection.dropDatabase();
+  });
   describe('createChannel', () => {
-    let connection: Connection;
-    beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection');
-      await connection.dropDatabase();
-    });
     test('should create a channel', async () => {
       const result = await channelService.createChannel(connection, channel1);
       expect(result).toBeDefined();
@@ -30,11 +30,6 @@ describe('channel service', () => {
   });
 
   describe('createChannels', () => {
-    let connection: Connection;
-    beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection');
-      await connection.dropDatabase();
-    });
     test('should create channels', async () => {
       const result = await channelService.createChannels(connection, [channel1, channel2]);
       expect(result).toMatchObject([channel1, channel2]);
@@ -59,11 +54,6 @@ describe('channel service', () => {
   });
 
   describe('getChannel', () => {
-    let connection: Connection;
-    beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection');
-      await connection.dropDatabase();
-    });
     test('should retrieve an existing channel that match the filter criteria', async () => {
       await insertChannels([channel1], connection);
       const result = await channelService.getChannel(connection, {
@@ -81,11 +71,6 @@ describe('channel service', () => {
   });
 
   describe('getChannels', () => {
-    let connection: Connection;
-    beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection');
-      await connection.dropDatabase();
-    });
     test('should retrieve channels that match the filter criteria', async () => {
       await insertChannels([channel1, channel2, channel3], connection);
       const result = await channelService.getChannels(connection, {
@@ -104,11 +89,6 @@ describe('channel service', () => {
   });
 
   describe('updateChannel', () => {
-    let connection: Connection;
-    beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection');
-      await connection.dropDatabase();
-    });
     const updateBody: IChannelUpdateBody = {
       name: 'Channel 10',
       parentId: '111111',
@@ -134,11 +114,6 @@ describe('channel service', () => {
   });
 
   describe('updateChannels', () => {
-    let connection: Connection;
-    beforeEach(async () => {
-      connection = await DatabaseManager.getInstance().getTenantDb('connection');
-      await connection.dropDatabase();
-    });
     const updateBody: IChannelUpdateBody = {
       parentId: '111111',
     };
