@@ -4,6 +4,7 @@ import RabbitMQ, { MBConnection, Queue } from '@togethercrew.dev/tc-messagebroke
 
 const setupTestDB = () => {
   beforeAll(async () => {
+    mongoose.set("strictQuery", false);
     await mongoose.connect(config.mongoose.serverURL);
 
   });
