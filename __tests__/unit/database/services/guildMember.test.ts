@@ -10,7 +10,6 @@ describe('guildMember service', () => {
   let connection: Connection;
   beforeEach(async () => {
     connection = await DatabaseManager.getInstance().getTenantDb('connection');
-    await connection.dropDatabase();
   });
   describe('createGuidMember', () => {
     test('should create a guild member', async () => {

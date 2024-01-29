@@ -10,7 +10,6 @@ describe('role service', () => {
   let connection: Connection;
   beforeEach(async () => {
     connection = await DatabaseManager.getInstance().getTenantDb('connection');
-    await connection.dropDatabase();
   });
   describe('createRole', () => {
     test('should create a role', async () => {
