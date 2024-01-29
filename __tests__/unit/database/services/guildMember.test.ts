@@ -1,5 +1,11 @@
 import mongoose, { Connection } from 'mongoose';
-import { IGuildMember, guildMemberSchema, IGuildMemberUpdateBody, DatabaseManager, GuildMember } from '@togethercrew.dev/db';
+import {
+  IGuildMember,
+  guildMemberSchema,
+  IGuildMemberUpdateBody,
+  DatabaseManager,
+  GuildMember,
+} from '@togethercrew.dev/db';
 import setupTestDB from '../../../utils/setupTestDB';
 import { guildMember1, guildMember2, guildMember3 } from '../../../fixtures/guildMember.fixture';
 import { guildMemberService } from '../../../../src/database/services';
@@ -125,7 +131,6 @@ describe('guildMember service', () => {
         updateBody,
       );
 
-
       expect(result).toMatchObject(updateBody);
 
       const guildMember1Doc = await guildMemberService.getGuildMember(connection, {
@@ -141,11 +146,7 @@ describe('guildMember service', () => {
     });
 
     test('should return null when no guild member match the filter criteria', async () => {
-      const result = await guildMemberService.updateGuildMember(
-        connection,
-        { discordId: '1' },
-        updateBody,
-      );
+      const result = await guildMemberService.updateGuildMember(connection, { discordId: '1' }, updateBody);
       expect(result).toEqual(null);
     });
   });

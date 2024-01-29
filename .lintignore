@@ -5,3 +5,4 @@ src/**/*.js
 *.json
 *.log
 *.yml
+coverage
