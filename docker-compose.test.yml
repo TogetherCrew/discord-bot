@@ -36,7 +36,7 @@ services:
       rabbitmq: 
         condition: service_healthy
   mongo:
-    image: "mongo:5.4.0"
+    image: "mongo:5.0.10"
     environment:
       - MONGO_INITDB_DATABASE=RnDAO
       - MONGO_INITDB_ROOT_USERNAME=root
@@ -59,7 +59,7 @@ services:
       retries: 2
       start_period: 40s
   redis:
-    image: redis:4.6.6
+    image: redis:7.0.11
     restart: unless-stopped
     healthcheck:
       test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]

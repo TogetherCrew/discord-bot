@@ -10,7 +10,6 @@ describe('channel service', () => {
   let connection: Connection;
   beforeEach(async () => {
     connection = await DatabaseManager.getInstance().getTenantDb('connection');
-    await connection.dropDatabase();
   });
   describe('createChannel', () => {
     test('should create a channel', async () => {
