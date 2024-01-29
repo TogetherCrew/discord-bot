@@ -1,14 +1,7 @@
-# Ignore the __tests__ folder entirely
 **/__tests__/**
-
-# Ignore JavaScript files in the root directory
 *.js
-
-# Ignore a specific Markdown file in the root directory (replace 'example.md' with your file name)
-example.md
-
-# If you want to ignore all Markdown files
 *.md
-
-# Ignore JavaScript files in the src directory
 src/**/*.js
+*.json
+*.log
+*.yml

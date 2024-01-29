@@ -19,9 +19,8 @@
     "coverage",
     "dist",
     "__tests__/",
-    "jest.config.js",
+    "*.json",
     "*.yml",
-    "mongo-init.js",
-    "bable.config.js"
+    "*.js",
   ]
 }
