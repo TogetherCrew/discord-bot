@@ -133,7 +133,7 @@ describe('guildMember service', () => {
     test('should return null when no guild member match the filter criteria', async () => {
       const result = await guildMemberService.updateGuildMember(
         connection,
-        { discordId: guildMember1.discordId },
+        { discordId: '1' },
         updateBody,
       );
       expect(result).toEqual(null);
