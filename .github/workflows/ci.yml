@@ -8,5 +8,4 @@ jobs:
     uses: TogetherCrew/operations/.github/workflows/ci.yml@main
     secrets:
       CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-    - name: Print MongoDB logs
-      run: docker logs discord-bot-mongo-1
+    - run: docker logs discord-bot-mongo-1
