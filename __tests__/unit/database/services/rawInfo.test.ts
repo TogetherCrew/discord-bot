@@ -19,7 +19,7 @@ describe('rawInfo service', () => {
   });
   describe('createRawInfo', () => {
     beforeEach(async () => {
-      await connection.collection('channels').deleteMany({});
+      await connection.collection('rawinfos').deleteMany({});
     });
     test('should create a rawInfo', async () => {
       const result = await rawInfoService.createRawInfo(connection, rawInfo1);
@@ -40,7 +40,7 @@ describe('rawInfo service', () => {
 
   describe('createRawInfos', () => {
     beforeEach(async () => {
-      await connection.collection('channels').deleteMany({});
+      await connection.collection('rawinfos').deleteMany({});
     });
     test('should create rawInfos (list of rawInfo)', async () => {
       const result = await rawInfoService.createRawInfos(connection, [rawInfo1, rawInfo2, rawInfo3]);
@@ -74,7 +74,7 @@ describe('rawInfo service', () => {
 
   describe('getRawInfo', () => {
     beforeEach(async () => {
-      await connection.collection('channels').deleteMany({});
+      await connection.collection('rawinfos').deleteMany({});
     });
     test('should retrieve an existing rawInfo that matches the filter criteria', async () => {
       await rawInfoService.createRawInfo(connection, rawInfo3);
@@ -95,7 +95,7 @@ describe('rawInfo service', () => {
 
   describe('getRawInfos', () => {
     beforeEach(async () => {
-      await connection.collection('channels').deleteMany({});
+      await connection.collection('rawinfos').deleteMany({});
     });
     test('should retrieve rawInfo that matches the filter criteria', async () => {
       await rawInfoService.createRawInfos(connection, [rawInfo1, rawInfo2, rawInfo3]);
@@ -117,7 +117,7 @@ describe('rawInfo service', () => {
 
   describe('updateRawInfo', () => {
     beforeEach(async () => {
-      await connection.collection('channels').deleteMany({});
+      await connection.collection('rawinfos').deleteMany({});
     });
     const updateBody: IRawInfoUpdateBody = {
       channelId: 'channel1',
@@ -150,7 +150,7 @@ describe('rawInfo service', () => {
 
   describe('updateRawInfos', () => {
     beforeEach(async () => {
-      await connection.collection('channels').deleteMany({});
+      await connection.collection('rawinfos').deleteMany({});
     });
     const updateBody: IRawInfoUpdateBody = {
       channelId: 'channel1',
@@ -187,7 +187,7 @@ describe('rawInfo service', () => {
 
   describe('deleteRawInfo', () => {
     beforeEach(async () => {
-      await connection.collection('channels').deleteMany({});
+      await connection.collection('rawinfos').deleteMany({});
     });
     test('should delete rawInfo that matches the filter criteria', async () => {
       await rawInfoService.createRawInfo(connection, rawInfo1);
@@ -207,7 +207,7 @@ describe('rawInfo service', () => {
 
   describe('deleteRawInfos', () => {
     beforeEach(async () => {
-      await connection.collection('channels').deleteMany({});
+      await connection.collection('rawinfos').deleteMany({});
     });
     test('should delete rawInfo that matches the filter criteria', async () => {
       await rawInfoService.createRawInfos(connection, [rawInfo1, rawInfo2, rawInfo3]);

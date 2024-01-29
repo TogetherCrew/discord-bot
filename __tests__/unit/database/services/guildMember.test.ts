@@ -19,7 +19,7 @@ describe('guildMember service', () => {
   });
   describe('createGuidMember', () => {
     beforeEach(async () => {
-      await connection.collection('channels').deleteMany({});
+      await connection.collection('guildmembers').deleteMany({});
     });
     test('should create a guild member', async () => {
       const result = await guildMemberService.createGuildMember(connection, guildMember1);
@@ -40,7 +40,7 @@ describe('guildMember service', () => {
 
   describe('createGuidMembers', () => {
     beforeEach(async () => {
-      await connection.collection('channels').deleteMany({});
+      await connection.collection('guildmembers').deleteMany({});
     });
     test('should create guild members', async () => {
       const result = await guildMemberService.createGuildMembers(connection, [guildMember1, guildMember2]);
@@ -69,7 +69,7 @@ describe('guildMember service', () => {
 
   describe('getGuildMember', () => {
     beforeEach(async () => {
-      await connection.collection('channels').deleteMany({});
+      await connection.collection('guildmembers').deleteMany({});
     });
     test('should retrieve an existing guild member that match the filter criteria', async () => {
       await guildMemberService.createGuildMember(connection, guildMember1);
@@ -89,7 +89,7 @@ describe('guildMember service', () => {
 
   describe('getGuildMembers', () => {
     beforeEach(async () => {
-      await connection.collection('channels').deleteMany({});
+      await connection.collection('guildmembers').deleteMany({});
     });
     test('should retrieve guild members that match the filter criteria', async () => {
       await guildMemberService.createGuildMembers(connection, [guildMember1, guildMember2, guildMember3]);
@@ -110,7 +110,7 @@ describe('guildMember service', () => {
 
   describe('updateGuildMember', () => {
     beforeEach(async () => {
-      await connection.collection('channels').deleteMany({});
+      await connection.collection('guildmembers').deleteMany({});
     });
     const updateBody: IGuildMemberUpdateBody = {
       username: 'userName',
@@ -152,7 +152,7 @@ describe('guildMember service', () => {
 
   describe('updateGuildMembers', () => {
     beforeEach(async () => {
-      await connection.collection('channels').deleteMany({});
+      await connection.collection('guildmembers').deleteMany({});
     });
     const updateBody: IGuildMemberUpdateBody = {
       avatar: 'new-avatar.png',
@@ -179,7 +179,7 @@ describe('guildMember service', () => {
 
   describe('deleteGuildMember', () => {
     beforeEach(async () => {
-      await connection.collection('channels').deleteMany({});
+      await connection.collection('guildmembers').deleteMany({});
     });
     test('should delete guild member that match the filter criteria', async () => {
       await guildMemberService.createGuildMember(connection, guildMember1);
@@ -199,7 +199,7 @@ describe('guildMember service', () => {
 
   describe('deleteGuildMembers', () => {
     beforeEach(async () => {
-      await connection.collection('channels').deleteMany({});
+      await connection.collection('guildmembers').deleteMany({});
     });
     test('should delete guild members that match the filter criteria', async () => {
       await guildMemberService.createGuildMembers(connection, [guildMember1, guildMember2, guildMember3]);
