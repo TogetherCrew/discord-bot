@@ -7,11 +7,12 @@ import config from '../../../../src/config';
 setupTestDB();
 
 describe('guildMember service', () => {
-  let connection: Connection;
-  beforeEach(async () => {
-    connection = await DatabaseManager.getInstance().getTenantDb('connection');
-  });
   describe('createGuidMember', () => {
+    let connection: Connection;
+    beforeEach(async () => {
+      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      await connection.dropDatabase();
+    });
     test('should create a guild member', async () => {
       const result = await guildMemberService.createGuildMember(connection, guildMember1);
       expect(result).toBeDefined();
@@ -30,6 +31,11 @@ describe('guildMember service', () => {
   });
 
   describe('createGuidMembers', () => {
+    let connection: Connection;
+    beforeEach(async () => {
+      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      await connection.dropDatabase();
+    });
     test('should create guild members', async () => {
       const result = await guildMemberService.createGuildMembers(connection, [guildMember1, guildMember2]);
       expect(result).toMatchObject([guildMember1, guildMember2]);
@@ -56,6 +62,11 @@ describe('guildMember service', () => {
   });
 
   describe('getGuildMember', () => {
+    let connection: Connection;
+    beforeEach(async () => {
+      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      await connection.dropDatabase();
+    });
     test('should retrieve an existing guild member that match the filter criteria', async () => {
       await guildMemberService.createGuildMember(connection, guildMember1);
       const result = await guildMemberService.getGuildMember(connection, {
@@ -73,6 +84,11 @@ describe('guildMember service', () => {
   });
 
   describe('getGuildMembers', () => {
+    let connection: Connection;
+    beforeEach(async () => {
+      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      await connection.dropDatabase();
+    });
     test('should retrieve guild members that match the filter criteria', async () => {
       await guildMemberService.createGuildMembers(connection, [guildMember1, guildMember2, guildMember3]);
       const result = await guildMemberService.getGuildMembers(connection, {
@@ -92,6 +108,11 @@ describe('guildMember service', () => {
   });
 
   describe('updateGuildMember', () => {
+    let connection: Connection;
+    beforeEach(async () => {
+      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      await connection.dropDatabase();
+    });
     const updateBody: IGuildMemberUpdateBody = {
       username: 'userName',
       avatar: 'new-avatar.png',
@@ -132,6 +153,11 @@ describe('guildMember service', () => {
   });
 
   describe('updateGuildMembers', () => {
+    let connection: Connection;
+    beforeEach(async () => {
+      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      await connection.dropDatabase();
+    });
     const updateBody: IGuildMemberUpdateBody = {
       avatar: 'new-avatar.png',
     };
@@ -156,6 +182,11 @@ describe('guildMember service', () => {
   });
 
   describe('deleteGuildMember', () => {
+    let connection: Connection;
+    beforeEach(async () => {
+      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      await connection.dropDatabase();
+    });
     test('should delete guild member that match the filter criteria', async () => {
       await guildMemberService.createGuildMember(connection, guildMember1);
       const result = await guildMemberService.deleteGuildMember(connection, {
@@ -173,6 +204,11 @@ describe('guildMember service', () => {
   });
 
   describe('deleteGuildMembers', () => {
+    let connection: Connection;
+    beforeEach(async () => {
+      connection = await DatabaseManager.getInstance().getTenantDb('connection');
+      await connection.dropDatabase();
+    });
     test('should delete guild members that match the filter criteria', async () => {
       await guildMemberService.createGuildMembers(connection, [guildMember1, guildMember2, guildMember3]);
       const result = await guildMemberService.deleteGuildMembers(connection, {
