@@ -1,11 +1,2 @@
-{
-  "ignorePatterns": [
-    "coverage",
-    "dist",
-    "__tests__/",
-    "jest.config.js",
-    "*.yml",
-    "mongo-init.js",
-    "bable.config.js"
-  ]
-}
+overrides:
+  - files: ['src/**/*.ts']
