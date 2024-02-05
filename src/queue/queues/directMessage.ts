@@ -1,8 +1,11 @@
-import { type Snowflake } from 'discord.js';
-import { QueueFactory } from './index';
+import { type Snowflake } from 'discord.js'
+import { QueueFactory } from './index'
 
-export const directMessageQueue = QueueFactory.createQueue('directMessageQueue');
+export const directMessageQueue = QueueFactory.createQueue('directMessageQueue')
 
-export const addDirectMessage = (discordId: Snowflake, message: string): void => {
-  void directMessageQueue.add('directMessageQueue', { discordId, message });
-};
+export const addDirectMessage = (
+  discordId: Snowflake,
+  message: string
+): void => {
+  void directMessageQueue.add('directMessageQueue', { discordId, message })
+}

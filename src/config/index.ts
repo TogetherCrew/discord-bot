@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
-import Joi from 'joi';
+import Joi from 'joi'
 
 const envVarsSchema = Joi.object()
   .keys({
-    NODE_ENV: Joi.string().valid('production', 'development', 'test').required(),
+    NODE_ENV: Joi.string()
+      .valid('production', 'development', 'test')
+      .required(),
     DB_HOST: Joi.string().required().description('Mongo DB url'),
     DB_PORT: Joi.string().required().description('Mongo DB port'),
     DB_USER: Joi.string().required().description('Mongo DB username'),
@@ -14,21 +16,30 @@ const envVarsSchema = Joi.object()
     RABBIT_USER: Joi.string().required().description('RabbitMQ username'),
     RABBIT_PASSWORD: Joi.string().required().description('RabbitMQ password'),
     DISCORD_CLIENT_ID: Joi.string().required().description('Discord clinet id'),
-    DISCORD_CLIENT_SECRET: Joi.string().required().description('Discord clinet secret'),
+    DISCORD_CLIENT_SECRET: Joi.string()
+      .required()
+      .description('Discord clinet secret'),
     DISCORD_BOT_TOKEN: Joi.string().required().description('Discord bot token'),
     SENTRY_DSN: Joi.string().required().description('Sentry DSN'),
-    SENTRY_ENV: Joi.string().valid('production', 'development', 'local', 'test').required(),
+    SENTRY_ENV: Joi.string()
+      .valid('production', 'development', 'local', 'test')
+      .required(),
     REDIS_HOST: Joi.string().required().description('Reids host'),
     REDIS_PORT: Joi.string().required().description('Reids port'),
-    REDIS_PASSWORD: Joi.string().required().description('Reids password').allow(''),
+    REDIS_PASSWORD: Joi.string()
+      .required()
+      .description('Reids password')
+      .allow(''),
     LOG_LEVEL: Joi.string().required().description('Min allowed log level'),
   })
-  .unknown();
+  .unknown()
 
-const { value: envVars, error } = envVarsSchema.prefs({ errors: { label: 'key' } }).validate(process.env);
+const { value: envVars, error } = envVarsSchema
+  .prefs({ errors: { label: 'key' } })
+  .validate(process.env)
 
 if (error != null) {
-  throw new Error(`Config validation error: ${error.message}`);
+  throw new Error(`Config validation error: ${error.message}`)
 }
 export default {
   env: envVars.NODE_ENV,
@@ -56,4 +67,4 @@ export default {
   logger: {
     level: envVars.LOG_LEVEL,
   },
-};
+}

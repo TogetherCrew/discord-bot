@@ -1,11 +1,11 @@
-import pino, { type Bindings } from 'pino';
-import config from './index';
+import pino, { type Bindings } from 'pino'
+import config from './index'
 
 export default pino({
   level: config.logger.level,
   formatters: {
     level: (label) => {
-      return { level: label.toUpperCase() };
+      return { level: label.toUpperCase() }
     },
   },
   timestamp: () => `,"timestamp":"${new Date(Date.now()).toISOString()}"`,
@@ -13,6 +13,6 @@ export default pino({
     return {
       pid: bindings.pid,
       host: bindings.hostname,
-    };
+    }
   },
-});
+})

@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import fetch from 'node-fetch';
-import parentLogger from '../config/logger';
+import fetch from 'node-fetch'
+import parentLogger from '../config/logger'
 import {
   type ChatInputCommandInteraction_broker,
   type InteractionResponse,
   type InteractionResponseEditData,
-} from '../interfaces/Hivemind.interface';
+} from '../interfaces/Hivemind.interface'
 
-const logger = parentLogger.child({ module: 'InteractionResponses' });
+const logger = parentLogger.child({ module: 'InteractionResponses' })
 
 /**
  * exchange discord code with access token
@@ -17,18 +17,18 @@ const logger = parentLogger.child({ module: 'InteractionResponses' });
  */
 async function createInteractionResponse(
   interaction: ChatInputCommandInteraction_broker,
-  data: InteractionResponse,
+  data: InteractionResponse
 ): Promise<any> {
   try {
     // {4, 5, 9, 10, 11}
-    const { type, ...rest } = data;
+    const { type, ...rest } = data
     const body = {
       type,
       data: rest.data,
-    };
+    }
 
     if (interaction.token === null || interaction.token === undefined) {
-      throw new Error('InteractionToken is null or undefined');
+      throw new Error('InteractionToken is null or undefined')
     }
 
     const response = await fetch(
@@ -37,16 +37,20 @@ async function createInteractionResponse(
         method: 'POST',
         body: JSON.stringify(body),
         headers: { 'Content-Type': 'application/json' },
-      },
-    );
+      }
+    )
     if (!response.ok) {
-      throw new Error();
+      throw new Error()
     }
   } catch (error) {
     logger.error(
-      { interaction_id: interaction.id, interaction_token: interaction.token, error },
-      'Failed to send interaction response',
-    );
+      {
+        interaction_id: interaction.id,
+        interaction_token: interaction.token,
+        error,
+      },
+      'Failed to send interaction response'
+    )
   }
 }
 
@@ -56,7 +60,9 @@ async function createInteractionResponse(
    @param {string} redirect_uri
  * @returns {Promise<IDiscordOathBotCallback>}
  */
-async function getOriginalInteractionResponse(interaction: ChatInputCommandInteraction_broker): Promise<any> {
+async function getOriginalInteractionResponse(
+  interaction: ChatInputCommandInteraction_broker
+): Promise<any> {
   try {
     if (
       interaction.token === null ||
@@ -64,7 +70,9 @@ async function getOriginalInteractionResponse(interaction: ChatInputCommandInter
       interaction.applicationId === null ||
       interaction.applicationId === undefined
     ) {
-      throw new Error('InteractionToken or InteractionApplicationId is null or undefined');
+      throw new Error(
+        'InteractionToken or InteractionApplicationId is null or undefined'
+      )
     }
 
     const response = await fetch(
@@ -72,15 +80,22 @@ async function getOriginalInteractionResponse(interaction: ChatInputCommandInter
       {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
-      },
-    );
+      }
+    )
     if (response.ok) {
-      return await response.json();
+      return await response.json()
     } else {
-      throw new Error(await response.json());
+      throw new Error(await response.json())
     }
   } catch (error) {
-    logger.error({ application_id: interaction.applicationId, interaction_token: interaction.token, error }, '100');
+    logger.error(
+      {
+        application_id: interaction.applicationId,
+        interaction_token: interaction.token,
+        error,
+      },
+      '100'
+    )
   }
 }
 
@@ -92,7 +107,7 @@ async function getOriginalInteractionResponse(interaction: ChatInputCommandInter
  */
 async function editOriginalInteractionResponse(
   interaction: ChatInputCommandInteraction_broker,
-  data: InteractionResponseEditData,
+  data: InteractionResponseEditData
 ): Promise<any> {
   try {
     if (
@@ -101,7 +116,9 @@ async function editOriginalInteractionResponse(
       interaction.applicationId === null ||
       interaction.applicationId === undefined
     ) {
-      throw new Error('InteractionToken or InteractionApplicationId is null or undefined');
+      throw new Error(
+        'InteractionToken or InteractionApplicationId is null or undefined'
+      )
     }
 
     const response = await fetch(
@@ -110,15 +127,22 @@ async function editOriginalInteractionResponse(
         method: 'PATCH',
         body: JSON.stringify(data),
         headers: { 'Content-Type': 'application/json' },
-      },
-    );
+      }
+    )
     if (response.ok) {
-      return await response.json();
+      return await response.json()
     } else {
-      throw new Error(await response.json());
+      throw new Error(await response.json())
     }
   } catch (error) {
-    logger.error({ application_id: interaction.applicationId, interaction_token: interaction.token, error }, '100');
+    logger.error(
+      {
+        application_id: interaction.applicationId,
+        interaction_token: interaction.token,
+        error,
+      },
+      '100'
+    )
   }
 }
 
@@ -128,7 +152,9 @@ async function editOriginalInteractionResponse(
    @param {string} redirect_uri
  * @returns {Promise<IDiscordOathBotCallback>}
  */
-async function deleteOriginalInteractionResponse(interaction: ChatInputCommandInteraction_broker): Promise<void> {
+async function deleteOriginalInteractionResponse(
+  interaction: ChatInputCommandInteraction_broker
+): Promise<void> {
   try {
     if (
       interaction.token === null ||
@@ -136,7 +162,9 @@ async function deleteOriginalInteractionResponse(interaction: ChatInputCommandIn
       interaction.applicationId === null ||
       interaction.applicationId === undefined
     ) {
-      throw new Error('InteractionToken or InteractionApplicationId is null or undefined');
+      throw new Error(
+        'InteractionToken or InteractionApplicationId is null or undefined'
+      )
     }
 
     const response = await fetch(
@@ -144,13 +172,20 @@ async function deleteOriginalInteractionResponse(interaction: ChatInputCommandIn
       {
         method: 'DELETE',
         // headers: { 'Content-Type': 'application/json' }
-      },
-    );
+      }
+    )
     if (!response.ok) {
-      throw new Error(await response.json());
+      throw new Error(await response.json())
     }
   } catch (error) {
-    logger.error({ application_id: interaction.applicationId, interaction_token: interaction.token, error }, '100');
+    logger.error(
+      {
+        application_id: interaction.applicationId,
+        interaction_token: interaction.token,
+        error,
+      },
+      '100'
+    )
   }
 }
 
@@ -160,7 +195,10 @@ async function deleteOriginalInteractionResponse(interaction: ChatInputCommandIn
    @param {string} redirect_uri
  * @returns {Promise<IDiscordOathBotCallback>}
  */
-async function createFollowUpMessage(interaction: ChatInputCommandInteraction_broker, data: object): Promise<any> {
+async function createFollowUpMessage(
+  interaction: ChatInputCommandInteraction_broker,
+  data: object
+): Promise<any> {
   try {
     if (
       interaction.token === null ||
@@ -168,29 +206,38 @@ async function createFollowUpMessage(interaction: ChatInputCommandInteraction_br
       interaction.applicationId === null ||
       interaction.applicationId === undefined
     ) {
-      throw new Error('InteractionToken or InteractionApplicationId is null or undefined');
+      throw new Error(
+        'InteractionToken or InteractionApplicationId is null or undefined'
+      )
     }
 
-    const response = await fetch(`https://discord.com/api/webhooks/${interaction.applicationId}/${interaction.token}`, {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: { 'Content-Type': 'application/json' },
-    });
+    const response = await fetch(
+      `https://discord.com/api/webhooks/${interaction.applicationId}/${interaction.token}`,
+      {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: { 'Content-Type': 'application/json' },
+      }
+    )
     if (response.ok) {
-      return await response.json();
+      return await response.json()
     } else {
-      throw new Error(await response.json());
+      throw new Error(await response.json())
     }
   } catch (error) {
     logger.error(
-      { interaction_id: interaction.id, interaction_token: interaction.token, error },
-      'Failed to create followip message',
-    );
+      {
+        interaction_id: interaction.id,
+        interaction_token: interaction.token,
+        error,
+      },
+      'Failed to create followip message'
+    )
   }
 }
 
 function constructSerializableInteraction(
-  interaction: ChatInputCommandInteraction_broker,
+  interaction: ChatInputCommandInteraction_broker
 ): ChatInputCommandInteraction_broker {
   return {
     id: interaction.id,
@@ -221,7 +268,7 @@ function constructSerializableInteraction(
     commandGuildId: interaction.commandGuildId,
     options: interaction.options,
     version: interaction.version,
-  };
+  }
 }
 
 export default {
@@ -231,4 +278,4 @@ export default {
   deleteOriginalInteractionResponse,
   createFollowUpMessage,
   constructSerializableInteraction,
-};
+}
