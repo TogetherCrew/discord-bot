@@ -18,10 +18,12 @@ async function sendDirectMessage(discordId: Snowflake, message: string): Promise
   }
 }
 
-async function notifyUserAboutAnalysisFinish(
-  discordId: string,
-  info: { guildId: Snowflake; message: string; useFallback: boolean }
-): Promise<void> {
+interface IInfo {
+  guildId: Snowflake;
+  message: string;
+  useFallback: boolean;
+}
+async function notifyUserAboutAnalysisFinish(discordId: string, info: IInfo): Promise<void> {
   const client = await coreService.DiscordBotManager.getClient();
   const { guildId, message, useFallback } = info;
   const guild = await client.guilds.fetch(guildId);
