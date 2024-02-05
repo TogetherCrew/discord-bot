@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
 import { type Channel, ChannelType, type Snowflake, type TextChannel } from 'discord.js';
 import { Event, MBConnection } from '@togethercrew.dev/tc-messagebroker';
 import { coreService } from '../../services';
@@ -6,7 +5,6 @@ import { createPrivateThreadAndSendMessage } from '../../functions/thread';
 import parentLogger from '../../config/logger';
 import { platformService } from '../../database/services';
 import { addDirectMessage } from '../../queue/queues/directMessage';
-
 const logger = parentLogger.child({
   module: `${Event.DISCORD_BOT.SEND_MESSAGE}`,
 });
@@ -43,6 +41,7 @@ const notifyUserAboutAnalysisFinish = async (
   }
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function handleSendMessageEvent(msg: any): Promise<void> {
   try {
     logger.info({ msg, event: Event.DISCORD_BOT.SEND_MESSAGE, sagaId: msg.content.uuid }, 'is running');
