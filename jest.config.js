@@ -1,14 +1,14 @@
-// eslint-disable-next-line no-undef
+/* eslint-env node */
 module.exports = {
-  testPathIgnorePatterns: ['/__tests__/fixtures', '/__tests__/utils'],
+  testPathIgnorePatterns: ['/__tests__/fixtures/', '/__tests__/utils/'],
   transform: {
-    '^.+\\.(ts|tsx)?$': 'ts-jest',
+    '^.+\\.(ts|tsx)$': 'ts-jest',
     '^.+\\.(js|jsx)$': 'babel-jest',
   },
   collectCoverage: true,
   testEnvironment: 'node',
   coverageReporters: ['json', 'lcov', 'text', 'clover', 'html'],
-  collectCoverageFrom: ['src/**/*.ts*'],
+  collectCoverageFrom: ['src/**/*.{ts,tsx}'],
   coverageThreshold: {
     global: {
       branches: 10,

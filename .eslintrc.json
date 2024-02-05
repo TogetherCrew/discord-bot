@@ -12,5 +12,5 @@
     "project": "./tsconfig.json"
   },
   "rules": {},
-  "ignorePatterns": ["coverage", "dist", "__tests__/", "*.json", "*.yml", "*.js"]
+  "ignorePatterns": ["coverage", "dist", "__tests__/", "*.json", "*.yml", "*.js", "*.ts"]
 }

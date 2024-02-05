@@ -1,8 +1,0 @@
-**/__tests__/**
-*.js
-*.md
-src/**/*.js
-*.json
-*.log
-*.yml
-coverage
