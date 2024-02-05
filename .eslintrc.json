@@ -23,6 +23,7 @@
     "*.json",
     "*.yml",
     "*.js",
-    "*.ts"
+    "*.ts",
+    "bable.config.js"
   ]
 }

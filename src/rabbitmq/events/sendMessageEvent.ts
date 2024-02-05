@@ -1,48 +1,37 @@
 /* eslint-disable @typescript-eslint/consistent-type-assertions */
-import {
-  type Channel,
-  ChannelType,
-  type Snowflake,
-  type TextChannel,
-} from 'discord.js'
-import { Event, MBConnection } from '@togethercrew.dev/tc-messagebroker'
-import { coreService } from '../../services'
-import { createPrivateThreadAndSendMessage } from '../../functions/thread'
-import parentLogger from '../../config/logger'
-import { platformService } from '../../database/services'
-import { addDirectMessage } from '../../queue/queues/directMessage'
+import { type Channel, ChannelType, type Snowflake, type TextChannel } from 'discord.js';
+import { Event, MBConnection } from '@togethercrew.dev/tc-messagebroker';
+import { coreService } from '../../services';
+import { createPrivateThreadAndSendMessage } from '../../functions/thread';
+import parentLogger from '../../config/logger';
+import { platformService } from '../../database/services';
+import { addDirectMessage } from '../../queue/queues/directMessage';
 
 const logger = parentLogger.child({
   module: `${Event.DISCORD_BOT.SEND_MESSAGE}`,
-})
+});
 
 const notifyUserAboutAnalysisFinish = async (
   discordId: string,
-  info: { guildId: Snowflake; message: string; useFallback: boolean }
+  info: { guildId: Snowflake; message: string; useFallback: boolean },
 ): Promise<void> => {
-  const client = await coreService.DiscordBotManager.getClient()
+  const client = await coreService.DiscordBotManager.getClient();
 
   // related issue https://github.com/RnDAO/tc-discordBot/issues/68
-  const { guildId, message, useFallback } = info
+  const { guildId, message, useFallback } = info;
 
-  const guild = await client.guilds.fetch(guildId)
-  const channels = await guild.channels.fetch()
+  const guild = await client.guilds.fetch(guildId);
+  const channels = await guild.channels.fetch();
 
-  const arrayChannels = Array.from(
-    channels,
-    ([name, value]) => ({ ...value } as Channel)
-  )
-  const textChannels = arrayChannels.filter(
-    (channel) => channel.type === ChannelType.GuildText
-  ) as TextChannel[]
-  const rawPositionBasedSortedTextChannels = textChannels.sort(
-    (textChannelA, textChannelB) =>
-      textChannelA.rawPosition > textChannelB.rawPosition ? 1 : -1
-  )
-  const upperTextChannel = rawPositionBasedSortedTextChannels[0]
+  const arrayChannels = Array.from(channels, ([name, value]) => ({ ...value } as Channel));
+  const textChannels = arrayChannels.filter((channel) => channel.type === ChannelType.GuildText) as TextChannel[];
+  const rawPositionBasedSortedTextChannels = textChannels.sort((textChannelA, textChannelB) =>
+    textChannelA.rawPosition > textChannelB.rawPosition ? 1 : -1,
+  );
+  const upperTextChannel = rawPositionBasedSortedTextChannels[0];
 
   try {
-    addDirectMessage(discordId, message)
+    addDirectMessage(discordId, message);
   } catch (error) {
     // can not send DM to the user
     // Will create a private thread and notify him/her about the status if useFallback is true
@@ -50,27 +39,24 @@ const notifyUserAboutAnalysisFinish = async (
       await createPrivateThreadAndSendMessage(upperTextChannel, {
         threadName: 'TogetherCrew Status',
         message: `<@${discordId}> ${message}`,
-      })
+      });
   }
-}
+};
 
 export async function handleSendMessageEvent(msg: any): Promise<void> {
   try {
-    logger.info(
-      { msg, event: Event.DISCORD_BOT.SEND_MESSAGE, sagaId: msg.content.uuid },
-      'is running'
-    )
-    if (msg === undefined || msg === null) return
+    logger.info({ msg, event: Event.DISCORD_BOT.SEND_MESSAGE, sagaId: msg.content.uuid }, 'is running');
+    if (msg === undefined || msg === null) return;
 
-    const { content } = msg
+    const { content } = msg;
     const saga = await MBConnection.models.Saga.findOne({
       sagaId: content.uuid,
-    })
-    const platformId = saga.data.platformId
-    const platform = await platformService.getPlatform({ _id: platformId })
-    const discordId = saga.data.discordId
-    const message = saga.data.message
-    const useFallback = saga.data.useFallback
+    });
+    const platformId = saga.data.platformId;
+    const platform = await platformService.getPlatform({ _id: platformId });
+    const discordId = saga.data.discordId;
+    const message = saga.data.message;
+    const useFallback = saga.data.useFallback;
     if (platform !== null) {
       await saga.next(async () =>
         // eslint-disable-next-line @typescript-eslint/return-await
@@ -78,14 +64,11 @@ export async function handleSendMessageEvent(msg: any): Promise<void> {
           guildId: platform.metadata?.id,
           message,
           useFallback,
-        })
-      )
+        }),
+      );
     }
 
-    logger.info(
-      { msg, event: Event.DISCORD_BOT.SEND_MESSAGE, sagaId: msg.content.uuid },
-      'is done'
-    )
+    logger.info({ msg, event: Event.DISCORD_BOT.SEND_MESSAGE, sagaId: msg.content.uuid }, 'is done');
   } catch (error) {
     logger.error(
       {
@@ -94,7 +77,7 @@ export async function handleSendMessageEvent(msg: any): Promise<void> {
         sagaId: msg.content.uuid,
         error,
       },
-      'is failed'
-    )
+      'is failed',
+    );
   }
 }

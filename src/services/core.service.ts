@@ -1,9 +1,9 @@
-import { Client, GatewayIntentBits } from 'discord.js'
-import config from '../config'
+import { Client, GatewayIntentBits } from 'discord.js';
+import config from '../config';
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 class DiscordBotManager {
-  public static client: Client
+  public static client: Client;
   public static async getClient(): Promise<Client> {
     // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     if (!DiscordBotManager.client) {
@@ -15,10 +15,10 @@ class DiscordBotManager {
           GatewayIntentBits.GuildPresences,
           GatewayIntentBits.DirectMessages,
         ],
-      })
-      await DiscordBotManager.client.login(config.discord.botToken)
+      });
+      await DiscordBotManager.client.login(config.discord.botToken);
     }
-    return DiscordBotManager.client
+    return DiscordBotManager.client;
   }
 
   public static async initClient(): Promise<Client> {
@@ -30,17 +30,17 @@ class DiscordBotManager {
         GatewayIntentBits.GuildPresences,
         GatewayIntentBits.DirectMessages,
       ],
-    })
+    });
 
-    return DiscordBotManager.client
+    return DiscordBotManager.client;
   }
 
   public static async LoginClient(): Promise<Client> {
-    await DiscordBotManager.client.login(config.discord.botToken)
-    return DiscordBotManager.client
+    await DiscordBotManager.client.login(config.discord.botToken);
+    return DiscordBotManager.client;
   }
 }
 
 export default {
   DiscordBotManager,
-}
+};

@@ -9,24 +9,24 @@ import {
   type Role,
   ThreadChannel,
   type Snowflake,
-} from 'discord.js'
-import { type IRawInfo } from '@togethercrew.dev/db'
-import { rawInfoService } from '../database/services'
-import { type Connection } from 'mongoose'
-import parentLogger from '../config/logger'
+} from 'discord.js';
+import { type IRawInfo } from '@togethercrew.dev/db';
+import { rawInfoService } from '../database/services';
+import { type Connection } from 'mongoose';
+import parentLogger from '../config/logger';
 
-const logger = parentLogger.child({ module: 'FetchMessages' })
+const logger = parentLogger.child({ module: 'FetchMessages' });
 interface threadInfo {
-  threadId: Snowflake
-  threadName: string
-  channelId: Snowflake | undefined
-  channelName: string | undefined
+  threadId: Snowflake;
+  threadName: string;
+  channelId: Snowflake | undefined;
+  channelName: string | undefined;
 }
 
 interface FetchOptions {
-  limit: number
-  before?: Snowflake
-  after?: Snowflake
+  limit: number;
+  before?: Snowflake;
+  after?: Snowflake;
 }
 
 /**
@@ -36,23 +36,23 @@ interface FetchOptions {
  */
 async function getReactions(message: Message): Promise<string[]> {
   try {
-    const reactions = message.reactions.cache
-    const reactionsArray = [...reactions.values()]
-    const reactionsArr = []
+    const reactions = message.reactions.cache;
+    const reactionsArray = [...reactions.values()];
+    const reactionsArr = [];
 
     for (const reaction of reactionsArray) {
-      const emoji = reaction.emoji
-      const users: Collection<string, User> = await reaction.users.fetch()
-      let usersString = users.map((user) => `${user.id}`).join(',')
+      const emoji = reaction.emoji;
+      const users: Collection<string, User> = await reaction.users.fetch();
+      let usersString = users.map((user) => `${user.id}`).join(',');
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      usersString += `,${emoji.name}`
-      reactionsArr.push(usersString)
+      usersString += `,${emoji.name}`;
+      reactionsArr.push(usersString);
     }
 
-    return reactionsArr
+    return reactionsArr;
   } catch (err) {
-    logger.error({ message, err }, 'Faild to get reactions')
-    return []
+    logger.error({ message, err }, 'Faild to get reactions');
+    return [];
   }
 }
 
@@ -62,10 +62,7 @@ async function getReactions(message: Message): Promise<string[]> {
  * @param {threadInfo} threadInfo - An optional thread info object containing details about the thread the message is part of.
  * @returns {Promise<IRawInfo>} - A promise that resolves to an object of type IRawInfo containing the extracted data.
  */
-async function getNeedDataFromMessage(
-  message: Message,
-  threadInfo?: threadInfo
-): Promise<IRawInfo> {
+async function getNeedDataFromMessage(message: Message, threadInfo?: threadInfo): Promise<IRawInfo> {
   if (threadInfo) {
     return {
       type: message.type,
@@ -74,8 +71,7 @@ async function getNeedDataFromMessage(
       createdDate: message.createdAt,
       role_mentions: message.mentions.roles.map((role: Role) => role.id),
       user_mentions: message.mentions.users.map((user: User) => user.id),
-      replied_user:
-        message.type === 19 ? message.mentions.repliedUser?.id : null,
+      replied_user: message.type === 19 ? message.mentions.repliedUser?.id : null,
       reactions: await getReactions(message),
       messageId: message.id,
       channelId: threadInfo?.channelId ? threadInfo?.channelId : '',
@@ -83,7 +79,7 @@ async function getNeedDataFromMessage(
       threadId: threadInfo?.threadId ? threadInfo?.threadId : null,
       threadName: threadInfo?.threadName ? threadInfo?.threadName : null,
       isGeneratedByWebhook: message.webhookId ? true : false,
-    }
+    };
   } else {
     return {
       type: message.type,
@@ -92,17 +88,15 @@ async function getNeedDataFromMessage(
       createdDate: message.createdAt,
       role_mentions: message.mentions.roles.map((role: Role) => role.id),
       user_mentions: message.mentions.users.map((user: User) => user.id),
-      replied_user:
-        message.type === 19 ? message.mentions.repliedUser?.id : null,
+      replied_user: message.type === 19 ? message.mentions.repliedUser?.id : null,
       reactions: await getReactions(message),
       messageId: message.id,
       channelId: message.channelId,
-      channelName:
-        message.channel instanceof TextChannel ? message.channel.name : null,
+      channelName: message.channel instanceof TextChannel ? message.channel.name : null,
       threadId: null,
       threadName: null,
       isGeneratedByWebhook: message.webhookId ? true : false,
-    }
+    };
   }
 }
 
@@ -118,19 +112,19 @@ async function pushMessagesToArray(
   connection: Connection,
   arr: IRawInfo[],
   messagesArray: Message[],
-  threadInfo?: threadInfo
+  threadInfo?: threadInfo,
 ): Promise<IRawInfo[]> {
-  const allowedTypes: number[] = [0, 18, 19]
+  const allowedTypes: number[] = [0, 18, 19];
   for (const message of messagesArray) {
     if (message.type === 21) {
       // const res = await rawInfoService.updateRawInfo(connection, { messageId: message.id }, { threadId: threadInfo?.threadId, threadName: threadInfo?.threadName });
     }
 
     if (allowedTypes.includes(message.type)) {
-      arr.push(await getNeedDataFromMessage(message, threadInfo))
+      arr.push(await getNeedDataFromMessage(message, threadInfo));
     }
   }
-  return arr
+  return arr;
 }
 
 /**
@@ -147,68 +141,49 @@ async function fetchMessages(
   channel: TextChannel | ThreadChannel,
   rawInfo: IRawInfo | undefined = undefined,
   period: Date,
-  fetchDirection: 'before' | 'after' = 'before'
+  fetchDirection: 'before' | 'after' = 'before',
 ) {
   try {
     logger.info(
       { guild_id: connection.name, channel_id: channel.id, fetchDirection },
-      'Fetching channel messages is running'
-    )
-    const messagesToStore: IRawInfo[] = []
-    const options: FetchOptions = { limit: 100 }
+      'Fetching channel messages is running',
+    );
+    const messagesToStore: IRawInfo[] = [];
+    const options: FetchOptions = { limit: 100 };
     if (rawInfo) {
-      options[fetchDirection] = rawInfo.messageId
+      options[fetchDirection] = rawInfo.messageId;
     }
-    let fetchedMessages = await channel.messages.fetch(options)
+    let fetchedMessages = await channel.messages.fetch(options);
 
     while (fetchedMessages.size > 0) {
-      const boundaryMessage =
-        fetchDirection === 'before'
-          ? fetchedMessages.last()
-          : fetchedMessages.first()
+      const boundaryMessage = fetchDirection === 'before' ? fetchedMessages.last() : fetchedMessages.first();
 
       if (!boundaryMessage || (period && boundaryMessage.createdAt < period)) {
         if (period) {
-          fetchedMessages = fetchedMessages.filter(
-            (msg) => msg.createdAt > period
-          )
+          fetchedMessages = fetchedMessages.filter((msg) => msg.createdAt > period);
         }
         channel instanceof ThreadChannel
-          ? await pushMessagesToArray(
-              connection,
-              messagesToStore,
-              [...fetchedMessages.values()],
-              {
-                threadId: channel.id,
-                threadName: channel.name,
-                channelId: channel.parent?.id,
-                channelName: channel.parent?.name,
-              }
-            )
-          : await pushMessagesToArray(connection, messagesToStore, [
-              ...fetchedMessages.values(),
-            ])
-        break
-      }
-
-      channel instanceof ThreadChannel
-        ? await pushMessagesToArray(
-            connection,
-            messagesToStore,
-            [...fetchedMessages.values()],
-            {
+          ? await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()], {
               threadId: channel.id,
               threadName: channel.name,
               channelId: channel.parent?.id,
               channelName: channel.parent?.name,
-            }
-          )
-        : await pushMessagesToArray(connection, messagesToStore, [
-            ...fetchedMessages.values(),
-          ])
-      await rawInfoService.createRawInfos(connection, messagesToStore)
-      options[fetchDirection] = boundaryMessage.id
-      fetchedMessages = await channel.messages.fetch(options)
+            })
+          : await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()]);
+        break;
+      }
+
+      channel instanceof ThreadChannel
+        ? await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()], {
+            threadId: channel.id,
+            threadName: channel.name,
+            channelId: channel.parent?.id,
+            channelName: channel.parent?.name,
+          })
+        : await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()]);
+      await rawInfoService.createRawInfos(connection, messagesToStore);
+      options[fetchDirection] = boundaryMessage.id;
+      fetchedMessages = await channel.messages.fetch(options);
     }
   } catch (err) {
     logger.error(
@@ -218,13 +193,13 @@ async function fetchMessages(
         fetchDirection,
         err,
       },
-      'Fetching channel messages failed'
-    )
+      'Fetching channel messages failed',
+    );
   }
   logger.info(
     { guild_id: connection.name, channel_id: channel.id, fetchDirection },
-    'Fetching channel messages is done'
-  )
+    'Fetching channel messages is done',
+  );
 }
 
 /**
@@ -234,103 +209,54 @@ async function fetchMessages(
  * @param {Date} period - A date object specifying the oldest date for the messages to be fetched.
  * @throws Will throw an error if an issue is encountered during processing.
  */
-export default async function handleFetchChannelMessages(
-  connection: Connection,
-  channel: TextChannel,
-  period: Date
-) {
-  logger.info(
-    { guild_id: connection.name, channel_id: channel.id },
-    'Handle channel messages for channel is running'
-  )
+export default async function handleFetchChannelMessages(connection: Connection, channel: TextChannel, period: Date) {
+  logger.info({ guild_id: connection.name, channel_id: channel.id }, 'Handle channel messages for channel is running');
   try {
-    const oldestChannelRawInfo = await rawInfoService.getOldestRawInfo(
-      connection,
-      {
-        channelId: channel?.id,
-        threadId: null,
-      }
-    )
-    const newestChannelRawInfo = await rawInfoService.getNewestRawInfo(
-      connection,
-      {
-        channelId: channel?.id,
-        threadId: null,
-      }
-    )
+    const oldestChannelRawInfo = await rawInfoService.getOldestRawInfo(connection, {
+      channelId: channel?.id,
+      threadId: null,
+    });
+    const newestChannelRawInfo = await rawInfoService.getNewestRawInfo(connection, {
+      channelId: channel?.id,
+      threadId: null,
+    });
     if (oldestChannelRawInfo && oldestChannelRawInfo.createdDate > period) {
-      await fetchMessages(
-        connection,
-        channel,
-        oldestChannelRawInfo,
-        period,
-        'before'
-      )
+      await fetchMessages(connection, channel, oldestChannelRawInfo, period, 'before');
     }
     if (newestChannelRawInfo) {
-      await fetchMessages(
-        connection,
-        channel,
-        newestChannelRawInfo,
-        period,
-        'after'
-      )
+      await fetchMessages(connection, channel, newestChannelRawInfo, period, 'after');
     }
 
     if (!newestChannelRawInfo && !oldestChannelRawInfo) {
-      await fetchMessages(connection, channel, undefined, period, 'before')
+      await fetchMessages(connection, channel, undefined, period, 'before');
     }
 
-    const threads = channel.threads.cache.values()
+    const threads = channel.threads.cache.values();
 
     for (const thread of threads) {
-      const oldestThreadRawInfo = await rawInfoService.getOldestRawInfo(
-        connection,
-        {
-          channelId: channel?.id,
-          threadId: thread.id,
-        }
-      )
-      const newestThreadRawInfo = await rawInfoService.getNewestRawInfo(
-        connection,
-        {
-          channelId: channel?.id,
-          threadId: thread.id,
-        }
-      )
+      const oldestThreadRawInfo = await rawInfoService.getOldestRawInfo(connection, {
+        channelId: channel?.id,
+        threadId: thread.id,
+      });
+      const newestThreadRawInfo = await rawInfoService.getNewestRawInfo(connection, {
+        channelId: channel?.id,
+        threadId: thread.id,
+      });
 
       if (oldestThreadRawInfo && oldestThreadRawInfo.createdDate > period) {
-        await fetchMessages(
-          connection,
-          thread,
-          oldestThreadRawInfo,
-          period,
-          'before'
-        )
+        await fetchMessages(connection, thread, oldestThreadRawInfo, period, 'before');
       }
 
       if (newestThreadRawInfo) {
-        await fetchMessages(
-          connection,
-          thread,
-          newestThreadRawInfo,
-          period,
-          'after'
-        )
+        await fetchMessages(connection, thread, newestThreadRawInfo, period, 'after');
       }
 
       if (!newestThreadRawInfo && !oldestThreadRawInfo) {
-        await fetchMessages(connection, thread, undefined, period, 'before')
+        await fetchMessages(connection, thread, undefined, period, 'before');
       }
     }
   } catch (err) {
-    logger.error(
-      { guild_id: connection.name, channel_id: channel.id, err },
-      'Handle fetch channel messages failed'
-    )
+    logger.error({ guild_id: connection.name, channel_id: channel.id, err }, 'Handle fetch channel messages failed');
   }
-  logger.info(
-    { guild_id: connection.name, channel_id: channel.id },
-    'Handle fetch channel messages is done'
-  )
+  logger.info({ guild_id: connection.name, channel_id: channel.id }, 'Handle fetch channel messages is done');
 }

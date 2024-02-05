@@ -1,23 +1,17 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { SlashCommandBuilder } from 'discord.js'
-import { interactionService } from '../../services'
-import RabbitMQ, {
-  Event,
-  Queue as RabbitMQQueue,
-} from '@togethercrew.dev/tc-messagebroker'
-import { type ChatInputCommandInteraction_broker } from '../../interfaces/Hivemind.interface'
-import { handleBigInts, removeCircularReferences } from '../../utils/obj'
-import logger from '../../config/logger'
+import { SlashCommandBuilder } from 'discord.js';
+import { interactionService } from '../../services';
+import RabbitMQ, { Event, Queue as RabbitMQQueue } from '@togethercrew.dev/tc-messagebroker';
+import { type ChatInputCommandInteraction_broker } from '../../interfaces/Hivemind.interface';
+import { handleBigInts, removeCircularReferences } from '../../utils/obj';
+import logger from '../../config/logger';
 export default {
   data: new SlashCommandBuilder()
     .setName('question')
     .setDescription('Ask a question and get an answer from Hivemind!')
     .addStringOption((option) =>
-      option
-        .setName('question')
-        .setDescription('Your question to Hivemind')
-        .setRequired(true)
+      option.setName('question').setDescription('Your question to Hivemind').setRequired(true),
     ),
 
   async execute(interaction: ChatInputCommandInteraction_broker) {
@@ -35,24 +29,19 @@ export default {
             content: 'You do not have the required role to use this command!',
             flags: 64,
           },
-        })
+        });
       }
-      const serializedInteraction =
-        interactionService.constructSerializableInteraction(interaction)
-      const processedInteraction = handleBigInts(serializedInteraction)
-      const cleanInteraction = removeCircularReferences(processedInteraction) // Pass processedInteraction here
-      const serializedData = JSON.stringify(cleanInteraction, null, 2)
-      RabbitMQ.publish(
-        RabbitMQQueue.HIVEMIND,
-        Event.HIVEMIND.INTERACTION_CREATED,
-        { interaction: serializedData }
-      )
+      const serializedInteraction = interactionService.constructSerializableInteraction(interaction);
+      const processedInteraction = handleBigInts(serializedInteraction);
+      const cleanInteraction = removeCircularReferences(processedInteraction); // Pass processedInteraction here
+      const serializedData = JSON.stringify(cleanInteraction, null, 2);
+      RabbitMQ.publish(RabbitMQQueue.HIVEMIND, Event.HIVEMIND.INTERACTION_CREATED, { interaction: serializedData });
       await interactionService.createInteractionResponse(interaction, {
         type: 5,
         data: { flags: 64 },
-      })
+      });
     } catch (error) {
-      logger.error({ command: 'question', error }, 'is failed')
+      logger.error({ command: 'question', error }, 'is failed');
     }
   },
-}
+};
