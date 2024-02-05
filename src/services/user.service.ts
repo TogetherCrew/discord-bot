@@ -1,4 +1,7 @@
-import { type Snowflake, type Message } from 'discord.js';
+import { type Channel, ChannelType, type Snowflake, type TextChannel, type Message } from 'discord.js';
+import {} from 'discord.js';
+import { createPrivateThreadAndSendMessage } from '../functions/thread';
+import { addDirectMessage } from '../queue/queues/directMessage';
 import coreService from './core.service';
 
 /**
@@ -15,6 +18,32 @@ async function sendDirectMessage(discordId: Snowflake, message: string): Promise
   }
 }
 
+async function notifyUserAboutAnalysisFinish(
+  discordId: string,
+  info: { guildId: Snowflake; message: string; useFallback: boolean }
+): Promise<void> {
+  const client = await coreService.DiscordBotManager.getClient();
+  const { guildId, message, useFallback } = info;
+  const guild = await client.guilds.fetch(guildId);
+  const channels = await guild.channels.fetch();
+  const arrayChannels = Array.from(channels, ([name, value]) => ({ ...value })) as Channel[];
+  const textChannels = arrayChannels.filter((channel) => channel.type === ChannelType.GuildText) as TextChannel[];
+  const rawPositionBasedSortedTextChannels = textChannels.sort((a, b) => a.rawPosition - b.rawPosition);
+  const upperTextChannel = rawPositionBasedSortedTextChannels[0];
+
+  try {
+    addDirectMessage(discordId, message);
+  } catch (error) {
+    if (useFallback) {
+      await createPrivateThreadAndSendMessage(upperTextChannel, {
+        threadName: 'TogetherCrew Status',
+        message: `<@${discordId}> ${message}`,
+      });
+    }
+  }
+}
+
 export default {
   sendDirectMessage,
+  notifyUserAboutAnalysisFinish,
 };
