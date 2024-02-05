@@ -3,11 +3,7 @@
     "es2021": true,
     "node": true
   },
-  "extends": [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:prettier/recommended"
-  ],
+  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "plugin:prettier/recommended"],
   "overrides": [],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -16,14 +12,5 @@
     "project": "./tsconfig.json"
   },
   "rules": {},
-  "ignorePatterns": [
-    "coverage",
-    "dist",
-    "__tests__/",
-    "*.json",
-    "*.yml",
-    "*.js",
-    "*.ts",
-    "bable.config.js"
-  ]
+  "ignorePatterns": ["coverage", "dist", "__tests__/", "*.json", "*.yml", "*.js", "*.ts", "bable.config.js"]
 }
