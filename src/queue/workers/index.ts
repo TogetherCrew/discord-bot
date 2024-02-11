@@ -1,4 +1,4 @@
-import { Worker } from 'bullmq';
+import { type Worker } from 'bullmq';
 import parentLogger from '../../config/logger';
 const logger = parentLogger.child({ module: 'Queue' });
 
