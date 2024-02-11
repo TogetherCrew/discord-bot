@@ -16,10 +16,19 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["src/**/*", "__tests__/**/*", "types/**/*"],
+  "include": [
+    "src/**/*",
+    "__tests__/**/*",
+    "types/**/*"
+  ],
   "ts-node": {
     "transpileOnly": true,
     "files": true
   },
-  "exclude": ["./coverage", "./lib", "__tests__", "jest.config.js"]
+  "exclude": [
+    "./coverage",
+    "./lib",
+    "__tests__",
+    "jest.config.js"
+  ]
 }

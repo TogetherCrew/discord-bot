@@ -20,3 +20,9 @@ export const rateLimitConfig = {
   max: 20,
   duration: 10000,
 };
+
+export const discordEventConfig = {
+  attempts: 1,
+  max: 10,
+  duration: 10000,
+};
