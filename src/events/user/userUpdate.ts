@@ -8,8 +8,8 @@ export default {
     const dataToStore = {
       discordId: newUser.id,
       username: newUser.username,
-      globalName: newUser.globalName
+      globalName: newUser.globalName,
     };
-    addDiscordEvent({ type: Events.UserUpdate, dataToStore })
+    addDiscordEvent({ type: Events.UserUpdate, dataToStore });
   },
 };

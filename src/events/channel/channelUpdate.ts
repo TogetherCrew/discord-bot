@@ -6,9 +6,13 @@ export default {
   name: Events.ChannelUpdate,
   once: false,
   execute(oldChannel: Channel, newChannel: Channel) {
-    if (newChannel instanceof TextChannel || newChannel instanceof VoiceChannel || newChannel instanceof CategoryChannel) {
+    if (
+      newChannel instanceof TextChannel ||
+      newChannel instanceof VoiceChannel ||
+      newChannel instanceof CategoryChannel
+    ) {
       const dataToStore = channelService.getNeededDateFromChannel(newChannel);
-      addDiscordEvent({ type: Events.ChannelUpdate, guildId: newChannel.guildId, dataToStore })
+      addDiscordEvent({ type: Events.ChannelUpdate, guildId: newChannel.guildId, dataToStore });
     }
   },
 };

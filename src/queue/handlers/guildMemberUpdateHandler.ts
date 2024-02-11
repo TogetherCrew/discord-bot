@@ -10,7 +10,11 @@ export default async function (guildId: Snowflake, dataToStore: IGuildMember): P
   logger.info(logFields, 'event is running');
   const connection = await DatabaseManager.getInstance().getTenantDb(guildId);
   try {
-    const guildMemberDoc = await guildMemberService.updateGuildMember(connection, { discordId: dataToStore.discordId }, dataToStore);
+    const guildMemberDoc = await guildMemberService.updateGuildMember(
+      connection,
+      { discordId: dataToStore.discordId },
+      dataToStore,
+    );
     if (guildMemberDoc === null) {
       await guildMemberService.createGuildMember(connection, dataToStore);
     }

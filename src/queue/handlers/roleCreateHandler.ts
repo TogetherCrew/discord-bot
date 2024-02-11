@@ -13,7 +13,8 @@ export default async function (guildId: Snowflake, dataToStore: IRole): Promise<
     const roleDoc = await roleService.updateRole(connection, { roleId: dataToStore.roleId }, dataToStore);
     if (roleDoc === null) {
       await roleService.createRole(connection, dataToStore);
-    } logger.info(logFields, 'event is done');
+    }
+    logger.info(logFields, 'event is done');
   } catch (err) {
     logger.error({ ...logFields, err }, 'Failed to handle role changes');
   }

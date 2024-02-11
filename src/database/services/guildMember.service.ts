@@ -201,7 +201,6 @@ function getNeededDateFromGuildMember(guildMember: GuildMember): IGuildMember {
     nickname: guildMember.nickname,
     globalName: guildMember.user.globalName,
     isBot: guildMember.user.bot,
-
   };
 }
 

@@ -6,7 +6,7 @@ export default {
   once: false,
   execute(channel: Channel) {
     if (channel instanceof TextChannel || channel instanceof VoiceChannel || channel instanceof CategoryChannel) {
-      addDiscordEvent({ type: Events.ChannelDelete, guildId: channel.guildId, channelId: channel.id })
+      addDiscordEvent({ type: Events.ChannelDelete, guildId: channel.guildId, channelId: channel.id });
     }
   },
 };

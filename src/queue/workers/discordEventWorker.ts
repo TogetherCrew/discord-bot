@@ -18,7 +18,6 @@ import {
 export const discordEventWorker = new Worker(
   'discordEventQueue',
   async (job: Job<any, any, string> | undefined) => {
-
     if (job !== null && job !== undefined) {
       switch (job.data.type) {
         case Events.ChannelCreate: {
@@ -46,7 +45,7 @@ export const discordEventWorker = new Worker(
           break;
         }
         case Events.GuildRoleCreate: {
-          console.log('wtf', job.data.guildId, job.data.dataToStore)
+          console.log('wtf', job.data.guildId, job.data.dataToStore);
           await roleCreateHandler(job.data.guildId, job.data.dataToStore);
           break;
         }

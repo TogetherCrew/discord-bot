@@ -3,9 +3,9 @@ import { DatabaseManager } from '@togethercrew.dev/db';
 import parentLogger from '../../config/logger';
 
 interface IdataToStore {
-  username: string,
-  globalName: string,
-  discordId: string
+  username: string;
+  globalName: string;
+  discordId: string;
 }
 const logger = parentLogger.child({ event: 'UserUpdateHandler' });
 export default async function (dataToStore: IdataToStore): Promise<void> {
@@ -17,7 +17,6 @@ export default async function (dataToStore: IdataToStore): Promise<void> {
     });
     for (let i = 0; i < platforms.length; i++) {
       const connection = await DatabaseManager.getInstance().getTenantDb(platforms[i].metadata?.id);
-
 
       await guildMemberService.updateGuildMember(
         connection,

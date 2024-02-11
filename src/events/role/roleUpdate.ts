@@ -7,6 +7,6 @@ export default {
   once: false,
   execute(oldRole: Role, newRole: Role) {
     const dataToStore = roleService.getNeededDateFromRole(newRole);
-    addDiscordEvent({ type: Events.GuildRoleUpdate, guildId: newRole.guild.id, newRole, dataToStore })
+    addDiscordEvent({ type: Events.GuildRoleUpdate, guildId: newRole.guild.id, newRole, dataToStore });
   },
 };

@@ -25,5 +25,4 @@ export default async function (guildId: Snowflake, channelId: Snowflake): Promis
   } catch (err) {
     logger.error({ ...logFields, err }, 'Failed to soft delete the channel');
   }
-
 }

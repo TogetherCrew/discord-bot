@@ -10,7 +10,11 @@ export default async function (guildId: Snowflake, dataToStore: IChannel): Promi
   logger.info(logFields, 'event is running');
   const connection = await DatabaseManager.getInstance().getTenantDb(guildId);
   try {
-    const channelDoc = await channelService.updateChannel(connection, { channelId: dataToStore.channelId }, dataToStore);
+    const channelDoc = await channelService.updateChannel(
+      connection,
+      { channelId: dataToStore.channelId },
+      dataToStore,
+    );
     if (channelDoc === null) {
       await channelService.createChannel(connection, dataToStore);
     }
@@ -18,5 +22,4 @@ export default async function (guildId: Snowflake, dataToStore: IChannel): Promi
   } catch (err) {
     logger.error({ ...logFields, err }, 'Failed to handle channel changes');
   }
-
 }

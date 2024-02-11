@@ -8,7 +8,7 @@ export default {
   execute(channel: Channel) {
     if (channel instanceof TextChannel || channel instanceof VoiceChannel || channel instanceof CategoryChannel) {
       const dataToStore = channelService.getNeededDateFromChannel(channel);
-      addDiscordEvent({ type: Events.ChannelCreate, guildId: channel.guildId, dataToStore })
+      addDiscordEvent({ type: Events.ChannelCreate, guildId: channel.guildId, dataToStore });
     }
   },
 };

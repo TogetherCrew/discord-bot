@@ -7,6 +7,6 @@ export default {
   once: false,
   execute(member: GuildMember) {
     const dataToStore = guildMemberService.getNeededDateFromGuildMember(member);
-    addDiscordEvent({ type: Events.GuildMemberAdd, guildId: member.guild.id, dataToStore })
+    addDiscordEvent({ type: Events.GuildMemberAdd, guildId: member.guild.id, dataToStore });
   },
 };
