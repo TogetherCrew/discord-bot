@@ -45,7 +45,6 @@ export const discordEventWorker = new Worker(
           break;
         }
         case Events.GuildRoleCreate: {
-          console.log('wtf', job.data.guildId, job.data.dataToStore);
           await roleCreateHandler(job.data.guildId, job.data.dataToStore);
           break;
         }

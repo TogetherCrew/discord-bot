@@ -11,7 +11,6 @@ export default async function (guildId: Snowflake, dataToStore: IRole): Promise<
   const connection = await DatabaseManager.getInstance().getTenantDb(guildId);
   try {
     const roleDoc = await roleService.updateRole(connection, { roleId: dataToStore.roleId }, dataToStore);
-    console.log(roleDoc);
     if (roleDoc === null) {
       await roleService.createRole(connection, dataToStore);
     }

@@ -8,6 +8,7 @@ import './queue/workers/cronWorker';
 import './queue/workers/channelMessageWorker';
 import './queue/workers/directMessageWorker';
 import './queue/workers/discordEventWorker';
+import './queue/workers/guildExtractionWorker';
 
 const logger = parentLogger.child({ module: `app` });
 
