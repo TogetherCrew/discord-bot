@@ -200,6 +200,8 @@ function getNeededDateFromGuildMember(guildMember: GuildMember): IGuildMember {
     permissions: guildMember.permissions.bitfield.toString(),
     nickname: guildMember.nickname,
     globalName: guildMember.user.globalName,
+    isBot: guildMember.user.bot,
+
   };
 }
 
