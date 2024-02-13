@@ -115,7 +115,7 @@ async function handelRoleChanges(connection: Connection, role: Role): Promise<vo
   const commonFields = getNeededDateFromRole(role);
   try {
     const roleDoc = await updateRole(connection, { roleId: role.id }, commonFields);
-    if (!roleDoc) {
+    if (roleDoc === null) {
       await createRole(connection, commonFields);
     }
   } catch (error) {

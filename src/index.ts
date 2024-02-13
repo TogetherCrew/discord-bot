@@ -7,6 +7,8 @@ import parentLogger from './config/logger';
 import './queue/workers/cronWorker';
 import './queue/workers/channelMessageWorker';
 import './queue/workers/directMessageWorker';
+import './queue/workers/discordEventWorker';
+import './queue/workers/guildExtractionWorker';
 
 const logger = parentLogger.child({ module: `app` });
 
@@ -15,10 +17,10 @@ async function app(): Promise<void> {
   await connectToMB();
   await connectToRabbitMQ();
   await coreService.DiscordBotManager.initClient();
+  await coreService.DiscordBotManager.LoginClient();
   await eventService.loadEvents();
   await commandService.loadCommands();
   await commandService.registerCommand();
-  await coreService.DiscordBotManager.LoginClient();
   setupRabbitMQHandlers();
   addCronJob();
 }

@@ -3,9 +3,10 @@ import { DatabaseManager } from '@togethercrew.dev/db';
 import fetchMembers from '../../functions/fetchMembers';
 import fetchChannels from '../../functions/fetchChannels';
 import fetchRoles from '../../functions/fetchRoles';
-import guildExtraction from '../../functions/guildExtraction';
 import parentLogger from '../../config/logger';
 import { platformService } from '../../database/services';
+import { addGuildExtraction } from '../../queue/queues/guildExtraction';
+
 const logger = parentLogger.child({ module: `${Event.DISCORD_BOT.FETCH}` });
 
 const fetchMethod = async (msg: any): Promise<void> => {
@@ -25,7 +26,7 @@ const fetchMethod = async (msg: any): Promise<void> => {
       await fetchMembers(connection, platform);
       await fetchRoles(connection, platform);
     } else {
-      await guildExtraction(connection, platform);
+      addGuildExtraction(platform);
     }
   }
   logger.info({ msg }, 'fetchMethod is done');

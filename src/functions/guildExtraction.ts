@@ -1,5 +1,5 @@
-import { type Connection, type HydratedDocument } from 'mongoose';
-import { type IPlatform } from '@togethercrew.dev/db';
+import { type HydratedDocument } from 'mongoose';
+import { type IPlatform, DatabaseManager } from '@togethercrew.dev/db';
 import { platformService } from '../database/services';
 import handleFetchChannelMessages from './fetchMessages';
 import parentLogger from '../config/logger';
@@ -8,11 +8,11 @@ import { coreService } from '../services';
 const logger = parentLogger.child({ module: 'GuildExtraction' });
 /**
  * Extracts information from a given guild.
- * @param {Connection} connection - Mongoose connection object for the database.
  * @param {Snowflake} guildId - The identifier of the guild to extract information from.
  */
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export default async function guildExtraction(connection: Connection, platform: HydratedDocument<IPlatform>) {
+export default async function guildExtraction(platform: HydratedDocument<IPlatform>) {
+  const connection = await DatabaseManager.getInstance().getTenantDb(platform.metadata?.id);
   const client = await coreService.DiscordBotManager.getClient();
 
   logger.info({ guild_id: platform.metadata?.id }, 'Guild extraction for guild is running');
