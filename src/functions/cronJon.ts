@@ -1,4 +1,3 @@
-import { Client } from 'discord.js';
 import { Types } from 'mongoose';
 import { platformService } from '../database/services';
 import { ChoreographyDict, MBConnection, Status } from '@togethercrew.dev/tc-messagebroker';
@@ -23,16 +22,15 @@ async function createAndStartCronJobSaga(platformId: Types.ObjectId) {
 
 /**
  * Runs the extraction process for multiple guilds.
- * @param {Client} client - The discord.js client object used to fetch the guilds.
  */
-export default async function cronJob(client: Client) {
+export default async function cronJob() {
   logger.info('event is running');
   const platforms = await platformService.getPlatforms({ disconnectedAt: null });
   for (let i = 0; i < platforms.length; i++) {
     const connection = await DatabaseManager.getInstance().getTenantDb(platforms[i].metadata?.id);
     try {
       logger.info({ platform_Id: platforms[i].metadata?.id }, 'is running cronJob for platform');
-      await guildExtraction(connection, client, platforms[i]);
+      await guildExtraction(connection, platforms[i]);
       await createAndStartCronJobSaga(platforms[i].id);
       logger.info({ platform_Id: platforms[i].metadata?.id }, 'cronJob is done for platform');
     } catch (err) {

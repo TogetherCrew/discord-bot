@@ -1,23 +1,23 @@
-import { Client } from 'discord.js';
+
 import { Connection, HydratedDocument } from 'mongoose';
 import { IPlatform } from '@togethercrew.dev/db';
 import { platformService } from '../database/services';
 import handleFetchChannelMessages from './fetchMessages';
 import parentLogger from '../config/logger';
-
-console.log('FLAG - isInProgress Update?? || selectedChannels array of object to string')
+import { coreService } from '../services';
 
 const logger = parentLogger.child({ module: 'GuildExtraction' });
 /**
  * Extracts information from a given guild.
  * @param {Connection} connection - Mongoose connection object for the database.
- * @param {Client} client - The discord.js client object used to fetch the guild.
  * @param {Snowflake} guildId - The identifier of the guild to extract information from.
  */
-export default async function guildExtraction(connection: Connection, client: Client, platform: HydratedDocument<IPlatform>) {
+export default async function guildExtraction(connection: Connection, platform: HydratedDocument<IPlatform>) {
+  const client = await coreService.DiscordBotManager.getClient();
+
   logger.info({ guild_id: platform.metadata?.id }, 'Guild extraction for guild is running');
   try {
-    const hasBotAccessToGuild = await platformService.checkBotAccessToGuild(client, platform.metadata?.id);
+    const hasBotAccessToGuild = await platformService.checkBotAccessToGuild(platform.metadata?.id);
     if (!hasBotAccessToGuild) {
       return;
     }
