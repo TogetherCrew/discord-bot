@@ -1,4 +1,4 @@
-import { Events, Role } from 'discord.js';
+import { Events, type Role } from 'discord.js';
 import { roleService } from '../../database/services';
 import { DatabaseManager } from '@togethercrew.dev/db';
 import parentLogger from '../../config/logger';

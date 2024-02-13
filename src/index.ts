@@ -1,14 +1,16 @@
 import { connectToMongoDB, connectToMB } from './database/connection';
-import { coreService } from './services';
 import { addCronJob } from './queue/queues/cronJob';
 import { connectToRabbitMQ } from './rabbitmq/RabbitMQConnection';
 import { setupRabbitMQHandlers } from './rabbitmq/RabbitMQHandler';
-import { commandService, eventService } from './services';
+import { commandService, eventService, coreService } from './services';
+import parentLogger from './config/logger';
 import './queue/workers/cronWorker';
 import './queue/workers/channelMessageWorker';
 import './queue/workers/directMessageWorker';
 
-async function app() {
+const logger = parentLogger.child({ module: `app` });
+
+async function app(): Promise<void> {
   await connectToMongoDB();
   await connectToMB();
   await connectToRabbitMQ();
@@ -21,4 +23,6 @@ async function app() {
   addCronJob();
 }
 
-app();
+app().catch((error) => {
+  logger.fatal({ error }, 'Failed to start the application');
+});

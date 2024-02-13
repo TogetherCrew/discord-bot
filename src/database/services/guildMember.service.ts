@@ -1,6 +1,6 @@
-import { Connection } from 'mongoose';
-import { IGuildMember, IGuildMemberMethods, IGuildMemberUpdateBody } from '@togethercrew.dev/db';
-import { GuildMember } from 'discord.js';
+import { type Connection } from 'mongoose';
+import { type IGuildMember, type IGuildMemberMethods, type IGuildMemberUpdateBody } from '@togethercrew.dev/db';
+import { type GuildMember } from 'discord.js';
 import parentLogger from '../../config/logger';
 
 const logger = parentLogger.child({ module: 'GuildMemberService' });
@@ -15,16 +15,20 @@ async function createGuildMember(connection: Connection, guildMember: IGuildMemb
     return await connection.models.GuildMember.create(guildMember);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    if (error.code == 11000) {
+    if (error.code === 11000) {
       logger.warn(
         { database: connection.name, guild_member_id: guildMember.discordId },
-        'Failed to create duplicate guild member'
+        'Failed to create duplicate guild member',
       );
       return null;
     }
     logger.error(
-      { database: connection.name, guild_member_id: guildMember.discordId, error },
-      'Failed to create guild member'
+      {
+        database: connection.name,
+        guild_member_id: guildMember.discordId,
+        error,
+      },
+      'Failed to create guild member',
     );
     return null;
   }
@@ -38,10 +42,12 @@ async function createGuildMember(connection: Connection, guildMember: IGuildMemb
  */
 async function createGuildMembers(connection: Connection, guildMembers: IGuildMember[]): Promise<IGuildMember[] | []> {
   try {
-    return await connection.models.GuildMember.insertMany(guildMembers, { ordered: false });
+    return await connection.models.GuildMember.insertMany(guildMembers, {
+      ordered: false,
+    });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    if (error.code == 11000) {
+    if (error.code === 11000) {
       logger.warn({ database: connection.name }, 'Failed to create duplicate guild members');
       return [];
     }
@@ -58,7 +64,7 @@ async function createGuildMembers(connection: Connection, guildMembers: IGuildMe
  */
 async function getGuildMember(
   connection: Connection,
-  filter: object
+  filter: object,
 ): Promise<(IGuildMember & IGuildMemberMethods) | null> {
   return await connection.models.GuildMember.findOne(filter);
 }
@@ -83,15 +89,16 @@ async function getGuildMembers(connection: Connection, filter: object): Promise<
 async function updateGuildMember(
   connection: Connection,
   filter: object,
-  updateBody: IGuildMemberUpdateBody
+  updateBody: IGuildMemberUpdateBody,
 ): Promise<IGuildMember | null> {
   try {
     const guildMember = await connection.models.GuildMember.findOne(filter);
-    if (!guildMember) {
+    if (guildMember === null) {
       return null;
     }
     Object.assign(guildMember, updateBody);
-    return await guildMember.save();
+    await guildMember.save();
+    return guildMember;
   } catch (error) {
     logger.error({ database: connection.name, filter, updateBody, error }, 'Failed to update guild member');
     return null;
@@ -108,10 +115,11 @@ async function updateGuildMember(
 async function updateGuildMembers(
   connection: Connection,
   filter: object,
-  updateBody: IGuildMemberUpdateBody
+  updateBody: IGuildMemberUpdateBody,
 ): Promise<number> {
   try {
     const updateResult = await connection.models.GuildMember.updateMany(filter, updateBody);
+    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     return updateResult.modifiedCount || 0;
   } catch (error) {
     logger.error({ database: connection.name, filter, updateBody, error }, 'Failed to update guild members');
@@ -162,7 +170,7 @@ async function handelGuildMemberChanges(connection: Connection, guildMember: Gui
   const commonFields = getNeededDateFromGuildMember(guildMember);
   try {
     const guildMemberDoc = await updateGuildMember(connection, { discordId: guildMember.user.id }, commonFields);
-    if (!guildMemberDoc) {
+    if (guildMemberDoc === null) {
       await createGuildMember(connection, {
         ...commonFields,
         isBot: guildMember.user.bot,
@@ -171,7 +179,7 @@ async function handelGuildMemberChanges(connection: Connection, guildMember: Gui
   } catch (error) {
     logger.error(
       { guild_id: connection.name, guild_member_id: guildMember.id, error },
-      'Failed to handle guild member changes'
+      'Failed to handle guild member changes',
     );
   }
 }
@@ -187,7 +195,7 @@ function getNeededDateFromGuildMember(guildMember: GuildMember): IGuildMember {
     username: guildMember.user.username,
     avatar: guildMember.user.avatar,
     joinedAt: guildMember.joinedAt,
-    roles: guildMember.roles.cache.map(role => role.id),
+    roles: guildMember.roles.cache.map((role) => role.id),
     discriminator: guildMember.user.discriminator,
     permissions: guildMember.permissions.bitfield.toString(),
     nickname: guildMember.nickname,

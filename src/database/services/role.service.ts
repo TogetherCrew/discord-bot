@@ -1,6 +1,7 @@
-import { Connection } from 'mongoose';
-import { IRole, IRoleMethods, IRoleUpdateBody } from '@togethercrew.dev/db';
-import { Role } from 'discord.js';
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
+import { type Connection } from 'mongoose';
+import { type IRole, type IRoleMethods, type IRoleUpdateBody } from '@togethercrew.dev/db';
+import { type Role } from 'discord.js';
 import parentLogger from '../../config/logger';
 
 const logger = parentLogger.child({ module: 'roleService' });
@@ -15,7 +16,7 @@ async function createRole(connection: Connection, role: IRole): Promise<IRole | 
     return await connection.models.Role.create(role);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    if (error.code == 11000) {
+    if (error.code === 11000) {
       logger.warn({ database: connection.name, role_id: role.roleId }, 'Failed to create duplicate role');
       return null;
     }
@@ -35,7 +36,7 @@ async function createRoles(connection: Connection, roles: IRole[]): Promise<IRol
     return await connection.models.Role.insertMany(roles, { ordered: false });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    if (error.code == 11000) {
+    if (error.code === 11000) {
       logger.warn({ database: connection.name }, 'Failed to create duplicate roles');
       return [];
     }
@@ -74,11 +75,12 @@ async function getRoles(connection: Connection, filter: object): Promise<IRole[]
 async function updateRole(connection: Connection, filter: object, updateBody: IRoleUpdateBody): Promise<IRole | null> {
   try {
     const role = await connection.models.Role.findOne(filter);
-    if (!role) {
+    if (role === null) {
       return null;
     }
     Object.assign(role, updateBody);
-    return await role.save();
+    await role.save();
+    return role;
   } catch (error) {
     logger.error({ database: connection.name, filter, updateBody, error }, 'Failed to update role');
     return null;

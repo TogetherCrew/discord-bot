@@ -1,6 +1,7 @@
-import { Connection } from 'mongoose';
-import { IChannel, IChannelMethods, IChannelUpdateBody } from '@togethercrew.dev/db';
-import { VoiceChannel, TextChannel, CategoryChannel } from 'discord.js';
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
+import { type Connection } from 'mongoose';
+import { type IChannel, type IChannelMethods, type IChannelUpdateBody } from '@togethercrew.dev/db';
+import { type VoiceChannel, type TextChannel, type CategoryChannel } from 'discord.js';
 import parentLogger from '../../config/logger';
 
 const logger = parentLogger.child({ module: 'ChannelService' });
@@ -16,7 +17,7 @@ async function createChannel(connection: Connection, channel: IChannel): Promise
     return await connection.models.Channel.create(channel);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    if (error.code == 11000) {
+    if (error.code === 11000) {
       logger.warn({ database: connection.name, channel_id: channel.channelId }, 'Failed to create duplicate channel');
       return null;
     }
@@ -33,10 +34,12 @@ async function createChannel(connection: Connection, channel: IChannel): Promise
  */
 async function createChannels(connection: Connection, channels: IChannel[]): Promise<IChannel[] | []> {
   try {
-    return await connection.models.Channel.insertMany(channels, { ordered: false });
+    return await connection.models.Channel.insertMany(channels, {
+      ordered: false,
+    });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    if (error.code == 11000) {
+    if (error.code === 11000) {
       logger.warn({ database: connection.name }, 'Failed to create duplicate channels');
       return [];
     }
@@ -75,15 +78,16 @@ async function getChannels(connection: Connection, filter: object): Promise<ICha
 async function updateChannel(
   connection: Connection,
   filter: object,
-  updateBody: IChannelUpdateBody
+  updateBody: IChannelUpdateBody,
 ): Promise<IChannel | null> {
   try {
     const channel = await connection.models.Channel.findOne(filter);
-    if (!channel) {
+    if (channel === null) {
       return null;
     }
     Object.assign(channel, updateBody);
-    return await channel.save();
+    await channel.save();
+    return channel;
   } catch (error) {
     logger.error({ database: connection.name, filter, updateBody, error }, 'Failed to update channel');
     return null;
@@ -100,6 +104,7 @@ async function updateChannel(
 async function updateChannels(connection: Connection, filter: object, updateBody: IChannelUpdateBody): Promise<number> {
   try {
     const updateResult = await connection.models.Channel.updateMany(filter, updateBody);
+    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     return updateResult.modifiedCount || 0;
   } catch (error) {
     logger.error({ database: connection.name, filter, updateBody, error }, 'Failed to update channels');
@@ -116,7 +121,7 @@ async function updateChannels(connection: Connection, filter: object, updateBody
  */
 async function handelChannelChanges(
   connection: Connection,
-  channel: TextChannel | VoiceChannel | CategoryChannel
+  channel: TextChannel | VoiceChannel | CategoryChannel,
 ): Promise<void> {
   const commonFields = getNeededDateFromChannel(channel);
   try {
@@ -139,7 +144,7 @@ function getNeededDateFromChannel(channel: TextChannel | VoiceChannel | Category
     channelId: channel.id,
     name: channel.name, // cast to TextChannel for 'name'
     parentId: channel.parentId,
-    permissionOverwrites: Array.from(channel.permissionOverwrites.cache.values()).map(overwrite => ({
+    permissionOverwrites: Array.from(channel.permissionOverwrites.cache.values()).map((overwrite) => ({
       id: overwrite.id,
       type: overwrite.type,
       allow: overwrite.allow.bitfield.toString(),

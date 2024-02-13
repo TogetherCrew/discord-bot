@@ -1,4 +1,4 @@
-import { Events, User } from 'discord.js';
+import { Events, type User } from 'discord.js';
 import { guildMemberService, platformService } from '../../database/services';
 import { DatabaseManager } from '@togethercrew.dev/db';
 import parentLogger from '../../config/logger';
@@ -11,7 +11,9 @@ export default {
     const logFields = { user_id: newUser.id };
     logger.info(logFields, 'event is running');
     try {
-      const platforms = await platformService.getPlatforms({ disconnectedAt: null });
+      const platforms = await platformService.getPlatforms({
+        disconnectedAt: null,
+      });
       for (let i = 0; i < platforms.length; i++) {
         const connection = await DatabaseManager.getInstance().getTenantDb(platforms[i].metadata?.id);
         await guildMemberService.updateGuildMember(
@@ -20,7 +22,7 @@ export default {
           {
             username: newUser.username,
             globalName: newUser.globalName,
-          }
+          },
         );
         logger.info(logFields, 'event is done');
       }

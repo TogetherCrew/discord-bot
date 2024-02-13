@@ -1,4 +1,4 @@
-import { Events, Channel, TextChannel, VoiceChannel, CategoryChannel } from 'discord.js';
+import { Events, type Channel, TextChannel, VoiceChannel, CategoryChannel } from 'discord.js';
 import { channelService } from '../../database/services';
 import { DatabaseManager } from '@togethercrew.dev/db';
 import parentLogger from '../../config/logger';
@@ -14,13 +14,15 @@ export default {
       newChannel instanceof VoiceChannel ||
       newChannel instanceof CategoryChannel
     ) {
-      const logFields = { guild_id: newChannel.guild.id, channel_id: newChannel.id };
+      const logFields = {
+        guild_id: newChannel.guild.id,
+        channel_id: newChannel.id,
+      };
       logger.info(logFields, 'event is running');
       const connection = await DatabaseManager.getInstance().getTenantDb(newChannel.guild.id);
       try {
         await channelService.handelChannelChanges(connection, newChannel);
         logger.info(logFields, 'event is done');
-
       } catch (err) {
         logger.error({ ...logFields, err }, 'Failed to handle channel changes');
       }

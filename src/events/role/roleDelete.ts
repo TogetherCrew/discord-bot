@@ -1,4 +1,4 @@
-import { Events, Role } from 'discord.js';
+import { Events, type Role } from 'discord.js';
 import { roleService } from '../../database/services';
 import { DatabaseManager } from '@togethercrew.dev/db';
 import parentLogger from '../../config/logger';
@@ -14,7 +14,7 @@ export default {
     const connection = await DatabaseManager.getInstance().getTenantDb(role.guild.id);
     try {
       const roleDoc = await roleService.getRole(connection, { roleId: role.id });
-      await roleDoc?.softDelete();
+      roleDoc?.softDelete();
       logger.info(logFields, 'event is done');
     } catch (err) {
       logger.error({ ...logFields, err }, 'Failed to soft delete the role');

@@ -4,8 +4,7 @@ import { connectToMongoDB } from '../../database/connection';
 import webhookLogic from '../utils/webhookLogic';
 import { DatabaseManager } from '@togethercrew.dev/db';
 
-
-export const up = async () => {
+export const up = async (): Promise<void> => {
   await connectToMongoDB();
   const platforms = await platformService.getPlatforms({});
   for (let i = 0; i < platforms.length; i++) {
@@ -14,6 +13,6 @@ export const up = async () => {
   }
 };
 
-export const down = async () => {
+export const down = async (): Promise<void> => {
   // TODO: Implement rollback logic if needed
 };

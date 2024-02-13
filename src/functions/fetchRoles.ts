@@ -1,10 +1,9 @@
-import { Role } from 'discord.js';
-import { Connection, HydratedDocument } from 'mongoose';
-import { IPlatform, IRole } from '@togethercrew.dev/db';
+import { type Role } from 'discord.js';
+import { type Connection, type HydratedDocument } from 'mongoose';
+import { type IPlatform, type IRole } from '@togethercrew.dev/db';
 import { roleService, platformService } from '../database/services';
 import parentLogger from '../config/logger';
 import { coreService } from '../services';
-
 
 const logger = parentLogger.child({ module: 'FetchRoles' });
 
@@ -26,11 +25,16 @@ function pushRolesToArray(arr: IRole[], roleArray: Role[]): IRole[] {
  * @param {Connection} connection - Mongoose connection object for the database.
  * @param {Snowflake} guildId - The identifier of the guild to extract roles from.
  */
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default async function fetchGuildRoles(connection: Connection, platform: HydratedDocument<IPlatform>) {
   try {
     const client = await coreService.DiscordBotManager.getClient();
     const hasBotAccessToGuild = await platformService.checkBotAccessToGuild(platform.metadata?.id);
-    logger.info({ hasBotAccessToGuild, guildId: platform.metadata?.id, type: 'role' })
+    logger.info({
+      hasBotAccessToGuild,
+      guildId: platform.metadata?.id,
+      type: 'role',
+    });
 
     if (!hasBotAccessToGuild) {
       return;

@@ -1,4 +1,4 @@
-import { Events, GuildMember } from 'discord.js';
+import { Events, type GuildMember } from 'discord.js';
 import { guildMemberService } from '../../database/services';
 import { DatabaseManager } from '@togethercrew.dev/db';
 import parentLogger from '../../config/logger';
@@ -9,7 +9,10 @@ export default {
   name: Events.GuildMemberAdd,
   once: false,
   async execute(member: GuildMember) {
-    const logFields = { guild_id: member.guild.id, guild_member_id: member.user.id };
+    const logFields = {
+      guild_id: member.guild.id,
+      guild_member_id: member.user.id,
+    };
     logger.info(logFields, 'event is running');
     const connection = await DatabaseManager.getInstance().getTenantDb(member.guild.id);
     try {

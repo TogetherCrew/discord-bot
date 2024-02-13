@@ -1,5 +1,6 @@
-import { Connection } from 'mongoose';
-import { IRawInfo, IRawInfoUpdateBody } from '@togethercrew.dev/db';
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
+import { type Connection } from 'mongoose';
+import { type IRawInfo, type IRawInfoUpdateBody } from '@togethercrew.dev/db';
 import parentLogger from '../../config/logger';
 
 const logger = parentLogger.child({ module: 'rawInfoService' });
@@ -14,16 +15,24 @@ async function createRawInfo(connection: Connection, rawInfo: IRawInfo): Promise
     return await connection.models.RawInfo.create(rawInfo);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    if (error.code == 11000) {
+    if (error.code === 11000) {
       logger.warn(
-        { database: connection.name, channel_id: rawInfo.channelId, message_id: rawInfo.messageId },
-        'Failed to create duplicate rawInfo'
+        {
+          database: connection.name,
+          channel_id: rawInfo.channelId,
+          message_id: rawInfo.messageId,
+        },
+        'Failed to create duplicate rawInfo',
       );
       return null;
     }
     logger.error(
-      { database: connection.name, channel_id: rawInfo.channelId, message_id: rawInfo.messageId },
-      'Failed to create rawInfo'
+      {
+        database: connection.name,
+        channel_id: rawInfo.channelId,
+        message_id: rawInfo.messageId,
+      },
+      'Failed to create rawInfo',
     );
     return null;
   }
@@ -37,10 +46,12 @@ async function createRawInfo(connection: Connection, rawInfo: IRawInfo): Promise
  */
 async function createRawInfos(connection: Connection, rawInfos: IRawInfo[]): Promise<IRawInfo[] | []> {
   try {
-    return await connection.models.RawInfo.insertMany(rawInfos, { ordered: false });
+    return await connection.models.RawInfo.insertMany(rawInfos, {
+      ordered: false,
+    });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    if (error.code == 11000) {
+    if (error.code === 11000) {
       logger.warn({ database: connection.name }, 'Failed to create duplicate rawInfos');
       return [];
     }
@@ -79,15 +90,16 @@ async function getRawInfos(connection: Connection, filter: object): Promise<IRaw
 async function updateRawInfo(
   connection: Connection,
   filter: object,
-  updateBody: IRawInfoUpdateBody
+  updateBody: IRawInfoUpdateBody,
 ): Promise<IRawInfo | null> {
   try {
     const rawInfo = await connection.models.RawInfo.findOne(filter);
-    if (!rawInfo) {
+    if (rawInfo === null) {
       return null;
     }
     Object.assign(rawInfo, updateBody);
-    return await rawInfo.save();
+    await rawInfo.save();
+    return rawInfo;
   } catch (error) {
     logger.error({ database: connection.name, filter, updateBody, error }, 'Failed to update rawInfo');
     return null;
@@ -104,7 +116,7 @@ async function updateRawInfo(
 async function updateManyRawInfo(
   connection: Connection,
   filter: object,
-  updateBody: IRawInfoUpdateBody
+  updateBody: IRawInfoUpdateBody,
 ): Promise<number> {
   try {
     const updateResult = await connection.models.RawInfo.updateMany(filter, updateBody);
@@ -155,7 +167,9 @@ async function deleteManyRawInfo(connection: Connection, filter: object): Promis
  * @returns {Promise<IRawInfo | null>} - A promise that resolves to the oldest rawInfo object for the channel, or null if not found.
  */
 async function getNewestRawInfo(connection: Connection, filter: object): Promise<IRawInfo | null> {
-  return await connection.models.RawInfo.findOne(filter).sort({ createdDate: -1 });
+  return await connection.models.RawInfo.findOne(filter).sort({
+    createdDate: -1,
+  });
 }
 
 /**
@@ -165,7 +179,9 @@ async function getNewestRawInfo(connection: Connection, filter: object): Promise
  * @returns {Promise<IRawInfo | null>} - A promise that resolves to the oldest rawInfo object for the channel, or null if not found.
  */
 async function getOldestRawInfo(connection: Connection, filter: object): Promise<IRawInfo | null> {
-  return await connection.models.RawInfo.findOne(filter).sort({ createdDate: 1 });
+  return await connection.models.RawInfo.findOne(filter).sort({
+    createdDate: 1,
+  });
 }
 
 export default {
