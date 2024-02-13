@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import RabbitMQ, { Event } from '@togethercrew.dev/tc-messagebroker';
 import { handleFetchEvent } from './events/fetchEvent';
 import { handleSendMessageEvent } from './events/sendMessageEvent';
@@ -8,13 +9,13 @@ import { handleInteractionResponseDelete } from './events/interactionResponseDel
 import { handleFollowUpMessageCreate } from './events/FollowUpMessageCreate';
 import { handleSendMessageToChannel } from './events/sendMessageToChannel';
 
-export function setupRabbitMQHandlers() {
-    RabbitMQ.onEvent(Event.DISCORD_BOT.FETCH, handleFetchEvent);
-    RabbitMQ.onEvent(Event.DISCORD_BOT.SEND_MESSAGE, handleSendMessageEvent);
-    RabbitMQ.onEvent(Event.DISCORD_BOT.SEND_MESSAGE_TO_CHANNEL, handleSendMessageToChannel);
-    RabbitMQ.onEvent(Event.DISCORD_BOT.FETCH_MEMBERS, handleFetchMembersEvent);
-    RabbitMQ.onEvent(Event.DISCORD_BOT.INTERACTION_RESPONSE.CREATE, handleInteractionResponseCreate);
-    RabbitMQ.onEvent(Event.DISCORD_BOT.INTERACTION_RESPONSE.EDIT, handleInteractionResponseEdit);
-    RabbitMQ.onEvent(Event.DISCORD_BOT.INTERACTION_RESPONSE.DELETE, handleInteractionResponseDelete);
-    RabbitMQ.onEvent(Event.DISCORD_BOT.FOLLOWUP_MESSAGE.CREATE, handleFollowUpMessageCreate);
+export function setupRabbitMQHandlers(): void {
+  RabbitMQ.onEvent(Event.DISCORD_BOT.FETCH, handleFetchEvent);
+  RabbitMQ.onEvent(Event.DISCORD_BOT.SEND_MESSAGE, handleSendMessageEvent);
+  RabbitMQ.onEvent(Event.DISCORD_BOT.SEND_MESSAGE_TO_CHANNEL, handleSendMessageToChannel);
+  RabbitMQ.onEvent(Event.DISCORD_BOT.FETCH_MEMBERS, handleFetchMembersEvent);
+  RabbitMQ.onEvent(Event.DISCORD_BOT.INTERACTION_RESPONSE.CREATE, handleInteractionResponseCreate);
+  RabbitMQ.onEvent(Event.DISCORD_BOT.INTERACTION_RESPONSE.EDIT, handleInteractionResponseEdit);
+  RabbitMQ.onEvent(Event.DISCORD_BOT.INTERACTION_RESPONSE.DELETE, handleInteractionResponseDelete);
+  RabbitMQ.onEvent(Event.DISCORD_BOT.FOLLOWUP_MESSAGE.CREATE, handleFollowUpMessageCreate);
 }

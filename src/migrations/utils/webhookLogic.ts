@@ -1,6 +1,8 @@
-import { TextChannel, Message, ThreadChannel, Snowflake } from 'discord.js';
-import { IRawInfo } from '@togethercrew.dev/db';
-import { Connection } from 'mongoose';
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+import { type TextChannel, type Message, type ThreadChannel, type Snowflake } from 'discord.js';
+import { type IRawInfo } from '@togethercrew.dev/db';
+import { type Connection } from 'mongoose';
 import parentLogger from '../../config/logger';
 import { rawInfoService, channelService } from '../../database/services';
 import { coreService } from '../../services';
@@ -17,7 +19,7 @@ async function fetchMessagesBetweenOldestAndNewest(
   connection: Connection,
   channel: TextChannel | ThreadChannel,
   oldestRawInfo: IRawInfo,
-  newestRawInfo: IRawInfo
+  newestRawInfo: IRawInfo,
 ) {
   try {
     let allMessages: Message[] = [];
@@ -65,7 +67,7 @@ async function migrateIsGeneratedByWebhook(connection: Connection, channel: Text
       connection,
       channel,
       oldestChannelRawInfo,
-      newestChannelRawInfo
+      newestChannelRawInfo,
     );
     const messagesToUpdateTrue = [];
     const messagesToUpdateFalse = [];
@@ -93,7 +95,7 @@ async function migrateIsGeneratedByWebhook(connection: Connection, channel: Text
       await rawInfoService.updateManyRawInfo(
         connection,
         { messageId: { $in: messagesToUpdateTrue } },
-        { isGeneratedByWebhook: true }
+        { isGeneratedByWebhook: true },
       );
     }
 
@@ -101,7 +103,7 @@ async function migrateIsGeneratedByWebhook(connection: Connection, channel: Text
       await rawInfoService.updateManyRawInfo(
         connection,
         { messageId: { $in: messagesToUpdateFalse } },
-        { isGeneratedByWebhook: false }
+        { isGeneratedByWebhook: false },
       );
     }
 
@@ -127,7 +129,7 @@ async function migrateIsGeneratedByWebhook(connection: Connection, channel: Text
         connection,
         thread,
         oldestThreadRawInfo,
-        newestThreadRawInfo
+        newestThreadRawInfo,
       );
 
       const threadMessagesToUpdateTrue = [];
@@ -156,7 +158,7 @@ async function migrateIsGeneratedByWebhook(connection: Connection, channel: Text
         await rawInfoService.updateManyRawInfo(
           connection,
           { messageId: { $in: threadMessagesToUpdateTrue } },
-          { isGeneratedByWebhook: true }
+          { isGeneratedByWebhook: true },
         );
       }
 
@@ -164,7 +166,7 @@ async function migrateIsGeneratedByWebhook(connection: Connection, channel: Text
         await rawInfoService.updateManyRawInfo(
           connection,
           { messageId: { $in: threadMessagesToUpdateFalse } },
-          { isGeneratedByWebhook: false }
+          { isGeneratedByWebhook: false },
         );
       }
     }
@@ -173,7 +175,7 @@ async function migrateIsGeneratedByWebhook(connection: Connection, channel: Text
   } catch (err) {
     logger.error(
       { guild_id: connection.name, channel_id: channel.id, err },
-      'Migration for isGeneratedByWebhook failed'
+      'Migration for isGeneratedByWebhook failed',
     );
   }
 }
