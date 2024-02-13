@@ -7,7 +7,8 @@ export const redisConfig = {
 };
 
 export const cronJobConfig = {
-  cron: '0 0 * * *', // Run once at 00:00 UTC
+  // cron: '0 0 * * *', // Run once at 00:00 UTC
+  cron: '0 10 * * *', // Run once at 10:00 UTC
   jobId: 'cronJob',
   attempts: 0,
   backoff: {
