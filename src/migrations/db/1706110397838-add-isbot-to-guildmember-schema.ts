@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { connectDB } from '../../database';
+import { connectToMongoDB } from '../../database/connection';
 import isBotLogic from '../utils/isBotLogic';
 import { DatabaseManager } from '@togethercrew.dev/db';
 import { Client, GatewayIntentBits } from 'discord.js';
@@ -13,7 +13,7 @@ export const up = async () => {
   });
 
   await client.login(config.discord.botToken);
-  await connectDB();
+  await connectToMongoDB();
   const connection1 = await DatabaseManager.getInstance().getTenantDb('1023936505321881641');
   const connection2 = await DatabaseManager.getInstance().getTenantDb('949124961187016764');
   await isBotLogic(connection1, client, '1023936505321881641');
