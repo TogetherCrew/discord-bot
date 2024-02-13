@@ -6,7 +6,6 @@ import { Client, GatewayIntentBits } from 'discord.js';
 import config from '../../config';
 const { Guilds, GuildMembers, GuildMessages, GuildPresences, DirectMessages } = GatewayIntentBits;
 
-
 export const up = async () => {
   const client = new Client({
     intents: [Guilds, GuildMembers, GuildMessages, GuildPresences, DirectMessages],
