@@ -1,10 +1,10 @@
 import { Events, type GuildMember } from 'discord.js';
-import { addDiscordEvent } from '../../queue/queues/discordEvent';
+import { addGuildEventQueue } from '../../queue/queues/guildEvent';
 
 export default {
   name: Events.GuildMemberRemove,
   once: false,
   execute(member: GuildMember) {
-    addDiscordEvent({ type: Events.GuildMemberRemove, guildId: member.guild.id, guildMemberId: member.id });
+    addGuildEventQueue({ type: Events.GuildMemberRemove, guildId: member.guild.id, guildMemberId: member.id });
   },
 };

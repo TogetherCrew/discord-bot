@@ -9,14 +9,16 @@ import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { ExpressAdapter } from '@bull-board/express';
 import { channelMessageQueue } from './queue/queues/channelMessage';
 import { guildExtractionQueue } from './queue/queues/guildExtraction';
-import { discordEventQueue } from './queue/queues/discordEvent';
+import { guildEventQueue } from './queue/queues/guildEvent';
+import { userEventQueue } from './queue/queues/userEvent';
 import { cronJobQueue, addCronJob } from './queue/queues/cronJob';
 import { directMessageQueue } from './queue/queues/directMessage';
 import './queue/workers/cronWorker';
 import './queue/workers/channelMessageWorker';
 import './queue/workers/directMessageWorker';
-import './queue/workers/discordEventWorker';
+import './queue/workers/guildEventWorker';
 import './queue/workers/guildExtractionWorker';
+import './queue/workers/userEventWorker';
 
 const logger = parentLogger.child({ module: `app` });
 
@@ -42,9 +44,11 @@ async function app(): Promise<void> {
     queues: [
       new BullMQAdapter(channelMessageQueue),
       new BullMQAdapter(guildExtractionQueue),
-      new BullMQAdapter(discordEventQueue),
+      new BullMQAdapter(guildEventQueue),
       new BullMQAdapter(cronJobQueue),
       new BullMQAdapter(directMessageQueue),
+      new BullMQAdapter(userEventQueue),
+
     ],
     serverAdapter,
   });

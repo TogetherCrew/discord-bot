@@ -1,5 +1,5 @@
 import { Events, type User } from 'discord.js';
-import { addDiscordEvent } from '../../queue/queues/discordEvent';
+import { addUserEventQueue } from '../../queue/queues/userEvent';
 
 export default {
   name: Events.UserUpdate,
@@ -10,6 +10,6 @@ export default {
       username: newUser.username,
       globalName: newUser.globalName,
     };
-    addDiscordEvent({ type: Events.UserUpdate, dataToStore });
+    addUserEventQueue({ type: Events.UserUpdate, dataToStore });
   },
 };

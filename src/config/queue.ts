@@ -22,9 +22,15 @@ export const rateLimitConfig = {
   duration: 20000, // millisecond
 };
 
-export const discordEventConfig = {
+export const guildEventConfig = {
   attempts: 1,
-  max: 2,
+  max: 5,
+  duration: 20000,
+};
+
+export const userEventConfig = {
+  attempts: 1,
+  max: 1,
   duration: 20000,
 };
 
