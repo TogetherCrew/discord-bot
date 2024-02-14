@@ -144,10 +144,10 @@ async function fetchMessages(
   fetchDirection: 'before' | 'after' = 'before',
 ) {
   try {
-    logger.info(
-      { guild_id: connection.name, channel_id: channel.id, fetchDirection },
-      'Fetching channel messages is running',
-    );
+    // logger.info(
+    //   { guild_id: connection.name, channel_id: channel.id, fetchDirection },
+    //   'Fetching channel messages is running',
+    // );
     const messagesToStore: IRawInfo[] = [];
     const options: FetchOptions = { limit: 100 };
     if (rawInfo) {
@@ -164,22 +164,22 @@ async function fetchMessages(
         }
         channel instanceof ThreadChannel
           ? await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()], {
-              threadId: channel.id,
-              threadName: channel.name,
-              channelId: channel.parent?.id,
-              channelName: channel.parent?.name,
-            })
+            threadId: channel.id,
+            threadName: channel.name,
+            channelId: channel.parent?.id,
+            channelName: channel.parent?.name,
+          })
           : await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()]);
         break;
       }
 
       channel instanceof ThreadChannel
         ? await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()], {
-            threadId: channel.id,
-            threadName: channel.name,
-            channelId: channel.parent?.id,
-            channelName: channel.parent?.name,
-          })
+          threadId: channel.id,
+          threadName: channel.name,
+          channelId: channel.parent?.id,
+          channelName: channel.parent?.name,
+        })
         : await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()]);
       await rawInfoService.createRawInfos(connection, messagesToStore);
       options[fetchDirection] = boundaryMessage.id;
@@ -196,10 +196,10 @@ async function fetchMessages(
       'Fetching channel messages failed',
     );
   }
-  logger.info(
-    { guild_id: connection.name, channel_id: channel.id, fetchDirection },
-    'Fetching channel messages is done',
-  );
+  // logger.info(
+  //   { guild_id: connection.name, channel_id: channel.id, fetchDirection },
+  //   'Fetching channel messages is done',
+  // );
 }
 
 /**
@@ -210,7 +210,7 @@ async function fetchMessages(
  * @throws Will throw an error if an issue is encountered during processing.
  */
 export default async function handleFetchChannelMessages(connection: Connection, channel: TextChannel, period: Date) {
-  logger.info({ guild_id: connection.name, channel_id: channel.id }, 'Handle channel messages for channel is running');
+  // logger.info({ guild_id: connection.name, channel_id: channel.id }, 'Handle channel messages for channel is running');
   try {
     const oldestChannelRawInfo = await rawInfoService.getOldestRawInfo(connection, {
       channelId: channel?.id,
@@ -258,5 +258,5 @@ export default async function handleFetchChannelMessages(connection: Connection,
   } catch (err) {
     logger.error({ guild_id: connection.name, channel_id: channel.id, err }, 'Handle fetch channel messages failed');
   }
-  logger.info({ guild_id: connection.name, channel_id: channel.id }, 'Handle fetch channel messages is done');
+  // logger.info({ guild_id: connection.name, channel_id: channel.id }, 'Handle fetch channel messages is done');
 }

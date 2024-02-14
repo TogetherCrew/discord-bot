@@ -8,7 +8,7 @@ const logger = parentLogger.child({
 
 export async function handleSendMessageEvent(msg: any): Promise<void> {
   try {
-    logger.info({ msg, event: Event.DISCORD_BOT.SEND_MESSAGE, sagaId: msg.content.uuid }, 'is running');
+    // logger.info({ msg, event: Event.DISCORD_BOT.SEND_MESSAGE, sagaId: msg.content.uuid }, 'is running');
     if (msg === undefined || msg === null) return;
 
     const { content } = msg;
@@ -28,7 +28,7 @@ export async function handleSendMessageEvent(msg: any): Promise<void> {
       );
     }
 
-    logger.info({ msg, event: Event.DISCORD_BOT.SEND_MESSAGE, sagaId: msg.content.uuid }, 'is done');
+    // logger.info({ msg, event: Event.DISCORD_BOT.SEND_MESSAGE, sagaId: msg.content.uuid }, 'is done');
   } catch (error) {
     logger.error({ msg, event: Event.DISCORD_BOT.SEND_MESSAGE, sagaId: msg.content.uuid, error }, 'is failed');
   }

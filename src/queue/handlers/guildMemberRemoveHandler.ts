@@ -7,12 +7,12 @@ const logger = parentLogger.child({ event: 'GuildMemberRemoveHandler' });
 
 export default async function (guildId: Snowflake, guildMemberId: Snowflake): Promise<void> {
   const logFields = { guild_id: guildId, guild_member_id: guildMemberId };
-  logger.info(logFields, 'event is running');
+  // logger.info(logFields, 'event is running');
   const connection = await DatabaseManager.getInstance().getTenantDb(guildId);
   try {
     const guildMemberDoc = await guildMemberService.getGuildMember(connection, { discordId: guildMemberId });
     guildMemberDoc?.softDelete();
-    logger.info(logFields, 'event is done');
+    // logger.info(logFields, 'event is done');
   } catch (err) {
     logger.error({ ...logFields, err }, 'Failed to soft delete the guild member');
   }

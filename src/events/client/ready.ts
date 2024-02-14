@@ -19,11 +19,11 @@ export default {
     for (let i = 0; i < platforms.length; i++) {
       const connection = await DatabaseManager.getInstance().getTenantDb(platforms[i].metadata?.id);
       try {
-        logger.info({ platform_id: platforms[i].id }, 'Fetching guild members, roles,and channels');
+        // logger.info({ platform_id: platforms[i].id }, 'Fetching guild members, roles,and channels');
         await fetchMembers(connection, platforms[i]);
         await fetchRoles(connection, platforms[i]);
         await fetchChannels(connection, platforms[i]);
-        logger.info({ platform_id: platforms[i].metadata?.id }, 'Fetching guild members, roles, channels is done');
+        // logger.info({ platform_id: platforms[i].metadata?.id }, 'Fetching guild members, roles, channels is done');
       } catch (err) {
         logger.error(
           { platform_id: platforms[i].metadata?.id, err },

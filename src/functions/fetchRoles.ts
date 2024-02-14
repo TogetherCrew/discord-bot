@@ -30,11 +30,11 @@ export default async function fetchGuildRoles(connection: Connection, platform: 
   try {
     const client = await coreService.DiscordBotManager.getClient();
     const hasBotAccessToGuild = await platformService.checkBotAccessToGuild(platform.metadata?.id);
-    logger.info({
-      hasBotAccessToGuild,
-      guildId: platform.metadata?.id,
-      type: 'role',
-    });
+    // logger.info({
+    //   hasBotAccessToGuild,
+    //   guildId: platform.metadata?.id,
+    //   type: 'role',
+    // });
 
     if (!hasBotAccessToGuild) {
       return;
