@@ -48,7 +48,6 @@ async function app(): Promise<void> {
       new BullMQAdapter(cronJobQueue),
       new BullMQAdapter(directMessageQueue),
       new BullMQAdapter(userEventQueue),
-
     ],
     serverAdapter,
   });
