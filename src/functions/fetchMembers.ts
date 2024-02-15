@@ -31,11 +31,11 @@ export default async function fetchGuildMembers(connection: Connection, platform
     const client = await coreService.DiscordBotManager.getClient();
 
     const hasBotAccessToGuild = await platformService.checkBotAccessToGuild(platform.metadata?.id);
-    logger.info({
-      hasBotAccessToGuild,
-      guildId: platform.metadata?.id,
-      type: 'guild member',
-    });
+    // logger.info({
+    //   hasBotAccessToGuild,
+    //   guildId: platform.metadata?.id,
+    //   type: 'guild member',
+    // });
 
     if (!hasBotAccessToGuild) {
       return;

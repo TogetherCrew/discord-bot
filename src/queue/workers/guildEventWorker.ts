@@ -1,6 +1,6 @@
 import { WorkerFactory } from './index';
 import { Worker, type Job } from 'bullmq';
-import { redisConfig, discordEventConfig } from '../../config/queue';
+import { redisConfig, guildEventConfig } from '../../config/queue';
 import { Events } from 'discord.js';
 import {
   channelCreateHandler,
@@ -16,7 +16,7 @@ import {
 } from '../handlers';
 
 export const discordEventWorker = new Worker(
-  'discordEventQueue',
+  'guildEventQueue',
   async (job: Job<any, any, string> | undefined) => {
     if (job !== null && job !== undefined) {
       switch (job.data.type) {
@@ -65,7 +65,7 @@ export const discordEventWorker = new Worker(
   },
   {
     connection: redisConfig,
-    limiter: discordEventConfig,
+    limiter: guildEventConfig,
   },
 );
 

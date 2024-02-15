@@ -25,7 +25,7 @@ function pushMembersToArray(arr: IGuildMember[], guildMembersArray: GuildMember[
  * @param {Snowflake} guildId - The identifier of the guild to extract information from.
  */
 export default async function isBotLogic(connection: Connection, client: Client, guildId: Snowflake) {
-  logger.info({ guild_id: guildId }, 'add-isBot-to-guilbMember-schema migration is running');
+  // logger.info({ guild_id: guildId }, 'add-isBot-to-guilbMember-schema migration is running');
   try {
     const botGuildMembers = [];
     const noneBotGuildMembers = [];
@@ -35,7 +35,6 @@ export default async function isBotLogic(connection: Connection, client: Client,
     const fetchedMembers = await guild.members.fetch();
     const guildMembers = pushMembersToArray(membersToStore, [...fetchedMembers.values()]);
 
-    console.log(guildMembers.length, guildId);
     if (guildMembers) {
       for (const guildMember of guildMembers) {
         if (guildMember.isBot) {
@@ -65,5 +64,5 @@ export default async function isBotLogic(connection: Connection, client: Client,
   } catch (err) {
     logger.error({ guild_id: guildId, err }, 'add-isBot-to-guilbMember-schema migration is failed');
   }
-  logger.info({ guild_id: guildId }, 'add-isBot-to-guilbMember-schema migration is done');
+  // logger.info({ guild_id: guildId }, 'add-isBot-to-guilbMember-schema migration is done');
 }

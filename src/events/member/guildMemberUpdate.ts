@@ -1,5 +1,5 @@
 import { Events, type GuildMember } from 'discord.js';
-import { addDiscordEvent } from '../../queue/queues/discordEvent';
+import { addGuildEventQueue } from '../../queue/queues/guildEvent';
 import { guildMemberService } from '../../database/services';
 
 export default {
@@ -7,6 +7,6 @@ export default {
   once: false,
   execute(oldMember: GuildMember, newMember: GuildMember) {
     const dataToStore = guildMemberService.getNeededDateFromGuildMember(newMember);
-    addDiscordEvent({ type: Events.GuildMemberUpdate, guildId: newMember.guild.id, dataToStore });
+    addGuildEventQueue({ type: Events.GuildMemberUpdate, guildId: newMember.guild.id, dataToStore });
   },
 };

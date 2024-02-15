@@ -1,15 +1,18 @@
 import { Events, type User } from 'discord.js';
-import { addDiscordEvent } from '../../queue/queues/discordEvent';
+import { addUserEventQueue } from '../../queue/queues/userEvent';
 
 export default {
   name: Events.UserUpdate,
   once: false,
   execute(oldUser: User, newUser: User) {
+    console.log(newUser);
+
     const dataToStore = {
       discordId: newUser.id,
       username: newUser.username,
       globalName: newUser.globalName,
     };
-    addDiscordEvent({ type: Events.UserUpdate, dataToStore });
+
+    addUserEventQueue({ type: Events.UserUpdate, dataToStore });
   },
 };
