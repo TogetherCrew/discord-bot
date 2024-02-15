@@ -1,7 +1,18 @@
-import { Message, TextChannel, Collection, User, Role, ThreadChannel, Snowflake } from 'discord.js';
-import { IRawInfo } from '@togethercrew.dev/db';
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable no-unneeded-ternary */
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
+import {
+  type Message,
+  TextChannel,
+  type Collection,
+  type User,
+  type Role,
+  ThreadChannel,
+  type Snowflake,
+} from 'discord.js';
+import { type IRawInfo } from '@togethercrew.dev/db';
 import { rawInfoService } from '../database/services';
-import { Connection } from 'mongoose';
+import { type Connection } from 'mongoose';
 import parentLogger from '../config/logger';
 
 const logger = parentLogger.child({ module: 'FetchMessages' });
@@ -32,7 +43,8 @@ async function getReactions(message: Message): Promise<string[]> {
     for (const reaction of reactionsArray) {
       const emoji = reaction.emoji;
       const users: Collection<string, User> = await reaction.users.fetch();
-      let usersString = users.map(user => `${user.id}`).join(',');
+      let usersString = users.map((user) => `${user.id}`).join(',');
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       usersString += `,${emoji.name}`;
       reactionsArr.push(usersString);
     }
@@ -100,7 +112,7 @@ async function pushMessagesToArray(
   connection: Connection,
   arr: IRawInfo[],
   messagesArray: Message[],
-  threadInfo?: threadInfo
+  threadInfo?: threadInfo,
 ): Promise<IRawInfo[]> {
   const allowedTypes: number[] = [0, 18, 19];
   for (const message of messagesArray) {
@@ -109,7 +121,7 @@ async function pushMessagesToArray(
     }
 
     if (allowedTypes.includes(message.type)) {
-      await arr.push(await getNeedDataFromMessage(message, threadInfo));
+      arr.push(await getNeedDataFromMessage(message, threadInfo));
     }
   }
   return arr;
@@ -129,12 +141,12 @@ async function fetchMessages(
   channel: TextChannel | ThreadChannel,
   rawInfo: IRawInfo | undefined = undefined,
   period: Date,
-  fetchDirection: 'before' | 'after' = 'before'
+  fetchDirection: 'before' | 'after' = 'before',
 ) {
   try {
     logger.info(
       { guild_id: connection.name, channel_id: channel.id, fetchDirection },
-      'Fetching channel messages is running'
+      'Fetching channel messages is running',
     );
     const messagesToStore: IRawInfo[] = [];
     const options: FetchOptions = { limit: 100 };
@@ -148,26 +160,26 @@ async function fetchMessages(
 
       if (!boundaryMessage || (period && boundaryMessage.createdAt < period)) {
         if (period) {
-          fetchedMessages = fetchedMessages.filter(msg => msg.createdAt > period);
+          fetchedMessages = fetchedMessages.filter((msg) => msg.createdAt > period);
         }
         channel instanceof ThreadChannel
           ? await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()], {
-            threadId: channel.id,
-            threadName: channel.name,
-            channelId: channel.parent?.id,
-            channelName: channel.parent?.name,
-          })
+              threadId: channel.id,
+              threadName: channel.name,
+              channelId: channel.parent?.id,
+              channelName: channel.parent?.name,
+            })
           : await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()]);
         break;
       }
 
       channel instanceof ThreadChannel
         ? await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()], {
-          threadId: channel.id,
-          threadName: channel.name,
-          channelId: channel.parent?.id,
-          channelName: channel.parent?.name,
-        })
+            threadId: channel.id,
+            threadName: channel.name,
+            channelId: channel.parent?.id,
+            channelName: channel.parent?.name,
+          })
         : await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()]);
       await rawInfoService.createRawInfos(connection, messagesToStore);
       options[fetchDirection] = boundaryMessage.id;
@@ -175,13 +187,18 @@ async function fetchMessages(
     }
   } catch (err) {
     logger.error(
-      { guild_id: connection.name, channel_id: channel.id, fetchDirection, err },
-      'Fetching channel messages failed'
+      {
+        guild_id: connection.name,
+        channel_id: channel.id,
+        fetchDirection,
+        err,
+      },
+      'Fetching channel messages failed',
     );
   }
   logger.info(
     { guild_id: connection.name, channel_id: channel.id, fetchDirection },
-    'Fetching channel messages is done'
+    'Fetching channel messages is done',
   );
 }
 

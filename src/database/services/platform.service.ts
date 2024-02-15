@@ -1,6 +1,6 @@
-import { HydratedDocument } from 'mongoose';
-import { Platform, IPlatform, IPlatformUpdateBody } from '@togethercrew.dev/db';
-import { Snowflake } from 'discord.js';
+import { type HydratedDocument } from 'mongoose';
+import { Platform, type IPlatform, type IPlatformUpdateBody } from '@togethercrew.dev/db';
+import { type Snowflake } from 'discord.js';
 import { coreService } from '../../services';
 import parentLogger from '../../config/logger';
 
@@ -12,7 +12,7 @@ const logger = parentLogger.child({ module: 'PlatformService' });
  * @returns {Promise<IGuild | null>}
  */
 async function getPlatform(filter: object): Promise<HydratedDocument<IPlatform> | null> {
-  return Platform.findOne(filter);
+  return await Platform.findOne(filter);
 }
 
 /**
@@ -20,7 +20,7 @@ async function getPlatform(filter: object): Promise<HydratedDocument<IPlatform> 
  * @param {object} filter - Filter criteria to match the desired platform entries.
  * @returns {Promise<object[]>} - A promise that resolves to an array of matching platform entries.
  */
-async function getPlatforms(filter: object): Promise<HydratedDocument<IPlatform>[]> {
+async function getPlatforms(filter: object): Promise<Array<HydratedDocument<IPlatform>>> {
   return await Platform.find(filter);
 }
 
@@ -30,22 +30,27 @@ async function getPlatforms(filter: object): Promise<HydratedDocument<IPlatform>
  * @param {IPlatformUpdateBody} updateBody - Updated information for the platform entry.
  * @returns {Promise<object|null>} - A promise that resolves to the updated platform entry, or null if not found.
  */
-async function updatePlatform(filter: object, updateBody: IPlatformUpdateBody): Promise<HydratedDocument<IPlatform> | null> {
+async function updatePlatform(
+  filter: object,
+  updateBody: IPlatformUpdateBody,
+): Promise<HydratedDocument<IPlatform> | null> {
   try {
     const platform = await Platform.findOne(filter);
-    if (!platform) {
+    if (platform === null) {
       return null;
     }
 
+    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     if (updateBody.metadata) {
       updateBody.metadata = {
         ...platform.metadata,
-        ...updateBody.metadata
+        ...updateBody.metadata,
       };
     }
 
     Object.assign(platform, updateBody);
-    return await platform.save();
+    await platform.save();
+    return platform;
   } catch (error) {
     logger.error({ database: 'Core', filter, updateBody, error }, 'Failed to update platform');
     return null;
@@ -69,8 +74,9 @@ async function updateManyPlatforms(filter: object, updateBody: IPlatformUpdateBo
   }
 }
 
-async function checkBotAccessToGuild(guildId: Snowflake) {
+async function checkBotAccessToGuild(guildId: Snowflake): Promise<boolean> {
   const client = await coreService.DiscordBotManager.getClient();
+  // TODO: Check the logic
   if (!client.guilds.cache.has(guildId)) {
     await updatePlatform({ 'metadata.id': guildId }, { disconnectedAt: new Date() });
     return false;

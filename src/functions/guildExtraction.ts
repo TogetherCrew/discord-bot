@@ -1,6 +1,5 @@
-
-import { Connection, HydratedDocument } from 'mongoose';
-import { IPlatform } from '@togethercrew.dev/db';
+import { type HydratedDocument } from 'mongoose';
+import { type IPlatform, DatabaseManager } from '@togethercrew.dev/db';
 import { platformService } from '../database/services';
 import handleFetchChannelMessages from './fetchMessages';
 import parentLogger from '../config/logger';
@@ -9,10 +8,11 @@ import { coreService } from '../services';
 const logger = parentLogger.child({ module: 'GuildExtraction' });
 /**
  * Extracts information from a given guild.
- * @param {Connection} connection - Mongoose connection object for the database.
  * @param {Snowflake} guildId - The identifier of the guild to extract information from.
  */
-export default async function guildExtraction(connection: Connection, platform: HydratedDocument<IPlatform>) {
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export default async function guildExtraction(platform: HydratedDocument<IPlatform>) {
+  const connection = await DatabaseManager.getInstance().getTenantDb(platform.metadata?.id);
   const client = await coreService.DiscordBotManager.getClient();
 
   logger.info({ guild_id: platform.metadata?.id }, 'Guild extraction for guild is running');
@@ -22,11 +22,13 @@ export default async function guildExtraction(connection: Connection, platform: 
       return;
     }
     const guild = await client.guilds.fetch(platform.metadata?.id);
+    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     if (platform.metadata?.selectedChannels && platform.metadata?.period) {
       await platformService.updatePlatform({ _id: platform.id }, { metadata: { isInProgress: true } });
 
       for (let i = 0; i < platform.metadata?.selectedChannels.length; i++) {
         const channel = await guild.channels.fetch(platform.metadata?.selectedChannels[i]);
+        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
         if (channel) {
           if (channel.type !== 0) continue;
           await handleFetchChannelMessages(connection, channel, platform.metadata?.period);

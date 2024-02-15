@@ -1,4 +1,4 @@
-import { ChannelType, TextChannel } from 'discord.js';
+import { ChannelType, type TextChannel } from 'discord.js';
 
 /**
  * create a private thread on specific channel and send a message to it
@@ -6,9 +6,10 @@ import { ChannelType, TextChannel } from 'discord.js';
  * @param info
  * @returns thread object
  */
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export async function createPrivateThreadAndSendMessage(
   channel: TextChannel,
-  info: { threadName: string; message: string; threadReason?: string }
+  info: { threadName: string; message: string; threadReason?: string },
 ) {
   const { threadName, message, threadReason } = info;
 

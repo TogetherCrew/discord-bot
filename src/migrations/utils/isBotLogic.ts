@@ -3,7 +3,7 @@ import { GuildMember } from 'discord.js';
 import { Connection } from 'mongoose';
 import parentLogger from '../../config/logger';
 import { guildMemberService } from '../../database/services';
-import { IGuildMember, } from '@togethercrew.dev/db';
+import { IGuildMember } from '@togethercrew.dev/db';
 
 const logger = parentLogger.child({ module: 'Migration-isBot' });
 
@@ -13,10 +13,10 @@ const logger = parentLogger.child({ module: 'Migration-isBot' });
  * @returns {Promise<IGuildMember[]>} - A promise that resolves to the updated array containing the extracted data.
  */
 function pushMembersToArray(arr: IGuildMember[], guildMembersArray: GuildMember[]): IGuildMember[] {
-    for (const guildMember of guildMembersArray) {
-        arr.push(guildMemberService.getNeededDateFromGuildMember(guildMember));
-    }
-    return arr;
+  for (const guildMember of guildMembersArray) {
+    arr.push(guildMemberService.getNeededDateFromGuildMember(guildMember));
+  }
+  return arr;
 }
 
 /**
@@ -25,54 +25,45 @@ function pushMembersToArray(arr: IGuildMember[], guildMembersArray: GuildMember[
  * @param {Snowflake} guildId - The identifier of the guild to extract information from.
  */
 export default async function isBotLogic(connection: Connection, client: Client, guildId: Snowflake) {
-    logger.info({ guild_id: guildId }, 'add-isBot-to-guilbMember-schema migration is running');
-    try {
-        const botGuildMembers = [];
-        const noneBotGuildMembers = [];
+  logger.info({ guild_id: guildId }, 'add-isBot-to-guilbMember-schema migration is running');
+  try {
+    const botGuildMembers = [];
+    const noneBotGuildMembers = [];
 
-        const guild = await client.guilds.fetch(guildId);
-        const membersToStore: IGuildMember[] = [];
-        const fetchedMembers = await guild.members.fetch();
-        const guildMembers = pushMembersToArray(membersToStore, [...fetchedMembers.values()]);
+    const guild = await client.guilds.fetch(guildId);
+    const membersToStore: IGuildMember[] = [];
+    const fetchedMembers = await guild.members.fetch();
+    const guildMembers = pushMembersToArray(membersToStore, [...fetchedMembers.values()]);
 
-        console.log(guildMembers.length, guildId)
-        if (guildMembers) {
-            for (const guildMember of guildMembers) {
-                if (guildMember.isBot) {
-                    botGuildMembers.push(guildMember.discordId);
-                } else {
-                    noneBotGuildMembers.push(guildMember.discordId);
-                }
-            }
+    console.log(guildMembers.length, guildId);
+    if (guildMembers) {
+      for (const guildMember of guildMembers) {
+        if (guildMember.isBot) {
+          botGuildMembers.push(guildMember.discordId);
+        } else {
+          noneBotGuildMembers.push(guildMember.discordId);
         }
-
-        if (botGuildMembers.length > 0) {
-            await guildMemberService.updateGuildMembers(
-                connection,
-                { discordId: { $in: botGuildMembers } },
-                { isBot: true }
-            );
-        }
-
-        if (noneBotGuildMembers.length > 0) {
-            await guildMemberService.updateGuildMembers(
-                connection,
-                { discordId: { $in: noneBotGuildMembers } },
-                { isBot: false }
-            );
-        }
-
-        const mergedArray = botGuildMembers.concat(noneBotGuildMembers);
-        if (mergedArray.length > 0) {
-            await guildMemberService.updateGuildMembers(
-                connection,
-                { discordId: { $nin: mergedArray } },
-                { isBot: null }
-            );
-        }
-
-    } catch (err) {
-        logger.error({ guild_id: guildId, err }, 'add-isBot-to-guilbMember-schema migration is failed');
+      }
     }
-    logger.info({ guild_id: guildId }, 'add-isBot-to-guilbMember-schema migration is done');
+
+    if (botGuildMembers.length > 0) {
+      await guildMemberService.updateGuildMembers(connection, { discordId: { $in: botGuildMembers } }, { isBot: true });
+    }
+
+    if (noneBotGuildMembers.length > 0) {
+      await guildMemberService.updateGuildMembers(
+        connection,
+        { discordId: { $in: noneBotGuildMembers } },
+        { isBot: false },
+      );
+    }
+
+    const mergedArray = botGuildMembers.concat(noneBotGuildMembers);
+    if (mergedArray.length > 0) {
+      await guildMemberService.updateGuildMembers(connection, { discordId: { $nin: mergedArray } }, { isBot: null });
+    }
+  } catch (err) {
+    logger.error({ guild_id: guildId, err }, 'add-isBot-to-guilbMember-schema migration is failed');
+  }
+  logger.info({ guild_id: guildId }, 'add-isBot-to-guilbMember-schema migration is done');
 }

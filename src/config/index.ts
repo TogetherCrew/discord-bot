@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 import Joi from 'joi';
 
 const envVarsSchema = Joi.object()
@@ -26,14 +27,14 @@ const envVarsSchema = Joi.object()
 
 const { value: envVars, error } = envVarsSchema.prefs({ errors: { label: 'key' } }).validate(process.env);
 
-if (error) {
+if (error != null) {
   throw new Error(`Config validation error: ${error.message}`);
 }
 export default {
   env: envVars.NODE_ENV,
   mongoose: {
-    serverURL: `mongodb://${envVars.DB_USER}:${envVars.DB_PASSWORD}@${envVars.DB_HOST}:${envVars.DB_PORT}/${envVars.DB_NAME}`,
-    dbURL: `mongodb://${envVars.DB_USER}:${envVars.DB_PASSWORD}@${envVars.DB_HOST}:${envVars.DB_PORT}`,
+    serverURL: `mongodb://${envVars.DB_USER}:${envVars.DB_PASSWORD}@${envVars.DB_HOST}:${envVars.DB_PORT}/${envVars.DB_NAME}?authSource=admin`,
+    dbURL: `mongodb://${envVars.DB_USER}:${envVars.DB_PASSWORD}@${envVars.DB_HOST}:${envVars.DB_PORT}?authSource=admin`,
   },
   redis: {
     host: envVars.REDIS_HOST,

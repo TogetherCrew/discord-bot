@@ -1,10 +1,10 @@
-import pino, { Bindings } from 'pino';
+import pino, { type Bindings } from 'pino';
 import config from './index';
 
 export default pino({
   level: config.logger.level,
   formatters: {
-    level: label => {
+    level: (label) => {
       return { level: label.toUpperCase() };
     },
   },
