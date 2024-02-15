@@ -7,7 +7,7 @@ const logger = parentLogger.child({ event: 'GuildMemberUpdateHandler' });
 
 export default async function (guildId: Snowflake, dataToStore: IGuildMember): Promise<void> {
   const logFields = { guild_id: guildId, guild_member_id: dataToStore.discordId };
-  logger.info(logFields, 'event is running');
+  // logger.info(logFields, 'event is running');
   const connection = await DatabaseManager.getInstance().getTenantDb(guildId);
   try {
     const guildMemberDoc = await guildMemberService.updateGuildMember(
@@ -18,7 +18,7 @@ export default async function (guildId: Snowflake, dataToStore: IGuildMember): P
     if (guildMemberDoc === null) {
       await guildMemberService.createGuildMember(connection, dataToStore);
     }
-    logger.info(logFields, 'event is done');
+    // logger.info(logFields, 'event is done');
   } catch (err) {
     logger.error({ ...logFields, err }, 'Failed to handle guild member changes');
   }

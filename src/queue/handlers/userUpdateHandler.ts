@@ -10,7 +10,7 @@ interface IdataToStore {
 const logger = parentLogger.child({ event: 'UserUpdateHandler' });
 export default async function (dataToStore: IdataToStore): Promise<void> {
   const logFields = { user_id: dataToStore.discordId };
-  logger.info(logFields, 'event is running');
+  // logger.info(logFields, 'event is running');
   try {
     const platforms = await platformService.getPlatforms({
       disconnectedAt: null,
@@ -26,7 +26,7 @@ export default async function (dataToStore: IdataToStore): Promise<void> {
           globalName: dataToStore.globalName,
         },
       );
-      logger.info(logFields, 'event is done');
+      // logger.info(logFields, 'event is done');
     }
   } catch (err) {
     logger.error({ ...logFields, err }, 'Failed to handle user changes');

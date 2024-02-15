@@ -12,23 +12,31 @@ export const cronJobConfig = {
   attempts: 0,
   backoff: {
     type: 'exponential',
-    delay: 1000,
+    delay: 10000,
   },
+  max: 1,
+  duration: 60000000,
 };
 
 export const rateLimitConfig = {
   max: 20,
-  duration: 20000, // millisecond
+  duration: 100000, // millisecond
 };
 
-export const discordEventConfig = {
+export const guildEventConfig = {
   attempts: 1,
-  max: 10,
-  duration: 20000,
+  max: 5,
+  duration: 100000,
+};
+
+export const userEventConfig = {
+  attempts: 1,
+  max: 1,
+  duration: 100000,
 };
 
 export const guildExtractionConfig = {
   attempts: 1,
   max: 1,
-  duration: 3600,
+  duration: 6000000,
 };

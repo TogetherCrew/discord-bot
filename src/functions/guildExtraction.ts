@@ -15,7 +15,7 @@ export default async function guildExtraction(platform: HydratedDocument<IPlatfo
   const connection = await DatabaseManager.getInstance().getTenantDb(platform.metadata?.id);
   const client = await coreService.DiscordBotManager.getClient();
 
-  logger.info({ guild_id: platform.metadata?.id }, 'Guild extraction for guild is running');
+  // logger.info({ guild_id: platform.metadata?.id }, 'Guild extraction for guild is running');
   try {
     const hasBotAccessToGuild = await platformService.checkBotAccessToGuild(platform.metadata?.id);
     if (!hasBotAccessToGuild) {
@@ -38,5 +38,5 @@ export default async function guildExtraction(platform: HydratedDocument<IPlatfo
   } catch (err) {
     logger.error({ guild_id: platform.metadata?.id, err }, 'Guild extraction CronJob failed for guild');
   }
-  logger.info({ guild_id: platform.metadata?.id }, 'Guild extraction for guild is done');
+  // logger.info({ guild_id: platform.metadata?.id }, 'Guild extraction for guild is done');
 }

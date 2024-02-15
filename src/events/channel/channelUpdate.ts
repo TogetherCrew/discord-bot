@@ -1,5 +1,5 @@
 import { Events, type Channel, TextChannel, VoiceChannel, CategoryChannel } from 'discord.js';
-import { addDiscordEvent } from '../../queue/queues/discordEvent';
+import { addGuildEventQueue } from '../../queue/queues/guildEvent';
 import { channelService } from '../../database/services';
 
 export default {
@@ -12,7 +12,7 @@ export default {
       newChannel instanceof CategoryChannel
     ) {
       const dataToStore = channelService.getNeededDateFromChannel(newChannel);
-      addDiscordEvent({ type: Events.ChannelUpdate, guildId: newChannel.guildId, dataToStore });
+      addGuildEventQueue({ type: Events.ChannelUpdate, guildId: newChannel.guildId, dataToStore });
     }
   },
 };

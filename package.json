@@ -31,12 +31,14 @@
   },
   "homepage": "https://github.com/Behzad-rabiei/tc-discordBot#readme",
   "dependencies": {
+    "@bull-board/express": "^5.14.0",
     "@sentry/node": "^7.51.2",
     "@togethercrew.dev/db": "^3.0.28",
     "@togethercrew.dev/tc-messagebroker": "^0.0.44",
     "babel-jest": "^29.5.0",
     "bullmq": "^3.14.0",
     "discord.js": "^14.12.1",
+    "express": "^4.18.2",
     "flatted": "^3.2.9",
     "joi": "^17.9.2",
     "migrate": "^2.0.0",
@@ -48,6 +50,7 @@
     "redis": "^4.6.6"
   },
   "devDependencies": {
+    "@types/express": "^4.17.21",
     "@types/jest": "^29.5.1",
     "@types/node": "^20.1.1",
     "@types/node-fetch": "^2.6.2",

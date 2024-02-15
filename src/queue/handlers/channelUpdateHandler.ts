@@ -7,7 +7,7 @@ const logger = parentLogger.child({ event: 'ChannelUpdateHandler' });
 
 export default async function (guildId: Snowflake, dataToStore: IChannel): Promise<void> {
   const logFields = { guild_id: guildId, channel_id: dataToStore.channelId };
-  logger.info(logFields, 'event is running');
+  // logger.info(logFields, 'event is running');
   const connection = await DatabaseManager.getInstance().getTenantDb(guildId);
   try {
     const channelDoc = await channelService.updateChannel(
@@ -18,7 +18,7 @@ export default async function (guildId: Snowflake, dataToStore: IChannel): Promi
     if (channelDoc === null) {
       await channelService.createChannel(connection, dataToStore);
     }
-    logger.info(logFields, 'event is done');
+    // logger.info(logFields, 'event is done');
   } catch (err) {
     logger.error({ ...logFields, err }, 'Failed to handle channel changes');
   }

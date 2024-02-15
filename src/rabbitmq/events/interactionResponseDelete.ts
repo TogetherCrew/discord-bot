@@ -8,10 +8,10 @@ const logger = parentLogger.child({
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function handleInteractionResponseDelete(msg: any): Promise<void> {
   try {
-    logger.info({ msg, event: Event.DISCORD_BOT.INTERACTION_RESPONSE.DELETE }, 'is running');
+    // logger.info({ msg, event: Event.DISCORD_BOT.INTERACTION_RESPONSE.DELETE }, 'is running');
     const interaction = msg?.content.interaction;
     await interactionService.deleteOriginalInteractionResponse(interaction);
-    logger.info({ msg, event: Event.DISCORD_BOT.INTERACTION_RESPONSE.DELETE }, 'is done');
+    // logger.info({ msg, event: Event.DISCORD_BOT.INTERACTION_RESPONSE.DELETE }, 'is done');
   } catch (error) {
     logger.error({ msg, event: Event.DISCORD_BOT.INTERACTION_RESPONSE.DELETE, error }, 'is failed');
   }
