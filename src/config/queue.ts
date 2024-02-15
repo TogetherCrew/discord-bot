@@ -12,10 +12,10 @@ export const cronJobConfig = {
   attempts: 0,
   backoff: {
     type: 'exponential',
-    delay: 1000,
+    delay: 10000,
   },
   max: 1,
-  duration: 60000000
+  duration: 60000000,
 };
 
 export const rateLimitConfig = {
