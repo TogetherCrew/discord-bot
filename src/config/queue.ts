@@ -7,35 +7,36 @@ export const redisConfig = {
 };
 
 export const cronJobConfig = {
-  // cron: '0 0 * * *', // Run once at 00:00 UTC
-  cron: '15 20 * * *',
+  cron: '0 0 * * *', // Run once at 00:00 UTC
   jobId: 'cronJob',
   attempts: 0,
   backoff: {
     type: 'exponential',
     delay: 1000,
   },
+  max: 1,
+  duration: 60000000
 };
 
 export const rateLimitConfig = {
   max: 20,
-  duration: 20000, // millisecond
+  duration: 100000, // millisecond
 };
 
 export const guildEventConfig = {
   attempts: 1,
   max: 5,
-  duration: 20000,
+  duration: 100000,
 };
 
 export const userEventConfig = {
   attempts: 1,
   max: 1,
-  duration: 20000,
+  duration: 100000,
 };
 
 export const guildExtractionConfig = {
   attempts: 1,
   max: 1,
-  duration: 3600,
+  duration: 6000000,
 };
