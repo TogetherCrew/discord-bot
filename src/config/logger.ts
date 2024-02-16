@@ -1,4 +1,4 @@
-import pino, { type Bindings } from 'pino';
+import pino from 'pino';
 import config from './index';
 
 export default pino({
@@ -9,10 +9,4 @@ export default pino({
     },
   },
   timestamp: () => `,"timestamp":"${new Date(Date.now()).toISOString()}"`,
-  bindings: (bindings: Bindings) => {
-    return {
-      pid: bindings.pid,
-      host: bindings.hostname,
-    };
-  },
 });

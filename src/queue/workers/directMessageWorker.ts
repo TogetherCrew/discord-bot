@@ -1,6 +1,6 @@
 import { WorkerFactory } from './index';
 import { Worker, type Job } from 'bullmq';
-import { redisConfig, rateLimitConfig } from '../../config/queue';
+import { redisConfig } from '../../config/queue';
 import { userService } from '../../services';
 
 export const directMessageWorker = new Worker(
@@ -12,7 +12,11 @@ export const directMessageWorker = new Worker(
   },
   {
     connection: redisConfig,
-    limiter: rateLimitConfig,
+    concurrency: 100,
+    limiter: {
+      max: 100,
+      duration: 10000,
+    },
   },
 );
 
