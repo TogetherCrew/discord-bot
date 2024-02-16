@@ -46,7 +46,8 @@
     "mongodb": "^5.4.0",
     "mongoose": "^6.11.1",
     "node-fetch": "^2.6.7",
-    "pino": "^8.15.0",
+    "npm": "^10.4.0",
+    "pino": "^8.18.0",
     "redis": "^4.6.6"
   },
   "devDependencies": {

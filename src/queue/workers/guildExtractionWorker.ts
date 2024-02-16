@@ -1,6 +1,6 @@
 import { WorkerFactory } from './index';
 import { Worker, type Job } from 'bullmq';
-import { redisConfig, guildExtractionConfig } from '../../config/queue';
+import { redisConfig } from '../../config/queue';
 import guildExtraction from '../../functions/guildExtraction';
 
 export const guildExtractionWorker = new Worker(
@@ -12,7 +12,7 @@ export const guildExtractionWorker = new Worker(
   },
   {
     connection: redisConfig,
-    limiter: guildExtractionConfig,
+    concurrency: 1,
   },
 );
 

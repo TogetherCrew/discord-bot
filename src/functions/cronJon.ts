@@ -1,24 +1,9 @@
-import { type Types } from 'mongoose';
 import { platformService } from '../database/services';
-import { ChoreographyDict, MBConnection, Status } from '@togethercrew.dev/tc-messagebroker';
 import { addGuildExtraction } from '../queue/queues/guildExtraction';
 
 import parentLogger from '../config/logger';
 
 const logger = parentLogger.child({ event: 'CronJob' });
-
-async function createAndStartCronJobSaga(platformId: Types.ObjectId): Promise<void> {
-  try {
-    const saga = await MBConnection.models.Saga.create({
-      status: Status.NOT_STARTED,
-      data: { platformId },
-      choreography: ChoreographyDict.DISCORD_SCHEDULED_JOB,
-    });
-    await saga.start();
-  } catch (err) {
-    logger.error({ platform_Id: platformId, err }, 'Failed to create saga');
-  }
-}
 
 /**
  * Runs the extraction process for multiple guilds.
@@ -28,9 +13,10 @@ export default async function cronJob(): Promise<void> {
   const platforms = await platformService.getPlatforms({ disconnectedAt: null });
   for (let i = 0; i < platforms.length; i++) {
     try {
+      console.log('cron', i);
+
       logger.info({ platform_Id: platforms[i].metadata?.id }, 'is running cronJob for platform');
       addGuildExtraction(platforms[i]);
-      await createAndStartCronJobSaga(platforms[i].id);
       logger.info({ platform_Id: platforms[i].metadata?.id }, 'cronJob is done for platform');
     } catch (err) {
       logger.error({ platform_Id: platforms[i].metadata?.id, err }, 'CronJob Failed for platform');
