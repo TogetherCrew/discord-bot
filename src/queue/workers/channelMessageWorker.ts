@@ -15,7 +15,7 @@ export const channelMessageWorker = new Worker(
     concurrency: 20,
     limiter: {
       max: 20,
-      duration: 10000
+      duration: 10000,
     },
   },
 );

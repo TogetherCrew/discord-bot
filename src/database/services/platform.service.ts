@@ -77,10 +77,10 @@ async function updateManyPlatforms(filter: object, updateBody: IPlatformUpdateBo
 async function checkBotAccessToGuild(guildId: Snowflake): Promise<boolean> {
   const client = await coreService.DiscordBotManager.getClient();
   // TODO: Check the logic
-  // if (!client.guilds.cache.has(guildId)) {
-  //   await updatePlatform({ 'metadata.id': guildId }, { disconnectedAt: new Date() });
-  //   return false;
-  // }
+  if (!client.guilds.cache.has(guildId)) {
+    await updatePlatform({ 'metadata.id': guildId }, { disconnectedAt: new Date() });
+    return false;
+  }
   return true;
 }
 

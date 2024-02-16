@@ -18,7 +18,7 @@ export const discordEventWorker = new Worker(
   },
   {
     connection: redisConfig,
-    concurrency: 1
+    concurrency: 1,
   },
 );
 

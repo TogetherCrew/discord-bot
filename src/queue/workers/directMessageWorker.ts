@@ -15,7 +15,7 @@ export const directMessageWorker = new Worker(
     concurrency: 100,
     limiter: {
       max: 100,
-      duration: 10000
+      duration: 10000,
     },
   },
 );

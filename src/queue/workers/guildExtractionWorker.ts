@@ -12,7 +12,7 @@ export const guildExtractionWorker = new Worker(
   },
   {
     connection: redisConfig,
-    concurrency: 1
+    concurrency: 1,
   },
 );
 

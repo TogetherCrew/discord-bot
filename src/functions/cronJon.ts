@@ -5,8 +5,6 @@ import parentLogger from '../config/logger';
 
 const logger = parentLogger.child({ event: 'CronJob' });
 
-
-
 /**
  * Runs the extraction process for multiple guilds.
  */
@@ -15,14 +13,12 @@ export default async function cronJob(): Promise<void> {
   const platforms = await platformService.getPlatforms({ disconnectedAt: null });
   for (let i = 0; i < platforms.length; i++) {
     try {
-      console.log('cron', i)
+      console.log('cron', i);
 
       logger.info({ platform_Id: platforms[i].metadata?.id }, 'is running cronJob for platform');
       addGuildExtraction(platforms[i]);
       logger.info({ platform_Id: platforms[i].metadata?.id }, 'cronJob is done for platform');
-    }
-
-    catch (err) {
+    } catch (err) {
       logger.error({ platform_Id: platforms[i].metadata?.id, err }, 'CronJob Failed for platform');
     }
   }
