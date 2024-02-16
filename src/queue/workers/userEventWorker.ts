@@ -1,6 +1,6 @@
 import { WorkerFactory } from './index';
 import { Worker, type Job } from 'bullmq';
-import { redisConfig, userEventConfig } from '../../config/queue';
+import { redisConfig } from '../../config/queue';
 import { Events } from 'discord.js';
 import { userUpdateHandler } from '../handlers';
 
@@ -18,7 +18,7 @@ export const discordEventWorker = new Worker(
   },
   {
     connection: redisConfig,
-    limiter: userEventConfig,
+    concurrency: 1
   },
 );
 

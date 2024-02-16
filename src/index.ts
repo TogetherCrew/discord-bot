@@ -26,13 +26,7 @@ async function app(): Promise<void> {
   await connectToMongoDB();
   await connectToMB();
   await connectToRabbitMQ();
-  await coreService.DiscordBotManager.initClient();
-  await coreService.DiscordBotManager.LoginClient();
-  await eventService.loadEvents();
-  await commandService.loadCommands();
-  await commandService.registerCommand();
-  setupRabbitMQHandlers();
-  addCronJob();
+
 
   // Initialize Express
   const app = express();
@@ -61,6 +55,16 @@ async function app(): Promise<void> {
     console.log(`Server running on http://localhost:${port}`);
     console.log(`Bull-Board is available at http://localhost:${port}/admin/queues`);
   });
+
+
+  await coreService.DiscordBotManager.initClient();
+  await coreService.DiscordBotManager.LoginClient();
+  await eventService.loadEvents();
+  await commandService.loadCommands();
+  await commandService.registerCommand();
+  setupRabbitMQHandlers();
+  addCronJob();
+
 }
 
 app().catch((error) => {
