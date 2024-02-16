@@ -7,13 +7,9 @@ export const redisConfig = {
 };
 
 export const cronJobConfig = {
-  cron: '0 0 * * *', // Run once at 00:00 UTC
+  cron: '30 9 * * *', // Run once at 09:30 UTC (12:30 PM Iran time)
   jobId: 'cronJob',
   attempts: 0,
-  backoff: {
-    type: 'exponential',
-    delay: 10000,
-  },
   max: 1,
   duration: 60000000,
 };
@@ -25,7 +21,7 @@ export const rateLimitConfig = {
 
 export const guildEventConfig = {
   attempts: 1,
-  max: 5,
+  max: 10,
   duration: 100000,
 };
 

@@ -5,8 +5,6 @@ export default {
   name: Events.UserUpdate,
   once: false,
   execute(oldUser: User, newUser: User) {
-    console.log(newUser);
-
     const dataToStore = {
       discordId: newUser.id,
       username: newUser.username,
