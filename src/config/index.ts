@@ -22,6 +22,7 @@ const envVarsSchema = Joi.object()
     REDIS_PORT: Joi.string().required().description('Reids port'),
     REDIS_PASSWORD: Joi.string().required().description('Reids password').allow(''),
     LOG_LEVEL: Joi.string().required().description('Min allowed log level'),
+    PORT: Joi.number().default(3000),
   })
   .unknown();
 
@@ -32,6 +33,7 @@ if (error != null) {
 }
 export default {
   env: envVars.NODE_ENV,
+  port: envVars.PORT,
   mongoose: {
     serverURL: `mongodb://${envVars.DB_USER}:${envVars.DB_PASSWORD}@${envVars.DB_HOST}:${envVars.DB_PORT}/${envVars.DB_NAME}?authSource=admin`,
     dbURL: `mongodb://${envVars.DB_USER}:${envVars.DB_PASSWORD}@${envVars.DB_HOST}:${envVars.DB_PORT}?authSource=admin`,
