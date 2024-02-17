@@ -15,25 +15,25 @@ async function createRawInfo(connection: Connection, rawInfo: IRawInfo): Promise
     return await connection.models.RawInfo.create(rawInfo);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    if (error.code === 11000) {
-      logger.warn(
-        {
-          database: connection.name,
-          channel_id: rawInfo.channelId,
-          message_id: rawInfo.messageId,
-        },
-        'Failed to create duplicate rawInfo',
-      );
-      return null;
-    }
-    logger.error(
-      {
-        database: connection.name,
-        channel_id: rawInfo.channelId,
-        message_id: rawInfo.messageId,
-      },
-      'Failed to create rawInfo',
-    );
+    // if (error.code === 11000) {
+    //   logger.warn(
+    //     {
+    //       database: connection.name,
+    //       channel_id: rawInfo.channelId,
+    //       message_id: rawInfo.messageId,
+    //     },
+    //     'Failed to create duplicate rawInfo',
+    //   );
+    //   return null;
+    // }
+    // logger.error(
+    //   {
+    //     database: connection.name,
+    //     channel_id: rawInfo.channelId,
+    //     message_id: rawInfo.messageId,
+    //   },
+    //   'Failed to create rawInfo',
+    // );
     return null;
   }
 }
@@ -51,10 +51,10 @@ async function createRawInfos(connection: Connection, rawInfos: IRawInfo[]): Pro
     });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    if (error.code === 11000) {
-      logger.warn({ database: connection.name }, 'Failed to create duplicate rawInfos');
-      return [];
-    }
+    // if (error.code === 11000) {
+    //   logger.warn({ database: connection.name }, 'Failed to create duplicate rawInfos');
+    //   return [];
+    // }
     logger.error({ database: connection.name, error }, 'Failed to create rawInfos');
     return [];
   }
