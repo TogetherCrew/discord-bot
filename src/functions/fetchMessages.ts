@@ -150,7 +150,7 @@ async function fetchMessages(
     // );
     const messagesToStore: IRawInfo[] = [];
     const options: FetchOptions = { limit: 100 };
-    period = new Date(period)
+    period = new Date(period);
     if (rawInfo) {
       options[fetchDirection] = rawInfo.messageId;
     }
@@ -164,21 +164,21 @@ async function fetchMessages(
         }
         channel instanceof ThreadChannel
           ? await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()], {
-            threadId: channel.id,
-            threadName: channel.name,
-            channelId: channel.parent?.id,
-            channelName: channel.parent?.name,
-          })
+              threadId: channel.id,
+              threadName: channel.name,
+              channelId: channel.parent?.id,
+              channelName: channel.parent?.name,
+            })
           : await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()]);
         break;
       }
       channel instanceof ThreadChannel
         ? await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()], {
-          threadId: channel.id,
-          threadName: channel.name,
-          channelId: channel.parent?.id,
-          channelName: channel.parent?.name,
-        })
+            threadId: channel.id,
+            threadName: channel.name,
+            channelId: channel.parent?.id,
+            channelName: channel.parent?.name,
+          })
         : await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()]);
       await rawInfoService.createRawInfos(connection, messagesToStore);
       options[fetchDirection] = boundaryMessage.id;
