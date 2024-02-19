@@ -1,7 +1,8 @@
 ---
 name: CI Pipeline
 
-on: pull_request
+on:
+  push:
 
 jobs:
   ci:
