@@ -23,6 +23,7 @@ const envVarsSchema = Joi.object()
     REDIS_PASSWORD: Joi.string().required().description('Reids password').allow(''),
     LOG_LEVEL: Joi.string().required().description('Min allowed log level'),
     PORT: Joi.number().default(3000),
+    PYROSCOPE_URI: Joi.string(),
   })
   .unknown();
 
@@ -57,5 +58,8 @@ export default {
   },
   logger: {
     level: envVars.LOG_LEVEL,
+  },
+  pyroscope: {
+    uri: envVars.PYROSCOPE_URI,
   },
 };

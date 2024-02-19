@@ -27,6 +27,7 @@ services:
       - RABBIT_USER=root
       - RABBIT_PASSWORD=pass
       - LOG_LEVEL=info
+      - PYROSCOPE_URI=http://pyroscope:4040
     volumes:
       - ./coverage:/project/coverage
     depends_on:
