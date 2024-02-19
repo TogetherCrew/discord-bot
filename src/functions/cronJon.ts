@@ -13,6 +13,8 @@ export default async function cronJob(): Promise<void> {
   const platforms = await platformService.getPlatforms({ disconnectedAt: null });
   for (let i = 0; i < platforms.length; i++) {
     try {
+      console.log('cron', i);
+
       logger.info({ platform_Id: platforms[i].metadata?.id }, 'is running cronJob for platform');
       addGuildExtraction(platforms[i]);
       logger.info({ platform_Id: platforms[i].metadata?.id }, 'cronJob is done for platform');

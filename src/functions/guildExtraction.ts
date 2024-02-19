@@ -16,6 +16,7 @@ const logger = parentLogger.child({ module: 'GuildExtraction' });
  */
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default async function guildExtraction(platform: HydratedDocument<IPlatform>) {
+  console.log('Extract', platform.metadata?.name);
   const connection = await DatabaseManager.getInstance().getTenantDb(platform.metadata?.id);
   const client = await coreService.DiscordBotManager.getClient();
   // logger.info({ guild_id: platform.metadata?.id }, 'Guild extraction for guild is running');
