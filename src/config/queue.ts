@@ -7,6 +7,6 @@ export const redisConfig = {
 };
 
 export const cronJobRepeatConfig = {
-  pattern: '55 9 * * *',
+  pattern: '0 0 * * *',
   attempts: 0,
 };
