@@ -150,6 +150,7 @@ async function fetchMessages(
     // );
     const messagesToStore: IRawInfo[] = [];
     const options: FetchOptions = { limit: 100 };
+    period = new Date(period);
     if (rawInfo) {
       options[fetchDirection] = rawInfo.messageId;
     }
@@ -157,7 +158,6 @@ async function fetchMessages(
 
     while (fetchedMessages.size > 0) {
       const boundaryMessage = fetchDirection === 'before' ? fetchedMessages.last() : fetchedMessages.first();
-
       if (!boundaryMessage || (period && boundaryMessage.createdAt < period)) {
         if (period) {
           fetchedMessages = fetchedMessages.filter((msg) => msg.createdAt > period);
@@ -172,7 +172,6 @@ async function fetchMessages(
           : await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()]);
         break;
       }
-
       channel instanceof ThreadChannel
         ? await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()], {
             threadId: channel.id,

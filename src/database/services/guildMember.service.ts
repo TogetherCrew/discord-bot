@@ -15,21 +15,21 @@ async function createGuildMember(connection: Connection, guildMember: IGuildMemb
     return await connection.models.GuildMember.create(guildMember);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    if (error.code === 11000) {
-      logger.warn(
-        { database: connection.name, guild_member_id: guildMember.discordId },
-        'Failed to create duplicate guild member',
-      );
-      return null;
-    }
-    logger.error(
-      {
-        database: connection.name,
-        guild_member_id: guildMember.discordId,
-        error,
-      },
-      'Failed to create guild member',
-    );
+    // if (error.code === 11000) {
+    // logger.warn(
+    //   { database: connection.name, guild_member_id: guildMember.discordId },
+    //   'Failed to create duplicate guild member',
+    // );
+    //   return null;
+    // }
+    // logger.error(
+    //   {
+    //     database: connection.name,
+    //     guild_member_id: guildMember.discordId,
+    //     error,
+    //   },
+    //   'Failed to create guild member',
+    // );
     return null;
   }
 }
@@ -47,11 +47,11 @@ async function createGuildMembers(connection: Connection, guildMembers: IGuildMe
     });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    if (error.code === 11000) {
-      logger.warn({ database: connection.name }, 'Failed to create duplicate guild members');
-      return [];
-    }
-    logger.error({ database: connection.name, error }, 'Failed to create guild members');
+    // if (error.code === 11000) {
+    //   logger.warn({ database: connection.name }, 'Failed to create duplicate guild members');
+    //   return [];
+    // }
+    // logger.error({ database: connection.name, error }, 'Failed to create guild members');
     return [];
   }
 }
