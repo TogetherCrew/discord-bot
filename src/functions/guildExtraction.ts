@@ -3,6 +3,9 @@ import { type IPlatform, DatabaseManager } from '@togethercrew.dev/db';
 import { platformService } from '../database/services';
 import handleFetchChannelMessages from './fetchMessages';
 import parentLogger from '../config/logger';
+import fetchMembers from '../functions/fetchMembers';
+import fetchChannels from '../functions/fetchChannels';
+import fetchRoles from '../functions/fetchRoles';
 import { sagaService } from '../rabbitmq/services';
 import { coreService } from '../services';
 
@@ -22,6 +25,9 @@ export default async function guildExtraction(platform: HydratedDocument<IPlatfo
     if (!hasBotAccessToGuild) {
       return;
     }
+    await fetchMembers(connection, platform);
+    await fetchRoles(connection, platform);
+    await fetchChannels(connection, platform);
     const guild = await client.guilds.fetch(platform.metadata?.id);
     // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     if (platform.metadata?.selectedChannels && platform.metadata?.period) {

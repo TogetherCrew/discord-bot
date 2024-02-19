@@ -16,11 +16,11 @@ async function createRole(connection: Connection, role: IRole): Promise<IRole | 
     return await connection.models.Role.create(role);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    if (error.code === 11000) {
-      logger.warn({ database: connection.name, role_id: role.roleId }, 'Failed to create duplicate role');
-      return null;
-    }
-    logger.error({ database: connection.name, role_id: role.roleId, error }, 'Failed to create role');
+    // if (error.code === 11000) {
+    //   logger.warn({ database: connection.name, role_id: role.roleId }, 'Failed to create duplicate role');
+    //   return null;
+    // }
+    // logger.error({ database: connection.name, role_id: role.roleId, error }, 'Failed to create role');
     return null;
   }
 }
@@ -36,11 +36,11 @@ async function createRoles(connection: Connection, roles: IRole[]): Promise<IRol
     return await connection.models.Role.insertMany(roles, { ordered: false });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    if (error.code === 11000) {
-      logger.warn({ database: connection.name }, 'Failed to create duplicate roles');
-      return [];
-    }
-    logger.error({ database: connection.name, error }, 'Failed to create roles');
+    // if (error.code === 11000) {
+    //   logger.warn({ database: connection.name }, 'Failed to create duplicate roles');
+    //   return [];
+    // }
+    // logger.error({ database: connection.name, error }, 'Failed to create roles');
     return [];
   }
 }

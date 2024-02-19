@@ -8,6 +8,7 @@ services:
       dockerfile: Dockerfile
     environment:
       - NODE_ENV=test
+      - PORT=3000
       - DB_HOST=mongo
       - DB_PORT=27017
       - DB_USER=root

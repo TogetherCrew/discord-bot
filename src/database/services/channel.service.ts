@@ -17,11 +17,11 @@ async function createChannel(connection: Connection, channel: IChannel): Promise
     return await connection.models.Channel.create(channel);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    if (error.code === 11000) {
-      logger.warn({ database: connection.name, channel_id: channel.channelId }, 'Failed to create duplicate channel');
-      return null;
-    }
-    logger.error({ database: connection.name, channel_id: channel.channelId, error }, 'Failed to create channel');
+    // if (error.code === 11000) {
+    //   logger.warn({ database: connection.name, channel_id: channel.channelId }, 'Failed to create duplicate channel');
+    //   return null;
+    // }
+    // logger.error({ database: connection.name, channel_id: channel.channelId, error }, 'Failed to create channel');
     return null;
   }
 }
@@ -39,11 +39,11 @@ async function createChannels(connection: Connection, channels: IChannel[]): Pro
     });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    if (error.code === 11000) {
-      logger.warn({ database: connection.name }, 'Failed to create duplicate channels');
-      return [];
-    }
-    logger.error({ database: connection.name, error }, 'Failed to create channels');
+    // if (error.code === 11000) {
+    //   logger.warn({ database: connection.name }, 'Failed to create duplicate channels');
+    //   return [];
+    // }
+    // logger.error({ database: connection.name, error }, 'Failed to create channels');
     return [];
   }
 }
