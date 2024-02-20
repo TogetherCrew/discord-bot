@@ -1,5 +1,8 @@
-import { type Snowflake, type Message } from 'discord.js';
+import { type Snowflake, type Message, type Channel, type Guild } from 'discord.js';
 import coreService from './core.service';
+import parentLogger from '../config/logger';
+
+const logger = parentLogger.child({ module: 'ChannelService' });
 
 /**
  * Send message to channel
@@ -16,6 +19,17 @@ async function sendChannelMessage(discordId: Snowflake, message: string): Promis
   }
 }
 
+async function getChannelFromDiscordAPI(guild: Guild, channelId: Snowflake): Promise<Channel | null> {
+  try {
+    const channel = await guild.channels.fetch(channelId);
+    return channel;
+  } catch (err) {
+    logger.error({ guild_id: guild.id, channel_id: channelId, err }, 'Failed to fetch channel from discord API');
+    return null;
+  }
+}
+
 export default {
   sendChannelMessage,
+  getChannelFromDiscordAPI,
 };

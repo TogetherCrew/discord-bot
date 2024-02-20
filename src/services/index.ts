@@ -4,4 +4,5 @@ import coreService from './core.service';
 import eventService from './event.service';
 import commandService from './command.service';
 import interactionService from './interaction.service';
-export { channelService, userService, coreService, eventService, commandService, interactionService };
+import guildService from './guild.service';
+export { channelService, userService, coreService, eventService, commandService, interactionService, guildService };
