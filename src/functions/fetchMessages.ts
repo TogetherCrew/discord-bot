@@ -10,9 +10,10 @@ import {
   ThreadChannel,
   type Snowflake,
 } from 'discord.js';
-import { type IRawInfo } from '@togethercrew.dev/db';
-import { rawInfoService } from '../database/services';
-import { type Connection } from 'mongoose';
+import { type IRawInfo, type IPlatform } from '@togethercrew.dev/db';
+import { rawInfoService, platformService } from '../database/services';
+import { type Connection, type HydratedDocument } from 'mongoose';
+import { guildService, channelService } from '../services';
 import parentLogger from '../config/logger';
 
 const logger = parentLogger.child({ module: 'FetchMessages' });
@@ -208,7 +209,7 @@ async function fetchMessages(
  * @param {Date} period - A date object specifying the oldest date for the messages to be fetched.
  * @throws Will throw an error if an issue is encountered during processing.
  */
-export default async function handleFetchChannelMessages(connection: Connection, channel: TextChannel, period: Date) {
+async function handleFetchChannelMessages(connection: Connection, channel: TextChannel, period: Date) {
   // logger.info({ guild_id: connection.name, channel_id: channel.id }, 'Handle channel messages for channel is running');
   try {
     const oldestChannelRawInfo = await rawInfoService.getOldestRawInfo(connection, {
@@ -258,4 +259,24 @@ export default async function handleFetchChannelMessages(connection: Connection,
     logger.error({ guild_id: connection.name, channel_id: channel.id, err }, 'Handle fetch channel messages failed');
   }
   // logger.info({ guild_id: connection.name, channel_id: channel.id }, 'Handle fetch channel messages is done');
+}
+
+export default async function handleFetchMessages(connection: Connection, platform: HydratedDocument<IPlatform>) {
+  try {
+    const guild = await guildService.getGuildFromDiscordAPI(platform.metadata?.id);
+    if (guild) {
+      if (platform.metadata?.selectedChannels && platform.metadata?.period) {
+        await platformService.updatePlatform({ _id: platform.id }, { metadata: { isInProgress: true } });
+        for (let i = 0; i < platform.metadata?.selectedChannels.length; i++) {
+          const channel = await channelService.getChannelFromDiscordAPI(guild, platform.metadata?.selectedChannels[i]);
+          if (channel) {
+            if (channel.type !== 0) continue;
+            await handleFetchChannelMessages(connection, channel, platform.metadata?.period);
+          }
+        }
+      }
+    }
+  } catch (error) {
+    logger.error({ guild_id: platform.metadata?.id, error }, 'Failed to fetch messages');
+  }
 }
