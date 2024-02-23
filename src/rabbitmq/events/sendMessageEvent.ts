@@ -40,11 +40,10 @@ export async function handleSendMessageEvent(msg: any): Promise<void> {
             message,
             useFallback,
           });
-        },
-        );
+        });
       }
     } else {
-      throw new Error('Type of discordId is not valid')
+      throw new Error('Type of discordId is not valid');
     }
     // logger.info({ msg, event: Event.DISCORD_BOT.SEND_MESSAGE, sagaId: msg.content.uuid }, 'is done');
   } catch (error) {

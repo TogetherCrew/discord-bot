@@ -1,8 +1,7 @@
 import { type Channel, ChannelType, type Snowflake, type TextChannel } from 'discord.js';
-import { } from 'discord.js';
+import {} from 'discord.js';
 import { createPrivateThreadAndSendMessage } from '../functions/thread';
 import coreService from './core.service';
-
 
 interface IInfo {
   guildId: Snowflake;
