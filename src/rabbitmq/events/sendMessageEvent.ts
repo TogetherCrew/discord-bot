@@ -19,14 +19,14 @@ export async function handleSendMessageEvent(msg: any): Promise<void> {
     const discordId = saga.data.discordId;
     const message = saga.data.message;
     const useFallback = saga.data.useFallback;
-
-    if (Array.isArray(discordId)) {
+    const info = saga.data.info;
+    if (Array.isArray(info)) {
       if (platform !== null) {
         await saga.next(async () => {
-          for await (const id of discordId) {
-            addDirectMessage(id, {
+          for await (const element of info) {
+            addDirectMessage(element.discordId, {
               guildId: platform.metadata?.id,
-              message,
+              message: element.message,
               useFallback,
             });
           }
