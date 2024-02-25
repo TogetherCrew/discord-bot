@@ -29,7 +29,6 @@ export const channelMessageWorker = new Worker(
         await saga.save();
         logger.info({ saga }, 'channelMessageWorker-2');
       });
-
     }
   },
   {
