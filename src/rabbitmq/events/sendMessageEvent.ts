@@ -9,7 +9,7 @@ const logger = parentLogger.child({
 
 export async function handleSendMessageEvent(msg: any): Promise<void> {
   try {
-    // logger.info({ msg, event: Event.DISCORD_BOT.SEND_MESSAGE, sagaId: msg.content.uuid }, 'is running');
+    logger.info({ msg, event: Event.DISCORD_BOT.SEND_MESSAGE, sagaId: msg.content.uuid }, 'is running');
     if (msg === undefined || msg === null) return;
 
     const { content } = msg;
@@ -20,6 +20,8 @@ export async function handleSendMessageEvent(msg: any): Promise<void> {
     const message = saga.data.message;
     const useFallback = saga.data.useFallback;
     const info = saga.data.info;
+    logger.info({ saga: saga.data }, 'LALA');
+
     if (Array.isArray(info)) {
       if (platform !== null) {
         await saga.next(async () => {
@@ -45,7 +47,7 @@ export async function handleSendMessageEvent(msg: any): Promise<void> {
     } else {
       throw new Error('Type of discordId is not valid');
     }
-    // logger.info({ msg, event: Event.DISCORD_BOT.SEND_MESSAGE, sagaId: msg.content.uuid }, 'is done');
+    logger.info({ msg, event: Event.DISCORD_BOT.SEND_MESSAGE, sagaId: msg.content.uuid }, 'is done');
   } catch (error) {
     logger.error({ msg, event: Event.DISCORD_BOT.SEND_MESSAGE, sagaId: msg.content.uuid, error }, 'is failed');
   }
