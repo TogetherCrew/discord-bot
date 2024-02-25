@@ -3,6 +3,8 @@ import { Worker, type Job } from 'bullmq';
 import { redisConfig } from '../../config/queue';
 import { channelService } from '../../services';
 import { MBConnection } from '@togethercrew.dev/tc-messagebroker';
+import parentLogger from '../../config/logger';
+const logger = parentLogger.child({ module: 'channelMessageWorker' });
 
 export const channelMessageWorker = new Worker(
   'channelMessageQueue',
@@ -22,7 +24,9 @@ export const channelMessageWorker = new Worker(
           },
         };
       }
+      logger.info('channelMessageWorker1', saga);
       await saga.save();
+      logger.info('channelMessageWorker2', saga);
     }
   },
   {
