@@ -27,7 +27,6 @@ export const channelMessageWorker = new Worker(
       logger.info('channelMessageWorker-11', saga);
       await saga.save();
       logger.info('channelMessageWorker-22', saga);
-
     }
   },
   {
