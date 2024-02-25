@@ -23,11 +23,15 @@ export async function handleSendMessageToChannel(msg: any): Promise<void> {
     const channels = saga.data.channels;
     const message = saga.data.message;
 
-    await saga.next(async () => {
-      for await (const channel of channels) {
-        addChannelMessage(channel, message, content.uuid);
-      }
-    });
+    // await saga.next(async () => {
+    //   for await (const channel of channels) {
+    //      addChannelMessage(channel, message, content.uuid);
+    //   }
+    // });
+
+    for await (const channel of channels) {
+      addChannelMessage(channel, message, content.uuid);
+    }
     logger.info(
       {
         msg,
