@@ -10,9 +10,11 @@ export const channelMessageWorker = new Worker(
   'channelMessageQueue',
   async (job: Job<any, any, string> | undefined) => {
     if (job !== null && job !== undefined) {
+      logger.info({ job: job.data }, 'channelMessageWorker');
       const saga = await MBConnection.models.Saga.findOne({
         sagaId: job.data.sagaId,
       });
+      logger.info({ saga }, 'channelMessageWorker');
       await saga.next(async () => {
         const message = await channelService.sendChannelMessage(job.data.discordId, job.data.message);
         if (saga.data.isSafetyMessage === true) {
@@ -24,10 +26,8 @@ export const channelMessageWorker = new Worker(
               messageId: message?.id,
             },
           };
+          await saga.save();
         }
-        logger.info({ saga }, 'channelMessageWorker-1');
-        await saga.save();
-        logger.info({ saga }, 'channelMessageWorker-2');
       });
     }
   },
