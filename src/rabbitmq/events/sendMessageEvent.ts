@@ -20,12 +20,15 @@ export async function handleSendMessageEvent(msg: any): Promise<void> {
     const message = saga.data.message;
     const useFallback = saga.data.useFallback;
     const info = saga.data.info;
-    logger.info({ saga: saga.data }, 'LALA');
+    logger.info({ info }, 'LALA');
 
     if (Array.isArray(info)) {
+      logger.info(1);
       if (platform !== null) {
+        logger.info(2);
         await saga.next(async () => {
           for await (const element of info) {
+            logger.info({ element, platform });
             addDirectMessage(element.discordId, {
               guildId: platform.metadata?.id,
               message: element.message,
@@ -35,7 +38,9 @@ export async function handleSendMessageEvent(msg: any): Promise<void> {
         });
       }
     } else if (typeof discordId === 'string') {
+      logger.info(11);
       if (platform !== null) {
+        logger.info(22);
         await saga.next(async () => {
           addDirectMessage(discordId, {
             guildId: platform.metadata?.id,
