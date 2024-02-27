@@ -29,9 +29,18 @@ export async function handleSendMessageToChannel(msg: any): Promise<void> {
     //   }
     // });
 
-    for await (const channel of channels) {
-      addChannelMessage(channel, message, content.uuid);
+    if (saga.data.isSafetyMessage === true) {
+      for await (const channel of channels) {
+        addChannelMessage(channel, message, content.uuid);
+      }
+    } else {
+      await saga.next(async () => {
+        for await (const channel of channels) {
+          addChannelMessage(channel, message, content.uuid);
+        }
+      });
     }
+
     logger.info(
       {
         msg,
