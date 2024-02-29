@@ -150,6 +150,7 @@ function getNeededDateFromChannel(channel: TextChannel | VoiceChannel | Category
       allow: overwrite.allow.bitfield.toString(),
       deny: overwrite.deny.bitfield.toString(),
     })),
+    type: channel.type,
   };
 }
 
