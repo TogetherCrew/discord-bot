@@ -12,7 +12,7 @@
     "test:ci": "jest --ci --detectOpenHandles",
     "lint": "eslint **/*.ts",
     "lint-fix": "eslint --fix **/*.ts",
-    "format": "prettier --write \"src/**/*.ts\" \"types/*.ts\"",
+    "format": "prettier --write \"src/**/*.ts\" \"types/*.ts\" \"__tests__/**/*.ts\"",
     "dev-migrate:create": "migrate create  --template-file ./src/migrations/utils/template.ts --migrations-dir=\"./src/migrations/db\"  --compiler=\"ts:./src/migrations/utils/ts-compiler.js\"",
     "dev-migrate:up": "migrate --migrations-dir=\"./src/migrations/db\" up --compiler=\"ts:./src/migrations/utils/ts-compiler.js\"",
     "dev-migrate:down": "migrate --migrations-dir=\"./src/migrations/db\" --compiler=\"ts:./src/migrations/utils/ts-compiler.js\" down",

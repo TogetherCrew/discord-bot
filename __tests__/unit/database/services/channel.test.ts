@@ -35,7 +35,7 @@ describe('channel service', () => {
         channelId: channel1.channelId,
         name: channel1.name,
         parentId: channel1.parentId,
-        type: channel1.type
+        type: channel1.type,
       });
     });
   });
@@ -57,14 +57,14 @@ describe('channel service', () => {
         channelId: channel1.channelId,
         name: channel1.name,
         parentId: channel1.parentId,
-        type: channel1.type
+        type: channel1.type,
       });
       expect(channelDoc2).toBeDefined();
       expect(channelDoc2).toMatchObject({
         channelId: channel2.channelId,
         name: channel2.name,
         parentId: channel2.parentId,
-        type: channel1.type
+        type: channel1.type,
       });
     });
   });
