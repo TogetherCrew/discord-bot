@@ -12,10 +12,10 @@ import './queue/workers/directMessageWorker';
 import './queue/workers/guildEventWorker';
 import './queue/workers/guildExtractionWorker';
 import './queue/workers/userEventWorker';
-import pyroscope from './config/pyroscope';
+// import pyroscope from './config/pyroscope';
 
 const logger = parentLogger.child({ module: `app` });
-pyroscope();
+// pyroscope();
 
 async function app(): Promise<void> {
   await connectToMongoDB();
