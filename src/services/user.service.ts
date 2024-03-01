@@ -36,10 +36,12 @@ async function sendDirectMessage(discordId: string, info: IInfo): Promise<void> 
   } catch (error) {
     console.log(error);
     if (useFallback) {
-      await createPrivateThreadAndSendMessage(upperTextChannel, {
+      console.log('Inside', upperTextChannel, message, discordId);
+      const res = await createPrivateThreadAndSendMessage(upperTextChannel, {
         threadName: 'TogetherCrew Status',
         message: `<@${discordId}> ${message}`,
       });
+      console.log('THread', res);
     }
   }
 }
