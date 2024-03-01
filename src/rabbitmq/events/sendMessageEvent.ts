@@ -28,7 +28,7 @@ export async function handleSendMessageEvent(msg: any): Promise<void> {
             addDirectMessage(element.discordId, {
               guildId: platform.metadata?.id,
               message: element.message,
-              useFallback,
+              useFallback: element.useFallback,
             });
           }
         });
