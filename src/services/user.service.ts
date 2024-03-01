@@ -26,11 +26,14 @@ async function sendDirectMessage(discordId: string, info: IInfo): Promise<void> 
 
   try {
     // addDirectMessage(discordId, message);
+    console.log(guildId, message, useFallback, guild.name);
     const user = await client.users.fetch(discordId);
+    console.log(user.username);
     if (user !== null && user !== undefined) {
       await user.send(message);
     }
   } catch (error) {
+    console.log(error);
     if (useFallback) {
       await createPrivateThreadAndSendMessage(upperTextChannel, {
         threadName: 'TogetherCrew Status',
