@@ -1,5 +1,5 @@
 import { type Channel, ChannelType, type Snowflake, type TextChannel } from 'discord.js';
-import { } from 'discord.js';
+import {} from 'discord.js';
 import { createPrivateThreadAndSendMessage } from '../functions/thread';
 import coreService from './core.service';
 
@@ -26,14 +26,14 @@ async function sendDirectMessage(discordId: string, info: IInfo): Promise<void> 
 
   try {
     // addDirectMessage(discordId, message);
-    console.log(guildId, message, useFallback, guild.name)
+    console.log(guildId, message, useFallback, guild.name);
     const user = await client.users.fetch(discordId);
-    console.log(user.username)
+    console.log(user.username);
     if (user !== null && user !== undefined) {
       await user.send(message);
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
     if (useFallback) {
       await createPrivateThreadAndSendMessage(upperTextChannel, {
         threadName: 'TogetherCrew Status',
