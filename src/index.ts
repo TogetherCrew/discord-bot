@@ -3,7 +3,7 @@ import config from './config';
 import { connectToMongoDB, connectToMB } from './database/connection';
 import { connectToRabbitMQ } from './rabbitmq/RabbitMQConnection';
 import { setupRabbitMQHandlers } from './rabbitmq/RabbitMQHandler';
-import { commandService, eventService, coreService, userService } from './services';
+import { commandService, eventService, coreService } from './services';
 import parentLogger from './config/logger';
 import { addCronJob } from './queue/queues/cronJob';
 import './queue/workers/cronWorker';
@@ -31,13 +31,6 @@ async function app(): Promise<void> {
   await commandService.registerCommand();
   setupRabbitMQHandlers();
   addCronJob();
-  await userService.sendDirectMessage('1049412581699367072', {
-    guildId: '980858613587382322',
-    message: 'Hi haj Behzad',
-    useFallback: true,
-    announcement: true,
-    channelId: '1029501237554581564',
-  });
 }
 
 app().catch((error) => {
