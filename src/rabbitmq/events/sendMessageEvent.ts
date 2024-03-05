@@ -29,6 +29,9 @@ export async function handleSendMessageEvent(msg: any): Promise<void> {
               guildId: platform.metadata?.id,
               message: element.message,
               useFallback: element.useFallback,
+              announcementId: saga.data.announcementId,
+              channelId: saga.data.safetyMessageReference.channelId,
+              announcement: true,
             });
           }
         });
