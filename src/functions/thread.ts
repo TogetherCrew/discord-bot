@@ -12,7 +12,6 @@ export async function createPrivateThreadAndSendMessage(
   info: { threadName: string; message: string; threadReason?: string },
 ) {
   const { threadName, message, threadReason } = info;
-
   const thread = await channel.threads.create({
     name: threadName,
     reason: threadReason,
