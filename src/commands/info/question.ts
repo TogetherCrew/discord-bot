@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { SlashCommandBuilder } from 'discord.js';
-import { interactionService } from '../../services';
+import { interactionService, moduleService, platformService } from '../../services';
 import RabbitMQ, { Event, Queue as RabbitMQQueue } from '@togethercrew.dev/tc-messagebroker';
 import { type ChatInputCommandInteraction_broker } from '../../interfaces/Hivemind.interface';
 import { handleBigInts, removeCircularReferences } from '../../utils/obj';
@@ -16,6 +16,25 @@ export default {
 
   async execute(interaction: ChatInputCommandInteraction_broker) {
     try {
+      const platform = await platformService.getPlatformByFilter({ 'metadata.id': interaction.guildId });
+      const hivemindDiscordPlatform = await moduleService.getModuleByFilter({
+        "options.platforms": {
+          $elemMatch: {
+            name: "discord",
+            platform: platform?.id
+          }
+        }
+      })
+      console.log(platform, hivemindDiscordPlatform)
+      if (!hivemindDiscordPlatform) {
+        return await interactionService.createInteractionResponse(interaction, {
+          type: 4,
+          data: {
+            content: 'The **/question** command uses TogetherCrew Hivemind AI to help answer questions about your community.\nTo enable this feature, ask your community manager to configure the Hivemind module on [togethercrew app](https://app.togethercrew.com).\n**Note**: once configured, it can take up to 24 hours for Hivemind to start working.',
+            flags: 64,
+          },
+        });
+      }
       // RnDAO:915914985140531240  TogetherCrew-Leads: 983364577096003604  TogetherCrew-Contributors: 983364691692748832
       if (
         interaction.guildId === '915914985140531240' &&
