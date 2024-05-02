@@ -16,8 +16,9 @@ export default {
 
   async execute(interaction: ChatInputCommandInteraction_broker) {
     try {
-      // TogetherCrew-Leads: 983364577096003604  TogetherCrew-Contributors: 983364691692748832
+      // RnDAO:915914985140531240  TogetherCrew-Leads: 983364577096003604  TogetherCrew-Contributors: 983364691692748832
       if (
+        interaction.guildId === '915914985140531240' &&
         !(
           interaction.member?.roles.cache.has('983364577096003604') ||
           interaction.member?.roles.cache.has('983364691692748832')
