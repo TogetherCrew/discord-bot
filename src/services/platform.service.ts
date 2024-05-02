@@ -7,9 +7,9 @@ import { Platform, type IPlatform } from '@togethercrew.dev/db';
  * @returns {Promise<HydratedDocument<IPlatform> | null>}
  */
 const getPlatformByFilter = async (filter: object): Promise<HydratedDocument<IPlatform> | null> => {
-    return await Platform.findOne(filter);
+  return await Platform.findOne(filter);
 };
 
 export default {
-    getPlatformByFilter,
+  getPlatformByFilter,
 };

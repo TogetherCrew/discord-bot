@@ -18,19 +18,20 @@ export default {
     try {
       const platform = await platformService.getPlatformByFilter({ 'metadata.id': interaction.guildId });
       const hivemindDiscordPlatform = await moduleService.getModuleByFilter({
-        "options.platforms": {
+        'options.platforms': {
           $elemMatch: {
-            name: "discord",
-            platform: platform?.id
-          }
-        }
-      })
-      console.log(platform, hivemindDiscordPlatform)
+            name: 'discord',
+            platform: platform?.id,
+          },
+        },
+      });
+      console.log(platform, hivemindDiscordPlatform);
       if (!hivemindDiscordPlatform) {
         return await interactionService.createInteractionResponse(interaction, {
           type: 4,
           data: {
-            content: 'The **/question** command uses TogetherCrew Hivemind AI to help answer questions about your community.\nTo enable this feature, ask your community manager to configure the Hivemind module on [togethercrew app](https://app.togethercrew.com).\n**Note**: once configured, it can take up to 24 hours for Hivemind to start working.',
+            content:
+              'The **/question** command uses TogetherCrew Hivemind AI to help answer questions about your community.\nTo enable this feature, ask your community manager to configure the Hivemind module on [togethercrew app](https://app.togethercrew.com).\n**Note**: once configured, it can take up to 24 hours for Hivemind to start working.',
             flags: 64,
           },
         });

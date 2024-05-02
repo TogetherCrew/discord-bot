@@ -7,4 +7,14 @@ import interactionService from './interaction.service';
 import guildService from './guild.service';
 import platformService from './platform.service';
 import moduleService from './module.service';
-export { channelService, userService, coreService, eventService, commandService, interactionService, guildService, platformService, moduleService };
+export {
+  channelService,
+  userService,
+  coreService,
+  eventService,
+  commandService,
+  interactionService,
+  guildService,
+  platformService,
+  moduleService,
+};
