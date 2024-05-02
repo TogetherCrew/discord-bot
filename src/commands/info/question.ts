@@ -16,7 +16,10 @@ export default {
 
   async execute(interaction: ChatInputCommandInteraction_broker) {
     try {
-      const platform = await platformService.getPlatformByFilter({ 'metadata.id': interaction.guildId });
+      const platform = await platformService.getPlatformByFilter({
+        name: 'discord',
+        'metadata.id': interaction.guildId,
+      });
       const hivemindDiscordPlatform = await moduleService.getModuleByFilter({
         'options.platforms': {
           $elemMatch: {
