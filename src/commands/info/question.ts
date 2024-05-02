@@ -25,7 +25,6 @@ export default {
           },
         },
       });
-      console.log(platform, hivemindDiscordPlatform);
       if (!hivemindDiscordPlatform) {
         return await interactionService.createInteractionResponse(interaction, {
           type: 4,
