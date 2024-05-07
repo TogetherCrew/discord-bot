@@ -5,7 +5,10 @@ import { interactionService, moduleService, platformService } from '../../servic
 import RabbitMQ, { Event, Queue as RabbitMQQueue } from '@togethercrew.dev/tc-messagebroker';
 import { type ChatInputCommandInteraction_broker } from '../../interfaces/Hivemind.interface';
 import { handleBigInts, removeCircularReferences } from '../../utils/obj';
-import logger from '../../config/logger';
+import parentLogger from '../../config/logger';
+
+const logger = parentLogger.child({ command: 'question' });
+
 export default {
   data: new SlashCommandBuilder()
     .setName('question')
@@ -65,7 +68,7 @@ export default {
       });
     } catch (error) {
       console.log(error);
-      logger.error({ command: 'question', error }, 'is failed');
+      logger.error({ guildId: interaction.guildId, member: interaction.member, error }, 'is failed');
     }
   },
 };
