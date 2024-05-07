@@ -64,6 +64,7 @@ export default {
         data: { flags: 64 },
       });
     } catch (error) {
+      console.log(error)
       logger.error({ command: 'question', error }, 'is failed');
     }
   },
