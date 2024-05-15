@@ -18,7 +18,8 @@
     "dev-migrate:down": "migrate --migrations-dir=\"./src/migrations/db\" --compiler=\"ts:./src/migrations/utils/ts-compiler.js\" down",
     "migrate:create": "migrate create --template-file ./src/migrations/utils/template.ts --migrations-dir=\"./src/migrations/db\"",
     "migrate:up": "migrate --migrations-dir=\"./lib/migrations/db\" up",
-    "migrate:down": "migrate --migrations-dir=\"./lib/migrations/db\" down"
+    "migrate:down": "migrate --migrations-dir=\"./lib/migrations/db\" down",
+    "cleanupCompletedJobs": "node ./lib/scripts/cleanupCompletedJobs.js"
   },
   "repository": {
     "type": "git",
@@ -49,8 +50,7 @@
     "node-fetch": "^2.6.7",
     "npm": "^10.4.0",
     "pino": "^8.18.0",
-    "redis": "^4.6.6",
-    "cleanupCompletedJobs": "node ./lib/scripts/cleanupCompletedJobs.js"
+    "redis": "^4.6.6"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
