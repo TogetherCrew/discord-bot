@@ -13,12 +13,12 @@ const logger = parentLogger.child({ module: `cleanupCompletedJobs` });
  */
 async function cleanAllCompletedJobs(): Promise<void> {
   try {
-    const deletedUserEventJobIds = await userEventQueue.clean(0, 1000000, 'completed');
-    const deletedGuildExtractionJobIds = await guildExtractionQueue.clean(0, 1000000, 'completed');
-    const deletedDirectMessageJobIds = await directMessageQueue.clean(0, 1000000, 'completed');
-    const deletedChannelMessageJobIds = await channelMessageQueue.clean(0, 1000000, 'completed');
-    const deletedCronJobJobIds = await cronJobQueue.clean(0, 1000000, 'completed');
-    const deletedGuildEventJobIds = await guildEventQueue.clean(0, 1000000, 'completed');
+    const deletedUserEventJobIds = await userEventQueue.clean(0, 500000, 'completed');
+    const deletedGuildExtractionJobIds = await guildExtractionQueue.clean(0, 500000, 'completed');
+    const deletedDirectMessageJobIds = await directMessageQueue.clean(0, 500000, 'completed');
+    const deletedChannelMessageJobIds = await channelMessageQueue.clean(0, 500000, 'completed');
+    const deletedCronJobJobIds = await cronJobQueue.clean(0, 500000, 'completed');
+    const deletedGuildEventJobIds = await guildEventQueue.clean(0, 500000, 'completed');
     logger.info(`All GuildEvent completed jobs cleaned: ${deletedGuildEventJobIds.length} jobs removed.`);
     logger.info(`All CronJob completed jobs cleaned: ${deletedCronJobJobIds.length} jobs removed.`);
     logger.info(`All ChannelMessage completed jobs cleaned: ${deletedChannelMessageJobIds.length} jobs removed.`);
