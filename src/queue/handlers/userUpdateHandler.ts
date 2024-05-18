@@ -24,6 +24,7 @@ export default async function (dataToStore: IdataToStore): Promise<void> {
         {
           username: dataToStore.username,
           globalName: dataToStore.globalName,
+          deletedAt: null
         },
       );
       // logger.info(logFields, 'event is done');

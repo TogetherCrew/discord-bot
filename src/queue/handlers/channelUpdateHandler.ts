@@ -13,7 +13,7 @@ export default async function (guildId: Snowflake, dataToStore: IChannel): Promi
     const channelDoc = await channelService.updateChannel(
       connection,
       { channelId: dataToStore.channelId },
-      dataToStore,
+      { ...dataToStore, deletedAt: null },
     );
     if (channelDoc === null) {
       await channelService.createChannel(connection, dataToStore);
