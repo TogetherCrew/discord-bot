@@ -39,7 +39,7 @@
     "@togethercrew.dev/tc-messagebroker": "^0.0.45",
     "babel-jest": "^29.5.0",
     "bullmq": "^3.14.0",
-    "discord.js": "^14.12.1",
+    "discord.js": "^14.15.2",
     "express": "^4.18.2",
     "flatted": "^3.2.9",
     "joi": "^17.9.2",
