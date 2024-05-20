@@ -6,7 +6,7 @@ const logger = parentLogger.child({ module: 'Queue' });
 export class WorkerFactory {
   static attachEventListeners(worker: Worker): void {
     worker.on('completed', (job) => {
-      logger.info({ job }, 'Job is done');
+      // logger.info({ job }, 'Job is done');
     });
 
     worker.on('failed', (job, error) => {

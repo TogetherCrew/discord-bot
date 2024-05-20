@@ -26,12 +26,10 @@ async function cleanAllCompletedJobs(): Promise<void> {
     logger.info(`All GuildExtraction completed jobs cleaned: ${deletedGuildExtractionJobIds.length} jobs removed.`);
     logger.info(`All UserEvent completed jobs cleaned: ${deletedUserEventJobIds.length} jobs removed.`);
   } catch (error) {
-    console.log(100, error);
     logger.error('Failed to clean all completed jobs', error);
   }
 }
 
 cleanAllCompletedJobs().catch((error) => {
-  console.log(200, error);
   logger.error('Unhandled exception in cleanup jobs', error);
 });

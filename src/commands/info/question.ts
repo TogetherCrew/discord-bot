@@ -67,7 +67,6 @@ export default {
         data: { flags: 64 },
       });
     } catch (error) {
-      console.log(error);
       logger.error({ guildId: interaction.guildId, member: interaction.member, error }, 'is failed');
     }
   },
