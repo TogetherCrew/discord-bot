@@ -33,12 +33,7 @@ async function registerCommand(): Promise<void> {
     const client = await coreService.DiscordBotManager.getClient();
     const rest = new REST().setToken(config.discord.botToken);
     const commandData = [...client.commands.values()].map((command) => command.data.toJSON());
-    await rest.put(
-      // RnDAO: 915914985140531240
-      // Routes.applicationGuildCommands(config.discord.clientId, '915914985140531240'),
-      Routes.applicationCommands(config.discord.clientId),
-      { body: commandData },
-    );
+    await rest.put(Routes.applicationCommands(config.discord.clientId), { body: commandData });
     logger.info('Commands Registerd');
   } catch (err) {
     logger.error({ err }, 'Failed to register the slash command');

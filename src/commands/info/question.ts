@@ -41,22 +41,6 @@ export default {
           },
         });
       }
-      // RnDAO:915914985140531240  TogetherCrew-Leads: 983364577096003604  TogetherCrew-Contributors: 983364691692748832
-      if (
-        interaction.guildId === '915914985140531240' &&
-        !(
-          interaction.member?.roles.cache.has('983364577096003604') ||
-          interaction.member?.roles.cache.has('983364691692748832')
-        )
-      ) {
-        return await interactionService.createInteractionResponse(interaction, {
-          type: 4,
-          data: {
-            content: 'You do not have the required role to use this command!',
-            flags: 64,
-          },
-        });
-      }
       const serializedInteraction = interactionService.constructSerializableInteraction(interaction);
       const processedInteraction = handleBigInts(serializedInteraction);
       const cleanInteraction = removeCircularReferences(processedInteraction); // Pass processedInteraction here
