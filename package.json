@@ -19,7 +19,8 @@
     "migrate:create": "migrate create --template-file ./src/migrations/utils/template.ts --migrations-dir=\"./src/migrations/db\"",
     "migrate:up": "migrate --migrations-dir=\"./lib/migrations/db\" up",
     "migrate:down": "migrate --migrations-dir=\"./lib/migrations/db\" down",
-    "cleanupCompletedJobs": "node ./lib/scripts/cleanupCompletedJobs.js"
+    "cleanupCompletedJobs": "node ./lib/scripts/cleanupCompletedJobs.js",
+    "deleteRnDAOGuildCommands": "node ./lib/scripts/deleteRnDAOGuildCommands.js"
   },
   "repository": {
     "type": "git",
