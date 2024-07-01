@@ -13,7 +13,7 @@ export default async function (guildId: Snowflake, dataToStore: IGuildMember): P
     const guildMemberDoc = await guildMemberService.updateGuildMember(
       connection,
       { discordId: dataToStore.discordId },
-      dataToStore,
+      { ...dataToStore, deletedAt: null },
     );
     if (guildMemberDoc === null) {
       await guildMemberService.createGuildMember(connection, dataToStore);
