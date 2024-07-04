@@ -36,8 +36,8 @@ export async function handleFetchMembersEvent(msg: any): Promise<void> {
 
     const platform = await platformService.getPlatform({ _id: platformId });
 
-    logger.info({ platformId , platform }, 'platform info');
-  
+    logger.info({ platformId, platform }, 'platform info');
+
     if (platform !== null) {
       const fn = fetchInitialData.bind({}, platform);
       await saga.next(fn);
