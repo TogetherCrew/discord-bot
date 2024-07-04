@@ -6,8 +6,8 @@ import logger from '../config/logger';
 export const connectToRabbitMQ = async (): Promise<void> => {
   try {
     await RabbitMQ.connect(config.rabbitMQ.url, Queue.DISCORD_BOT);
-    logger.info({ url: config.rabbitMQ.url, queue: Queue.DISCORD_BOT }, 'Connected to RabbitMQ!');
+    logger.info({ queue: Queue.DISCORD_BOT }, 'Connected to RabbitMQ!');
   } catch (error) {
-    logger.fatal({ url: config.rabbitMQ.url, queue: Queue.DISCORD_BOT, error }, 'Failed to connect to RabbitMQ!');
+    logger.fatal({ queue: Queue.DISCORD_BOT, error }, 'Failed to connect to RabbitMQ!');
   }
 };
