@@ -1,4 +1,4 @@
-import { Client, GatewayIntentBits,Partials  } from 'discord.js';
+import { Client, GatewayIntentBits, Partials } from 'discord.js';
 import config from '../config';
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
@@ -17,7 +17,6 @@ class DiscordBotManager {
           GatewayIntentBits.MessageContent,
           GatewayIntentBits.DirectMessageReactions,
           GatewayIntentBits.DirectMessages,
-
         ],
         partials: [Partials.Channel],
       });
@@ -37,7 +36,6 @@ class DiscordBotManager {
         GatewayIntentBits.MessageContent,
         GatewayIntentBits.DirectMessageReactions,
         GatewayIntentBits.DirectMessages,
-
       ],
       partials: [Partials.Channel],
     });
