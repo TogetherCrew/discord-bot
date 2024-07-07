@@ -1,19 +1,20 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable no-unneeded-ternary */
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
+import fetch from 'node-fetch';
 import {
   type Message,
   TextChannel,
-  type Collection,
   type User,
   type Role,
   ThreadChannel,
   type Snowflake,
 } from 'discord.js';
-import { type IRawInfo, type IPlatform } from '@togethercrew.dev/db';
+import { type IRawInfo, type IPlatform, type IDiscordUser } from '@togethercrew.dev/db';
 import { rawInfoService, platformService } from '../database/services';
 import { type Connection, type HydratedDocument } from 'mongoose';
 import { guildService, channelService } from '../services';
+import config from '../config';
 import parentLogger from '../config/logger';
 
 const logger = parentLogger.child({ module: 'FetchMessages' });
@@ -37,55 +38,113 @@ interface FetchOptions {
  */
 async function getReactions(message: Message): Promise<string[]> {
   try {
-
-
-
-    const reactions1 = message.reactions.cache;
-    const reactionsArray1 = [...reactions1.values()];
-
-
-
-    for (const reaction of reactionsArray1) {
-      if(message.content==='Hate that'){
-        console.log('-------------------------------')
-
-        console.log(reaction.users)
-        console.log('*******************************')
-  
-        console.log(reaction.emoji)
-        console.log('*******************************')
-  
-        console.log(reaction.users.cache)
-  
-        console.log('-------------------------------')
-  
-      }
-
-    }
-
-
-
-
-
+    const channelId = message.channel.id;
+    const messageId = message.id;
     const reactions = message.reactions.cache;
     const reactionsArray = [...reactions.values()];
     const reactionsArr = [];
 
     for (const reaction of reactionsArray) {
       const emoji = reaction.emoji;
-      const users: Collection<string, User> = await reaction.users.fetch();
-      let usersString = users.map((user) => `${user.id}`).join(',');
+      let encodedEmoji;
+
+      if (emoji.id) {
+        // Custom emoji: encode as name:id
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+        encodedEmoji = encodeURIComponent(`${emoji.name}:${emoji.id}`);
+      } else if (emoji.name) {
+        // Standard emoji: just encode the name
+        encodedEmoji = encodeURIComponent(emoji.name);
+      } else {
+        logger.error({ message_id: message.id,emoji }, 'Emoji name is null or undefined.');
+
+        continue;
+      }
+
+      const users = await fetchAllUsersForReaction(channelId, messageId, encodedEmoji);
+      const usersString = users.map((user) => `${user.id}`).join(',');
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      usersString += `,${emoji.name}`;
-      reactionsArr.push(usersString);
+      reactionsArr.push(`${usersString},${emoji.name}`);
     }
 
     return reactionsArr;
-  } catch (err) {
-    logger.error({ message, err }, 'Faild to get reactions');
+  } catch (error) {
+    logger.error({ message_id: message.id, error }, 'Failed to get reactions');
     return [];
   }
 }
+
+
+/**
+ * Fetches all users who reacted with a specific emoji on a message using pagination.
+ * @param {string} channelId - The ID of the channel containing the message.
+ * @param {string} messageId - The ID of the message containing the reactions.
+ * @param {string} encodedEmoji - The URL-encoded emoji string.
+ * @returns {Promise<{ id: string; username: string; discriminator: string; avatar: string | null }[]>} - A promise that resolves to an array of user objects. */
+async function fetchAllUsersForReaction(channelId: string, messageId: string, encodedEmoji: string): Promise<IDiscordUser[]> {
+  let users:IDiscordUser[] = [];
+  let after = '';
+  const limit = 100;
+  let hasMore = true;
+
+  while (hasMore) {
+    const url = `https://discord.com/api/v9/channels/${channelId}/messages/${messageId}/reactions/${encodedEmoji}?limit=${limit}${after ? `&after=${after}` : ''}`;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+        Authorization: `Bot ${config.discord.botToken}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (response.ok) {
+      const fetchedUsers = await response.json();
+      users = users.concat(fetchedUsers);
+      if (fetchedUsers.length < limit) {
+        hasMore = false;
+      } else {
+        after = fetchedUsers[fetchedUsers.length - 1].id;
+      }
+    } else {
+      logger.error({ message_id: messageId,  error:await response.text() }, 'Error fetching users for reaction');
+      hasMore = false;
+    }
+  }
+  return users;
+}
+
+
+// /**
+//  * Fetches reaction details from a message.
+//  * @param {Message} message - The message object from which reactions are to be fetched.
+//  * @returns {Promise<string[]>} - A promise that resolves to an array of strings where each string is a comma-separated list of user IDs who reacted followed by the reaction emoji.
+//  */
+// async function getReactions(message: Message): Promise<string[]> {
+//   try {
+//     const reactions = message.reactions.cache;
+//     const reactionsArray = [...reactions.values()];
+//     const reactionsArr = [];
+
+//     for (const reaction of reactionsArray) {
+//       const emoji = reaction.emoji;
+//       const users: Collection<string, User> = await reaction.users.fetch();
+//       let usersString = users.map((user) => `${user.id}`).join(',');
+//       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+//       usersString += `,${emoji.name}`;
+//       reactionsArr.push(usersString);
+//     }
+
+//     return reactionsArr;
+//   } catch (err) {
+//     logger.error({ message, err }, 'Faild to get reactions');
+//     return [];
+//   }
+// }
+
+
+
+
 
 /**
  * Extracts necessary data from a given message.
@@ -310,3 +369,4 @@ export default async function handleFetchMessages(connection: Connection, platfo
     logger.error({ guild_id: platform.metadata?.id, error }, 'Failed to fetch messages');
   }
 }
+
