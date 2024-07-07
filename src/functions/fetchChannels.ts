@@ -23,11 +23,6 @@ export default async function fetchGuildChannels(connection: Connection, platfor
     const guild = await client.guilds.fetch(platform.metadata?.id);
     let channelsToStore: IChannel[] = [];
     logger.info({ guild_id: platform.metadata?.id }, 'Fetching channels');
-
-    // const textAndVoiceChannels = [...guild.channels.cache.values()].filter(
-    //   (channel) => channel.type === 0 || channel.type === 2 || channel.type === 4,
-    // ) as Array<TextChannel | VoiceChannel>;
-
     const fetchedChannels = await guild.channels.fetch();
     const filterNeededChannels = [...fetchedChannels.values()].filter(
       (channel) => channel?.type === 0 || channel?.type === 2 || channel?.type === 4,

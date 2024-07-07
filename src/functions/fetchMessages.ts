@@ -37,6 +37,36 @@ interface FetchOptions {
  */
 async function getReactions(message: Message): Promise<string[]> {
   try {
+
+
+
+    const reactions1 = message.reactions.cache;
+    const reactionsArray1 = [...reactions1.values()];
+
+
+
+    for (const reaction of reactionsArray1) {
+      if(message.content==='Hate that'){
+        console.log('-------------------------------')
+
+        console.log(reaction.users)
+        console.log('*******************************')
+  
+        console.log(reaction.emoji)
+        console.log('*******************************')
+  
+        console.log(reaction.users.cache)
+  
+        console.log('-------------------------------')
+  
+      }
+
+    }
+
+
+
+
+
     const reactions = message.reactions.cache;
     const reactionsArray = [...reactions.values()];
     const reactionsArr = [];
@@ -266,7 +296,7 @@ export default async function handleFetchMessages(connection: Connection, platfo
     const guild = await guildService.getGuildFromDiscordAPI(platform.metadata?.id);
     if (guild) {
       if (platform.metadata?.selectedChannels && platform.metadata?.period) {
-        await platformService.updatePlatform({ _id: platform.id }, { metadata: { isInProgress: true } });
+        await platformService.updatePlatform({ _id: platform.id }, { metadata: { isInProgress: false } });
         for (let i = 0; i < platform.metadata?.selectedChannels.length; i++) {
           const channel = await channelService.getChannelFromDiscordAPI(guild, platform.metadata?.selectedChannels[i]);
           if (channel) {
