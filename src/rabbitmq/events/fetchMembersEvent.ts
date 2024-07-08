@@ -3,6 +3,7 @@ import { type HydratedDocument } from 'mongoose';
 import fetchMembers from '../../functions/fetchMembers';
 import fetchChannels from '../../functions/fetchChannels';
 import fetchRoles from '../../functions/fetchRoles';
+import guildMemberService from '../../database/services/guildMember.service';
 import { Event, MBConnection } from '@togethercrew.dev/tc-messagebroker';
 import parentLogger from '../../config/logger';
 import { platformService } from '../../database/services';
@@ -14,10 +15,12 @@ const logger = parentLogger.child({
 const fetchInitialData = async (platform: HydratedDocument<IPlatform>): Promise<void> => {
   try {
     const connection = await DatabaseManager.getInstance().getTenantDb(platform.metadata?.id);
+    console.log(await guildMemberService.getOldestGuildMember(connection, {}));
+
     await Promise.all([
       fetchMembers(connection, platform),
       fetchChannels(connection, platform),
-      fetchRoles(connection, platform)
+      fetchRoles(connection, platform),
     ]);
   } catch (error) {
     logger.error({ error }, 'fetchInitialData is failed');

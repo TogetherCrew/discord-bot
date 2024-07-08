@@ -26,7 +26,7 @@ const fetchMethod = async (msg: any): Promise<void> => {
       await Promise.all([
         fetchMembers(connection, platform),
         fetchChannels(connection, platform),
-        fetchRoles(connection, platform)
+        fetchRoles(connection, platform),
       ]);
     } else {
       addGuildExtraction(platform);

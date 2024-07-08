@@ -2,14 +2,7 @@
 /* eslint-disable no-unneeded-ternary */
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import fetch from 'node-fetch';
-import {
-  type Message,
-  TextChannel,
-  type User,
-  type Role,
-  ThreadChannel,
-  type Snowflake,
-} from 'discord.js';
+import { type Message, TextChannel, type User, type Role, ThreadChannel, type Snowflake } from 'discord.js';
 import { type IRawInfo, type IPlatform, type IDiscordUser } from '@togethercrew.dev/db';
 import { rawInfoService, platformService } from '../database/services';
 import { type Connection, type HydratedDocument } from 'mongoose';
@@ -56,7 +49,7 @@ async function getReactions(message: Message): Promise<string[]> {
         // Standard emoji: just encode the name
         encodedEmoji = encodeURIComponent(emoji.name);
       } else {
-        logger.error({ message_id: message.id,emoji }, 'Emoji name is null or undefined.');
+        logger.error({ message_id: message.id, emoji }, 'Emoji name is null or undefined.');
 
         continue;
       }
@@ -74,28 +67,33 @@ async function getReactions(message: Message): Promise<string[]> {
   }
 }
 
-
 /**
  * Fetches all users who reacted with a specific emoji on a message using pagination.
  * @param {string} channelId - The ID of the channel containing the message.
  * @param {string} messageId - The ID of the message containing the reactions.
  * @param {string} encodedEmoji - The URL-encoded emoji string.
  * @returns {Promise<{ id: string; username: string; discriminator: string; avatar: string | null }[]>} - A promise that resolves to an array of user objects. */
-async function fetchAllUsersForReaction(channelId: string, messageId: string, encodedEmoji: string): Promise<IDiscordUser[]> {
-  let users:IDiscordUser[] = [];
+async function fetchAllUsersForReaction(
+  channelId: string,
+  messageId: string,
+  encodedEmoji: string,
+): Promise<IDiscordUser[]> {
+  let users: IDiscordUser[] = [];
   let after = '';
   const limit = 100;
   let hasMore = true;
 
   while (hasMore) {
-    const url = `https://discord.com/api/v9/channels/${channelId}/messages/${messageId}/reactions/${encodedEmoji}?limit=${limit}${after ? `&after=${after}` : ''}`;
+    const url = `https://discord.com/api/v9/channels/${channelId}/messages/${messageId}/reactions/${encodedEmoji}?limit=${limit}${
+      after ? `&after=${after}` : ''
+    }`;
     const response = await fetch(url, {
       method: 'GET',
       headers: {
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         Authorization: `Bot ${config.discord.botToken}`,
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json',
+      },
     });
 
     if (response.ok) {
@@ -107,13 +105,12 @@ async function fetchAllUsersForReaction(channelId: string, messageId: string, en
         after = fetchedUsers[fetchedUsers.length - 1].id;
       }
     } else {
-      logger.error({ message_id: messageId,  error:await response.text() }, 'Error fetching users for reaction');
+      logger.error({ message_id: messageId, error: await response.text() }, 'Error fetching users for reaction');
       hasMore = false;
     }
   }
   return users;
 }
-
 
 // /**
 //  * Fetches reaction details from a message.
@@ -141,10 +138,6 @@ async function fetchAllUsersForReaction(channelId: string, messageId: string, en
 //     return [];
 //   }
 // }
-
-
-
-
 
 /**
  * Extracts necessary data from a given message.
@@ -369,4 +362,3 @@ export default async function handleFetchMessages(connection: Connection, platfo
     logger.error({ guild_id: platform.metadata?.id, error }, 'Failed to fetch messages');
   }
 }
-

@@ -215,4 +215,5 @@ export default {
   deleteGuildMembers,
   handelGuildMemberChanges,
   getNeededDateFromGuildMember,
+  getOldestGuildMember,
 };
