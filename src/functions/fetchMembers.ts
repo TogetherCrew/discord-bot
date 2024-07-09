@@ -19,6 +19,11 @@ const CHUNK_SIZE = 1000;
 async function fetchMembersInChunks(guild: Guild, connection: Connection): Promise<void> {
   let lastMemberId: Snowflake | undefined;
 
+  // TODO: fetch after latest stored guild member
+  // const latestGuildMember = await guildMemberService.getLatestGuildMember(connection,{})
+  // if(latestGuildMember !== null){
+  //   lastMemberId=latestGuildMember.discordId;
+  // }
   while (true) {
     const fetchedMembers = await guild.members.list({
       limit: CHUNK_SIZE,

@@ -348,7 +348,7 @@ export default async function handleFetchMessages(connection: Connection, platfo
     const guild = await guildService.getGuildFromDiscordAPI(platform.metadata?.id);
     if (guild) {
       if (platform.metadata?.selectedChannels && platform.metadata?.period) {
-        await platformService.updatePlatform({ _id: platform.id }, { metadata: { isInProgress: false } });
+        await platformService.updatePlatform({ _id: platform.id }, { metadata: { isInProgress: true } });
         for (let i = 0; i < platform.metadata?.selectedChannels.length; i++) {
           const channel = await channelService.getChannelFromDiscordAPI(guild, platform.metadata?.selectedChannels[i]);
           if (channel) {
