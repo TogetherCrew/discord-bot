@@ -46,7 +46,6 @@ async function getReactions(message: Message): Promise<string[]> {
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         encodedEmoji = encodeURIComponent(`${emoji.name}:${emoji.id}`);
       } else if (emoji.name) {
-        // Standard emoji: just encode the name
         encodedEmoji = encodeURIComponent(emoji.name);
       } else {
         logger.error({ message_id: message.id, emoji }, 'Emoji name is null or undefined.');
@@ -111,33 +110,6 @@ async function fetchAllUsersForReaction(
   }
   return users;
 }
-
-// /**
-//  * Fetches reaction details from a message.
-//  * @param {Message} message - The message object from which reactions are to be fetched.
-//  * @returns {Promise<string[]>} - A promise that resolves to an array of strings where each string is a comma-separated list of user IDs who reacted followed by the reaction emoji.
-//  */
-// async function getReactions(message: Message): Promise<string[]> {
-//   try {
-//     const reactions = message.reactions.cache;
-//     const reactionsArray = [...reactions.values()];
-//     const reactionsArr = [];
-
-//     for (const reaction of reactionsArray) {
-//       const emoji = reaction.emoji;
-//       const users: Collection<string, User> = await reaction.users.fetch();
-//       let usersString = users.map((user) => `${user.id}`).join(',');
-//       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-//       usersString += `,${emoji.name}`;
-//       reactionsArr.push(usersString);
-//     }
-
-//     return reactionsArr;
-//   } catch (err) {
-//     logger.error({ message, err }, 'Faild to get reactions');
-//     return [];
-//   }
-// }
 
 /**
  * Extracts necessary data from a given message.

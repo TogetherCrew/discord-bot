@@ -47,10 +47,10 @@ async function createGuildMembers(connection: Connection, guildMembers: IGuildMe
     });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    if (error.code === 11000) {
-      logger.warn({ database: connection.name }, 'Failed to create duplicate guild members');
-      return [];
-    }
+    // if (error.code === 11000) {
+    //   logger.warn({ database: connection.name }, 'Failed to create duplicate guild members');
+    //   return [];
+    // }
     // logger.error({ database: connection.name, error }, 'Failed to create guild members');
     return [];
   }
