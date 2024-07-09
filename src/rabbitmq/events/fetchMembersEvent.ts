@@ -14,9 +14,13 @@ const logger = parentLogger.child({
 const fetchInitialData = async (platform: HydratedDocument<IPlatform>): Promise<void> => {
   try {
     const connection = await DatabaseManager.getInstance().getTenantDb(platform.metadata?.id);
-    await fetchChannels(connection, platform);
-    await fetchRoles(connection, platform);
-    await fetchMembers(connection, platform);
+    await platformService.updatePlatform({ _id: platform.id }, { metadata: { isFetchingIntialData: true } });
+    await Promise.all([
+      fetchMembers(connection, platform),
+      fetchChannels(connection, platform),
+      fetchRoles(connection, platform),
+    ]);
+    await platformService.updatePlatform({ _id: platform.id }, { metadata: { isFetchingIntialData: false } });
   } catch (error) {
     logger.error({ error }, 'fetchInitialData is failed');
   }

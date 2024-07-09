@@ -18,21 +18,21 @@ const logger = parentLogger.child({ module: `app` });
 pyroscope();
 
 async function app(): Promise<void> {
+  await coreService.DiscordBotManager.initClient();
+  await coreService.DiscordBotManager.LoginClient();
+  await eventService.loadEvents();
+  await commandService.loadCommands();
+  await commandService.registerCommand();
   await connectToMongoDB();
   await connectToMB();
   await connectToRabbitMQ();
   server.listen(config.port, () => {
     logger.info(`Listening on ${config.port as string}`);
   });
-  await coreService.DiscordBotManager.initClient();
-  await coreService.DiscordBotManager.LoginClient();
-  await eventService.loadEvents();
-  await commandService.loadCommands();
-  await commandService.registerCommand();
   setupRabbitMQHandlers();
   addCronJob();
 }
 
 app().catch((error) => {
-  logger.fatal({ error }, 'Failed To start the application!');
+  logger.fatal({ error }, 'Failed To start the application!!');
 });

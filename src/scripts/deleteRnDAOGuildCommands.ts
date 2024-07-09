@@ -18,7 +18,6 @@ async function deleteRnDAOGuildCommands(): Promise<void> {
       await rest.delete(Routes.applicationGuildCommand(config.discord.clientId, '915914985140531240', command.id));
     });
   } catch (error) {
-    console.log(error);
     logger.error('Failed to delete RnDAO guild commands', error);
   }
 }

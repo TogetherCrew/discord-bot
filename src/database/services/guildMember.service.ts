@@ -204,6 +204,18 @@ function getNeededDateFromGuildMember(guildMember: GuildMember): IGuildMember {
   };
 }
 
+/**
+ * Retrieves the oldest guildMember object from the database.
+ * @param {Connection} connection - Mongoose connection object for the database.
+ * @param {object} filter - An object specifying the filter criteria to match the desired rawInfo entry.
+ * @returns {Promise<IRawInfo | null>} - A promise that resolves to the oldest rawInfo object for the channel, or null if not found.
+ */
+async function getLatestGuildMember(connection: Connection, filter: object): Promise<IGuildMember | null> {
+  return await connection.models.GuildMember.findOne(filter).sort({
+    _id: -1,
+  });
+}
+
 export default {
   createGuildMember,
   createGuildMembers,
@@ -215,4 +227,5 @@ export default {
   deleteGuildMembers,
   handelGuildMemberChanges,
   getNeededDateFromGuildMember,
+  getLatestGuildMember,
 };
