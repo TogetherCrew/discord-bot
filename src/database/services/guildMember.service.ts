@@ -216,7 +216,6 @@ async function getLatestGuildMember(connection: Connection, filter: object): Pro
   });
 }
 
-
 export default {
   createGuildMember,
   createGuildMembers,
@@ -228,5 +227,5 @@ export default {
   deleteGuildMembers,
   handelGuildMemberChanges,
   getNeededDateFromGuildMember,
-  getLatestGuildMember
+  getLatestGuildMember,
 };
