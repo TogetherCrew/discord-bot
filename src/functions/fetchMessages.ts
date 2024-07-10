@@ -48,7 +48,10 @@ async function getReactions(message: Message): Promise<string[]> {
       } else if (emoji.name) {
         encodedEmoji = encodeURIComponent(emoji.name);
       } else {
-        logger.error({ message_id: message.id, emoji }, 'Emoji name is null or undefined.');
+        logger.error(
+          { guild_id: message.guildId, channle_id: channelId, message_id: message.id, emoji },
+          'Emoji name is null or undefined.',
+        );
 
         continue;
       }
@@ -61,7 +64,7 @@ async function getReactions(message: Message): Promise<string[]> {
 
     return reactionsArr;
   } catch (error) {
-    logger.error({ message_id: message.id, error }, 'Failed to get reactions');
+    // logger.error({ message_id: message.id, error }, 'Failed to get reactions');
     return [];
   }
 }
@@ -71,7 +74,8 @@ async function getReactions(message: Message): Promise<string[]> {
  * @param {string} channelId - The ID of the channel containing the message.
  * @param {string} messageId - The ID of the message containing the reactions.
  * @param {string} encodedEmoji - The URL-encoded emoji string.
- * @returns {Promise<{ id: string; username: string; discriminator: string; avatar: string | null }[]>} - A promise that resolves to an array of user objects. */
+ * @returns {Promise<IDiscordUser[]>} - A promise that resolves to an array of user objects.
+ */
 async function fetchAllUsersForReaction(
   channelId: string,
   messageId: string,
@@ -103,8 +107,19 @@ async function fetchAllUsersForReaction(
       } else {
         after = fetchedUsers[fetchedUsers.length - 1].id;
       }
+    } else if (response.status === 429) {
+      const rateLimitInfo = await response.json();
+      const retryAfter = rateLimitInfo.retry_after * 1000;
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+      logger.warn(
+        { channel_id: channelId, message_id: messageId },
+        `Rate limited. Retrying after ${rateLimitInfo.retry_after} seconds.`,
+      );
+      await new Promise((resolve) => setTimeout(resolve, retryAfter));
+      continue;
     } else {
-      logger.error({ message_id: messageId, error: await response.text() }, 'Error fetching users for reaction');
+      const errorText = await response.text();
+      logger.error({ channelId, messageId, errorText }, 'Error fetching users for reaction');
       hasMore = false;
     }
   }
