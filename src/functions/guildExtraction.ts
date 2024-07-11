@@ -3,7 +3,6 @@ import { type IPlatform, DatabaseManager } from '@togethercrew.dev/db';
 import { platformService } from '../database/services';
 import fetchMessages from './fetchMessages';
 import parentLogger from '../config/logger';
-import { sagaService } from '../rabbitmq/services';
 
 const logger = parentLogger.child({ module: 'GuildExtraction' });
 /**
@@ -20,7 +19,6 @@ export default async function guildExtraction(platform: HydratedDocument<IPlatfo
       return;
     }
     await fetchMessages(connection, platform);
-    await sagaService.createAndStartDiscordScheduledJobsaga(platform.id);
   } catch (err) {
     logger.error({ guild_id: platform.metadata?.id, err }, 'Guild extraction CronJob failed for guild');
   }
