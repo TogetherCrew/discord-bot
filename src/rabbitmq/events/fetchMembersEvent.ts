@@ -28,7 +28,6 @@ const fetchInitialData = async (platform: HydratedDocument<IPlatform>): Promise<
 
 export async function handleFetchMembersEvent(msg: any): Promise<void> {
   try {
-    console.log(2222);
     logger.info({ msg, event: Event.DISCORD_BOT.FETCH_MEMBERS, sagaId: msg.content.uuid }, 'is running');
     if (msg === undefined || msg === null) return;
 
