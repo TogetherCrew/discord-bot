@@ -20,7 +20,10 @@
     "migrate:up": "migrate --migrations-dir=\"./lib/migrations/db\" up",
     "migrate:down": "migrate --migrations-dir=\"./lib/migrations/db\" down",
     "cleanupCompletedJobs": "node ./lib/scripts/cleanupCompletedJobs.js",
-    "deleteRnDAOGuildCommands": "node ./lib/scripts/deleteRnDAOGuildCommands.js"
+    "deleteRnDAOGuildCommands": "node ./lib/scripts/deleteRnDAOGuildCommands.js",
+    "fetchInitialData": "node ./lib/scripts/fetchInitialData.js"
+
+    
   },
   "repository": {
     "type": "git",
