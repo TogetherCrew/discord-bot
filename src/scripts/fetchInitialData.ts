@@ -36,6 +36,7 @@ async function fetchInitialData(guildId: string): Promise<void> {
   }
 }
 
-fetchInitialData('980858613587382322').catch((error) => {
-  logger.error('Unhandled exception in fetching 980858613587382322 guild', error);
+fetchInitialData('933959587462254612').catch((error) => {
+  logger.error('Unhandled exception in fetching 933959587462254612 guild', error);
 });
+

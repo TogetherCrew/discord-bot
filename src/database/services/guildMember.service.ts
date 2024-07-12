@@ -196,7 +196,7 @@ function getNeededDateFromGuildMember(guildMember: GuildMember): IGuildMember {
     avatar: guildMember.user.avatar,
     joinedAt: guildMember.joinedAt,
     // roles: guildMember.roles.cache.map((role) => role.id),
-    roles:[],
+    roles: [],
     discriminator: guildMember.user.discriminator,
     permissions: guildMember.permissions.bitfield.toString(),
     nickname: guildMember.nickname,
