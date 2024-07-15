@@ -113,6 +113,7 @@ async function fetchAllUsersForReaction(
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       logger.warn(
         { channel_id: channelId, message_id: messageId },
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         `Rate limited. Retrying after ${rateLimitInfo.retry_after} seconds.`,
       );
       await new Promise((resolve) => setTimeout(resolve, retryAfter));
@@ -334,10 +335,10 @@ export default async function handleFetchMessages(connection: Connection, platfo
   try {
     const guild = await guildService.getGuildFromDiscordAPI(platform.metadata?.id);
     if (guild) {
-      if (platform.metadata?.selectedChannels && platform.metadata?.period) {
+      if (platform.metadata?.resources && platform.metadata?.period) {
         await platformService.updatePlatform({ _id: platform.id }, { metadata: { isInProgress: true } });
-        for (let i = 0; i < platform.metadata?.selectedChannels.length; i++) {
-          const channel = await channelService.getChannelFromDiscordAPI(guild, platform.metadata?.selectedChannels[i]);
+        for (let i = 0; i < platform.metadata?.resources.length; i++) {
+          const channel = await channelService.getChannelFromDiscordAPI(guild, platform.metadata?.resources[i]);
           if (channel) {
             if (channel.type !== 0) continue;
             await handleFetchChannelMessages(connection, channel, platform.metadata?.period);

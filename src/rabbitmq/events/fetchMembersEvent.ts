@@ -13,7 +13,7 @@ const logger = parentLogger.child({
 
 const fetchInitialData = async (platform: HydratedDocument<IPlatform>): Promise<void> => {
   try {
-    const connection = await DatabaseManager.getInstance().getTenantDb(platform.metadata?.id);
+    const connection = await DatabaseManager.getInstance().getGuildDb(platform.metadata?.id);
     await platformService.updatePlatform({ _id: platform.id }, { metadata: { isFetchingInitialData: true } });
     await Promise.all([
       fetchMembers(connection, platform),

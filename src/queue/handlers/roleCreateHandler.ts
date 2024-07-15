@@ -8,7 +8,7 @@ const logger = parentLogger.child({ event: 'GuildRoleCreateHandler' });
 export default async function (guildId: Snowflake, dataToStore: IRole): Promise<void> {
   const logFields = { guild_id: guildId, role_id: dataToStore.roleId };
   // logger.info(logFields, 'event is running');
-  const connection = await DatabaseManager.getInstance().getTenantDb(guildId);
+  const connection = await DatabaseManager.getInstance().getGuildDb(guildId);
   try {
     const roleDoc = await roleService.updateRole(connection, { roleId: dataToStore.roleId }, dataToStore);
     if (roleDoc === null) {

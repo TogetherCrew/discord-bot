@@ -4,7 +4,7 @@ import { DatabaseManager } from '@togethercrew.dev/db';
 
 export const up = async (): Promise<void> => {
   await connectToMongoDB();
-  const connection = await DatabaseManager.getInstance().getTenantDb('681946187490000803');
+  const connection = await DatabaseManager.getInstance().getGuildDb('681946187490000803');
 
   await connection.createCollection('my_collection');
 };

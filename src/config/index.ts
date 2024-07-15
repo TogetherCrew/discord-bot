@@ -24,6 +24,9 @@ const envVarsSchema = Joi.object()
     LOG_LEVEL: Joi.string().required().description('Min allowed log level'),
     PORT: Joi.number().default(3000),
     PYROSCOPE_SERVER_ADDRESS: Joi.string(),
+    AIRFLOW_BASE_URL: Joi.string().required().description('Airflow base URL'),
+    AIRFLOW_USERNAME: Joi.string().required().description('Airflow username'),
+    AIRFLOW_PASSWORD: Joi.string().required().description('Airflow password'),
   })
   .unknown();
 
@@ -61,5 +64,10 @@ export default {
   },
   pyroscope: {
     address: envVars.PYROSCOPE_SERVER_ADDRESS,
+  },
+  airflow: {
+    baseURL: envVars.AIRFLOW_BASE_URL,
+    username: envVars.AIRFLOW_USERNAME,
+    password: envVars.AIRFLOW_PASSWORD,
   },
 };

@@ -21,7 +21,7 @@ const fetchMethod = async (msg: any): Promise<void> => {
 
   if (platform !== null) {
     const isPlatformCreated = saga.data.created;
-    const connection = await DatabaseManager.getInstance().getTenantDb(platform.metadata?.id);
+    const connection = await DatabaseManager.getInstance().getGuildDb(platform.metadata?.id);
     if (isPlatformCreated === true) {
       await platformService.updatePlatform({ _id: platform.id }, { metadata: { isFetchingInitialData: true } });
       await Promise.all([

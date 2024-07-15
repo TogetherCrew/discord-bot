@@ -2,7 +2,6 @@ import { platformService } from '../database/services';
 import { addGuildExtraction } from '../queue/queues/guildExtraction';
 import { PlatformNames } from '@togethercrew.dev/db';
 import parentLogger from '../config/logger';
-import { sagaService } from '../rabbitmq/services';
 
 const logger = parentLogger.child({ event: 'CronJob' });
 
@@ -16,7 +15,6 @@ export default async function cronJob(): Promise<void> {
     try {
       logger.info({ platform_Id: platforms[i].metadata?.id }, 'is running cronJob for platform');
       addGuildExtraction(platforms[i]);
-      await sagaService.createAndStartDiscordScheduledJobsaga(platforms[i].id);
       logger.info({ platform_Id: platforms[i].metadata?.id }, 'cronJob is done for platform');
     } catch (err) {
       logger.error({ platform_Id: platforms[i].metadata?.id, err }, 'CronJob Failed for platform');
