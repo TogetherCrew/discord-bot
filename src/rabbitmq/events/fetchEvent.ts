@@ -29,7 +29,7 @@ const fetchMethod = async (msg: any): Promise<void> => {
       ]);
       await platformService.updatePlatform({ _id: platform.id }, { metadata: { isFetchingInitialData: false } });
     } else {
-      addGuildExtraction(platform);
+      addGuildExtraction(platform, true);
     }
   }
   logger.info({ msg }, 'fetchMethod is done');

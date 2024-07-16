@@ -87,8 +87,9 @@ async function fetchAllUsersForReaction(
   let hasMore = true;
 
   while (hasMore) {
-    const url = `https://discord.com/api/v9/channels/${channelId}/messages/${messageId}/reactions/${encodedEmoji}?limit=${limit}${after ? `&after=${after}` : ''
-      }`;
+    const url = `https://discord.com/api/v9/channels/${channelId}/messages/${messageId}/reactions/${encodedEmoji}?limit=${limit}${
+      after ? `&after=${after}` : ''
+    }`;
     const response = await fetch(url, {
       method: 'GET',
       headers: {
@@ -234,21 +235,21 @@ async function fetchMessages(
         }
         channel instanceof ThreadChannel
           ? await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()], {
-            threadId: channel.id,
-            threadName: channel.name,
-            channelId: channel.parent?.id,
-            channelName: channel.parent?.name,
-          })
+              threadId: channel.id,
+              threadName: channel.name,
+              channelId: channel.parent?.id,
+              channelName: channel.parent?.name,
+            })
           : await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()]);
         break;
       }
       channel instanceof ThreadChannel
         ? await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()], {
-          threadId: channel.id,
-          threadName: channel.name,
-          channelId: channel.parent?.id,
-          channelName: channel.parent?.name,
-        })
+            threadId: channel.id,
+            threadName: channel.name,
+            channelId: channel.parent?.id,
+            channelName: channel.parent?.name,
+          })
         : await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()]);
       await rawInfoService.createRawInfos(connection, messagesToStore);
       options[fetchDirection] = boundaryMessage.id;
