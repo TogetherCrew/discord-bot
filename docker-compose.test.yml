@@ -28,6 +28,9 @@ services:
       - RABBIT_PASSWORD=pass
       - LOG_LEVEL=info
       - PYROSCOPE_SERVER_ADDRESS=http://pyroscope:4040
+      - AIRFLOW_BASE_URL=l
+      - AIRFLOW_USERNAME=l
+      - AIRFLOW_PASSWORD=l
     volumes:
       - ./coverage:/project/coverage
     depends_on:
