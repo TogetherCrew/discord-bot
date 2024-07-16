@@ -13,13 +13,13 @@ export default async function (guildId: Snowflake, channelId: Snowflake): Promis
     const channelDoc = await channelService.getChannel(connection, { channelId });
     channelDoc?.softDelete();
     const platformDoc = await platformService.getPlatform({ 'metadata.id': guildId });
-    const updatedSelecetdChannels = platformDoc?.metadata?.resources?.filter(
+    const updatedSelecetdChannels = platformDoc?.metadata?.selectedChannels?.filter(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (selectedChannel: any) => selectedChannel.channelId !== channelId,
     );
     await platformService.updatePlatform(
       { 'metadata.id': guildId },
-      { metadata: { resources: updatedSelecetdChannels } },
+      { metadata: { selectedChannels: updatedSelecetdChannels } },
     );
     // logger.info(logFields, 'event is done');
   } catch (err) {

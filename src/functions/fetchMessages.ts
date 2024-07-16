@@ -87,9 +87,8 @@ async function fetchAllUsersForReaction(
   let hasMore = true;
 
   while (hasMore) {
-    const url = `https://discord.com/api/v9/channels/${channelId}/messages/${messageId}/reactions/${encodedEmoji}?limit=${limit}${
-      after ? `&after=${after}` : ''
-    }`;
+    const url = `https://discord.com/api/v9/channels/${channelId}/messages/${messageId}/reactions/${encodedEmoji}?limit=${limit}${after ? `&after=${after}` : ''
+      }`;
     const response = await fetch(url, {
       method: 'GET',
       headers: {
@@ -235,21 +234,21 @@ async function fetchMessages(
         }
         channel instanceof ThreadChannel
           ? await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()], {
-              threadId: channel.id,
-              threadName: channel.name,
-              channelId: channel.parent?.id,
-              channelName: channel.parent?.name,
-            })
-          : await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()]);
-        break;
-      }
-      channel instanceof ThreadChannel
-        ? await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()], {
             threadId: channel.id,
             threadName: channel.name,
             channelId: channel.parent?.id,
             channelName: channel.parent?.name,
           })
+          : await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()]);
+        break;
+      }
+      channel instanceof ThreadChannel
+        ? await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()], {
+          threadId: channel.id,
+          threadName: channel.name,
+          channelId: channel.parent?.id,
+          channelName: channel.parent?.name,
+        })
         : await pushMessagesToArray(connection, messagesToStore, [...fetchedMessages.values()]);
       await rawInfoService.createRawInfos(connection, messagesToStore);
       options[fetchDirection] = boundaryMessage.id;
@@ -335,10 +334,10 @@ export default async function handleFetchMessages(connection: Connection, platfo
   try {
     const guild = await guildService.getGuildFromDiscordAPI(platform.metadata?.id);
     if (guild) {
-      if (platform.metadata?.resources && platform.metadata?.period) {
+      if (platform.metadata?.selectedChannels && platform.metadata?.period) {
         await platformService.updatePlatform({ _id: platform.id }, { metadata: { isInProgress: true } });
-        for (let i = 0; i < platform.metadata?.resources.length; i++) {
-          const channel = await channelService.getChannelFromDiscordAPI(guild, platform.metadata?.resources[i]);
+        for (let i = 0; i < platform.metadata?.selectedChannels.length; i++) {
+          const channel = await channelService.getChannelFromDiscordAPI(guild, platform.metadata?.selectedChannels[i]);
           if (channel) {
             if (channel.type !== 0) continue;
             await handleFetchChannelMessages(connection, channel, platform.metadata?.period);

@@ -45,6 +45,8 @@ async function triggerDag(params: DagConifg): Promise<any> {
             },
         });
 
+
+
         if (!response.ok) {
             const error = await response.json();
             logger.error({ error, body }, 'Failed to trigger DAG run');

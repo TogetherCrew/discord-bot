@@ -14,10 +14,8 @@ const fetchMethod = async (msg: any): Promise<void> => {
   if (msg === undefined || msg === null) return;
   const { content } = msg;
   const saga = await MBConnection.models.Saga.findOne({ sagaId: content.uuid });
-  logger.info({ saga: saga.data }, 'the saga info');
   const platformId = saga.data.platformId;
   const platform = await platformService.getPlatform({ _id: platformId });
-  logger.info({ platformId, platform }, 'platform info');
 
   if (platform !== null) {
     const isPlatformCreated = saga.data.created;
