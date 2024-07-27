@@ -114,7 +114,7 @@ async function fetchAllUsersForReaction(
       logger.warn(
         { channel_id: channelId, message_id: messageId },
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-        `Rate limited. Retrying after ${rateLimitInfo.retry_after} seconds.`,
+        `Rate limited for emoji: ${encodedEmoji}. Retrying after ${rateLimitInfo.retry_after} seconds.`,
       );
       await new Promise((resolve) => setTimeout(resolve, retryAfter));
       continue;
