@@ -4,10 +4,10 @@ import { type IPlatform } from '@togethercrew.dev/db';
 
 export const guildExtractionQueue = QueueFactory.createQueue('guildExtractionQueue');
 
-export const addGuildExtraction = (platform: HydratedDocument<IPlatform>): void => {
+export const addGuildExtraction = (platform: HydratedDocument<IPlatform>, recompute: boolean): void => {
   void guildExtractionQueue.add(
     'guildExtractionQueue',
-    { platform },
+    { platform, recompute },
     {
       removeOnComplete: {
         age: 7 * 24 * 3600, // keep up to 7 days

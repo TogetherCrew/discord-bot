@@ -8,7 +8,7 @@ const logger = parentLogger.child({ event: 'ChannelDeleteHandler' });
 export default async function (guildId: Snowflake, channelId: Snowflake): Promise<void> {
   const logFields = { guild_id: guildId, channel_id: channelId };
   // logger.info(logFields, 'event is running');
-  const connection = await DatabaseManager.getInstance().getTenantDb(guildId);
+  const connection = await DatabaseManager.getInstance().getGuildDb(guildId);
   try {
     const channelDoc = await channelService.getChannel(connection, { channelId });
     channelDoc?.softDelete();

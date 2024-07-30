@@ -8,7 +8,7 @@ const logger = parentLogger.child({ event: 'GuildMemberUpdateHandler' });
 export default async function (guildId: Snowflake, dataToStore: IGuildMember): Promise<void> {
   const logFields = { guild_id: guildId, guild_member_id: dataToStore.discordId };
   // logger.info(logFields, 'event is running');
-  const connection = await DatabaseManager.getInstance().getTenantDb(guildId);
+  const connection = await DatabaseManager.getInstance().getGuildDb(guildId);
   try {
     const guildMemberDoc = await guildMemberService.updateGuildMember(
       connection,

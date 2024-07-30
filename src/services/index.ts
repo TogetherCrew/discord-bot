@@ -7,6 +7,7 @@ import interactionService from './interaction.service';
 import guildService from './guild.service';
 import platformService from './platform.service';
 import moduleService from './module.service';
+import airflowService from './airflow.service';
 export {
   channelService,
   userService,
@@ -17,4 +18,5 @@ export {
   guildService,
   platformService,
   moduleService,
+  airflowService,
 };
