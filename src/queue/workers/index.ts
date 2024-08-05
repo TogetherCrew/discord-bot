@@ -4,6 +4,7 @@ import parentLogger from '../../config/logger';
 import { airflowService } from '../../services';
 import { type HydratedDocument } from 'mongoose';
 import { type IPlatform } from '@togethercrew.dev/db';
+import { error } from 'console';
 
 const logger = parentLogger.child({ module: 'Queue' });
 
@@ -16,15 +17,15 @@ export class WorkerFactory {
         try {
           const platform = job.data.platform as HydratedDocument<IPlatform>;
           const recompute = job.data.recompute;
-          logger.info({ jobId: job.id, platform, recompute }, 'Guild extraction job completed');
           const res = await airflowService.triggerDag({
             platform_id: platform.id,
             guild_id: platform.metadata?.id,
             period: platform.metadata?.period,
             recompute,
           });
-          console.log(res);
+          logger.info({ jobId: job.id, res, recompute, platform }, 'Guild extraction job completed');
         } catch (err) {
+          console.log(error);
           logger.error({ job, err }, 'triggerDag failed');
         }
       } else {
