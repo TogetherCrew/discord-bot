@@ -51,7 +51,7 @@ export default {
         data: { flags: 64 },
       });
     } catch (error) {
-      logger.error({ guildId: interaction.guildId, member: interaction.member, error }, 'is failed');
+      logger.error(error, 'is failed');
     }
   },
 };

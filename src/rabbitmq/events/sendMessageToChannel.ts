@@ -50,14 +50,6 @@ export async function handleSendMessageToChannel(msg: any): Promise<void> {
       'is done',
     );
   } catch (error) {
-    logger.error(
-      {
-        msg,
-        event: Event.DISCORD_BOT.SEND_MESSAGE_TO_CHANNEL,
-        sagaId: msg.content.uuid,
-        error,
-      },
-      'is failed',
-    );
+    logger.error(error, 'is failed');
   }
 }

@@ -21,6 +21,7 @@ export async function handleSendMessageEvent(msg: any): Promise<void> {
     const useFallback = saga.data.useFallback;
     const info = saga.data.info;
 
+    logger.info({ info, useFallback, platformId }, 'debug the announcement');
     if (Array.isArray(info)) {
       if (platform !== null) {
         await saga.next(async () => {
@@ -50,6 +51,6 @@ export async function handleSendMessageEvent(msg: any): Promise<void> {
     }
     logger.info({ msg, event: Event.DISCORD_BOT.SEND_MESSAGE, sagaId: msg.content.uuid }, 'is done');
   } catch (error) {
-    logger.error({ msg, event: Event.DISCORD_BOT.SEND_MESSAGE, sagaId: msg.content.uuid, error }, 'is failed');
+    logger.error(error, 'is failed');
   }
 }
