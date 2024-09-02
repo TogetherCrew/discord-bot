@@ -43,14 +43,7 @@ async function createInteractionResponse(
       throw new Error();
     }
   } catch (error) {
-    logger.error(
-      {
-        interaction_id: interaction.id,
-        interaction_token: interaction.token,
-        error,
-      },
-      'Failed to send interaction response',
-    );
+    logger.error(error, 'Failed to send interaction response');
   }
 }
 
@@ -84,14 +77,7 @@ async function getOriginalInteractionResponse(interaction: ChatInputCommandInter
       throw new Error(await response.json());
     }
   } catch (error) {
-    logger.error(
-      {
-        application_id: interaction.applicationId,
-        interaction_token: interaction.token,
-        error,
-      },
-      '100',
-    );
+    logger.error(error, 'Failed to get original interaction response');
   }
 }
 
@@ -129,14 +115,7 @@ async function editOriginalInteractionResponse(
       throw new Error(await response.json());
     }
   } catch (error) {
-    logger.error(
-      {
-        application_id: interaction.applicationId,
-        interaction_token: interaction.token,
-        error,
-      },
-      '100',
-    );
+    logger.error(error, 'Failed to edit original interaction response');
   }
 }
 
@@ -168,14 +147,7 @@ async function deleteOriginalInteractionResponse(interaction: ChatInputCommandIn
       throw new Error(await response.json());
     }
   } catch (error) {
-    logger.error(
-      {
-        application_id: interaction.applicationId,
-        interaction_token: interaction.token,
-        error,
-      },
-      '100',
-    );
+    logger.error(error, 'Failed to delete original interaction response');
   }
 }
 
@@ -207,14 +179,7 @@ async function createFollowUpMessage(interaction: ChatInputCommandInteraction_br
       throw new Error(await response.json());
     }
   } catch (error) {
-    logger.error(
-      {
-        interaction_id: interaction.id,
-        interaction_token: interaction.token,
-        error,
-      },
-      'Failed to create followip message',
-    );
+    logger.error(error, 'Failed to create follow up message');
   }
 }
 
