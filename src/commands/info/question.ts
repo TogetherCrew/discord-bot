@@ -18,6 +18,7 @@ export default {
     ),
 
   async execute(interaction: ChatInputCommandInteraction_broker) {
+    logger.info({ interaction_id: interaction.id, user: interaction.user }, 'question command started');
     try {
       const platform = await platformService.getPlatformByFilter({
         name: 'discord',
@@ -50,8 +51,17 @@ export default {
         type: 5,
         data: { flags: 64 },
       });
+      logger.info({ interaction_id: interaction.id, user: interaction.user }, 'question command ended');
     } catch (error) {
       logger.error(error, 'is failed');
+      await interactionService.createInteractionResponse(interaction, {
+        type: 4,
+        data: {
+          content:
+            "Sorry, we couldn't process your request at the moment. Please report this issue to the TogetherCrew development team. Thank you for your patience!",
+          flags: 64,
+        },
+      });
     }
   },
 };
