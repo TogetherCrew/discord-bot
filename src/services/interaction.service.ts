@@ -81,7 +81,10 @@ async function getOriginalInteractionResponse(interaction: ChatInputCommandInter
     }
   } catch (error) {
     logger.error(error, 'Failed to get original interaction response');
-    logger.error({ interaction_id: interaction.id, user: interaction.user }, 'Failed to send interaction response');
+    logger.error(
+      { interaction_id: interaction.id, user: interaction.user },
+      'Failed to get original interaction response',
+    );
   }
 }
 
@@ -121,7 +124,10 @@ async function editOriginalInteractionResponse(
     }
   } catch (error) {
     logger.error(error, 'Failed to edit original interaction response');
-    logger.error({ interaction_id: interaction.id, user: interaction.user }, 'Failed to send interaction response');
+    logger.error(
+      { interaction_id: interaction.id, user: interaction.user },
+      'Failed to edit original interaction response',
+    );
   }
 }
 
@@ -155,7 +161,10 @@ async function deleteOriginalInteractionResponse(interaction: ChatInputCommandIn
     }
   } catch (error) {
     logger.error(error, 'Failed to delete original interaction response');
-    logger.error({ interaction_id: interaction.id, user: interaction.user }, 'Failed to send interaction response');
+    logger.error(
+      { interaction_id: interaction.id, user: interaction.user },
+      'Failed to delete original interaction response',
+    );
   }
 }
 
@@ -189,7 +198,7 @@ async function createFollowUpMessage(interaction: ChatInputCommandInteraction_br
     }
   } catch (error) {
     logger.error(error, 'Failed to create follow up message');
-    logger.error({ interaction_id: interaction.id, user: interaction.user }, 'Failed to send interaction response');
+    logger.error({ interaction_id: interaction.id, user: interaction.user }, 'Failed to create follow up message');
   }
 }
 
