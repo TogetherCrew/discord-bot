@@ -40,10 +40,12 @@ async function createInteractionResponse(
       },
     );
     if (!response.ok) {
-      throw new Error();
+      const errorResponse = await response.text();
+      throw new Error(errorResponse);
     }
   } catch (error) {
     logger.error(error, 'Failed to send interaction response');
+    logger.error({ interaction_id: interaction.id, user: interaction.user }, 'Failed to send interaction response');
   }
 }
 
@@ -74,10 +76,12 @@ async function getOriginalInteractionResponse(interaction: ChatInputCommandInter
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(await response.json());
+      const errorResponse = await response.text();
+      throw new Error(errorResponse);
     }
   } catch (error) {
     logger.error(error, 'Failed to get original interaction response');
+    logger.error({ interaction_id: interaction.id, user: interaction.user }, 'Failed to send interaction response');
   }
 }
 
@@ -112,10 +116,12 @@ async function editOriginalInteractionResponse(
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(await response.json());
+      const errorResponse = await response.text();
+      throw new Error(errorResponse);
     }
   } catch (error) {
     logger.error(error, 'Failed to edit original interaction response');
+    logger.error({ interaction_id: interaction.id, user: interaction.user }, 'Failed to send interaction response');
   }
 }
 
@@ -144,10 +150,12 @@ async function deleteOriginalInteractionResponse(interaction: ChatInputCommandIn
       },
     );
     if (!response.ok) {
-      throw new Error(await response.json());
+      const errorResponse = await response.text();
+      throw new Error(errorResponse);
     }
   } catch (error) {
     logger.error(error, 'Failed to delete original interaction response');
+    logger.error({ interaction_id: interaction.id, user: interaction.user }, 'Failed to send interaction response');
   }
 }
 
@@ -176,10 +184,12 @@ async function createFollowUpMessage(interaction: ChatInputCommandInteraction_br
     if (response.ok) {
       return await response.json();
     } else {
-      throw new Error(await response.json());
+      const errorResponse = await response.text();
+      throw new Error(errorResponse);
     }
   } catch (error) {
     logger.error(error, 'Failed to create follow up message');
+    logger.error({ interaction_id: interaction.id, user: interaction.user }, 'Failed to send interaction response');
   }
 }
 

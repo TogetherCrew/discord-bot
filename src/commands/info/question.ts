@@ -53,7 +53,8 @@ export default {
       });
       logger.info({ interaction_id: interaction.id, user: interaction.user }, 'question command ended');
     } catch (error) {
-      logger.error(error, 'is failed');
+      logger.error(error, 'question command is failed');
+      logger.error({ interaction_id: interaction.id, user: interaction.user }, 'question command is failed');
       await interactionService.createInteractionResponse(interaction, {
         type: 4,
         data: {
