@@ -22,8 +22,6 @@
     "cleanupCompletedJobs": "node ./lib/scripts/cleanupCompletedJobs.js",
     "deleteRnDAOGuildCommands": "node ./lib/scripts/deleteRnDAOGuildCommands.js",
     "fetchInitialData": "node ./lib/scripts/fetchInitialData.js"
-
-    
   },
   "repository": {
     "type": "git",
@@ -53,6 +51,7 @@
     "mongoose": "^6.11.1",
     "node-fetch": "^2.6.7",
     "npm": "^10.4.0",
+    "perf_hooks": "^0.0.1",
     "pino": "^8.18.0",
     "redis": "^4.6.6"
   },
