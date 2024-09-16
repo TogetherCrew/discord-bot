@@ -6,6 +6,7 @@ import RabbitMQ, { Event, Queue as RabbitMQQueue } from '@togethercrew.dev/tc-me
 import { type ChatInputCommandInteraction_broker } from '../../interfaces/Hivemind.interface';
 import { handleBigInts, removeCircularReferences } from '../../utils/obj';
 import parentLogger from '../../config/logger';
+import { performance } from 'perf_hooks';
 
 const logger = parentLogger.child({ command: 'question' });
 
@@ -18,12 +19,21 @@ export default {
     ),
 
   async execute(interaction: ChatInputCommandInteraction_broker) {
+    const start = performance.now(); // Start high-resolution timer
     logger.info({ interaction_id: interaction.id, user: interaction.user }, 'question command started');
+
     try {
+      // Platform fetch stage
+      const stage1Start = performance.now(); // Start time for platform check
       const platform = await platformService.getPlatformByFilter({
         name: 'discord',
         'metadata.id': interaction.guildId,
       });
+      const stage1End = performance.now();
+      logger.info({ interaction_id: interaction.id }, `Platform fetch took ${stage1End - stage1Start} ms`);
+
+      // Hivemind check stage
+      const stage2Start = performance.now(); // Start time for Hivemind check
       const hivemindDiscordPlatform = await moduleService.getModuleByFilter({
         'options.platforms': {
           $elemMatch: {
@@ -32,8 +42,13 @@ export default {
           },
         },
       });
+      const stage2End = performance.now();
+      logger.info({ interaction_id: interaction.id }, `Hivemind check took ${stage2End - stage2Start} ms`);
+
+      // Hivemind not found, return response
       if (!hivemindDiscordPlatform) {
-        return await interactionService.createInteractionResponse(interaction, {
+        const stage3Start = performance.now(); // Start time for interaction response
+        await interactionService.createInteractionResponse(interaction, {
           type: 4,
           data: {
             content:
@@ -41,20 +56,33 @@ export default {
             flags: 64,
           },
         });
+        const stage4End = performance.now();
+        logger.info({ interaction_id: interaction.id }, `Response creation took ${stage4End - stage3Start} ms`);
+        return;
       }
-      const serializedInteraction = interactionService.constructSerializableInteraction(interaction);
-      const processedInteraction = handleBigInts(serializedInteraction);
-      const cleanInteraction = removeCircularReferences(processedInteraction); // Pass processedInteraction here
-      const serializedData = JSON.stringify(cleanInteraction, null, 2);
-      RabbitMQ.publish(RabbitMQQueue.HIVEMIND, Event.HIVEMIND.INTERACTION_CREATED, { interaction: serializedData });
+
+      const stage4Start = performance.now(); // Start time for deferred interaction response
       await interactionService.createInteractionResponse(interaction, {
         type: 5,
         data: { flags: 64 },
       });
-      logger.info({ interaction_id: interaction.id, user: interaction.user }, 'question command ended');
+      const stage4End = performance.now();
+      logger.info({ interaction_id: interaction.id }, `Deferred response took ${stage4End - stage4Start} ms`);
+
+      // Interaction processing stage
+      const stage5Start = performance.now(); // Start time for interaction processing
+      const serializedInteraction = interactionService.constructSerializableInteraction(interaction);
+      const processedInteraction = handleBigInts(serializedInteraction);
+      const cleanInteraction = removeCircularReferences(processedInteraction);
+      const serializedData = JSON.stringify(cleanInteraction, null, 2);
+      RabbitMQ.publish(RabbitMQQueue.HIVEMIND, Event.HIVEMIND.INTERACTION_CREATED, { interaction: serializedData });
+      const stage5End = performance.now();
+      logger.info({ interaction_id: interaction.id }, `Interaction processing took ${stage5End - stage5Start} ms`);
+
+      logger.info({ interaction_id: interaction.id, user: interaction.user }, `question command ended`);
+      logger.info(`Total execution time: ${performance.now() - start} ms`);
     } catch (error) {
-      logger.error(error, 'question command is failed');
-      logger.error({ interaction_id: interaction.id, user: interaction.user }, 'question command is failed');
+      logger.error(error, 'question command failed');
       await interactionService.createInteractionResponse(interaction, {
         type: 4,
         data: {
@@ -63,6 +91,7 @@ export default {
           flags: 64,
         },
       });
+      logger.info(`Error handling time: ${performance.now() - start} ms`);
     }
   },
 };
