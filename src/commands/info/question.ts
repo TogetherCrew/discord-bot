@@ -7,6 +7,7 @@ import { type ChatInputCommandInteraction_broker } from '../../interfaces/Hivemi
 import { handleBigInts, removeCircularReferences } from '../../utils/obj';
 import parentLogger from '../../config/logger';
 import { performance } from 'perf_hooks';
+import { ModuleNames } from '@togethercrew.dev/db';
 
 const logger = parentLogger.child({ command: 'question' });
 
@@ -23,18 +24,27 @@ export default {
     logger.info({ interaction_id: interaction.id, user: interaction.user }, 'question command started');
 
     try {
+      const stage1Start = performance.now(); // Start time for deferred interaction response
+      await interactionService.createInteractionResponse(interaction, {
+        type: 5,
+        data: { flags: 64 },
+      });
+      const stage1End = performance.now();
+      logger.info({ interaction_id: interaction.id }, `Deferred response took ${stage1End - stage1Start} ms`);
+
       // Platform fetch stage
-      const stage1Start = performance.now(); // Start time for platform check
+      const stage2Start = performance.now(); // Start time for platform check
       const platform = await platformService.getPlatformByFilter({
         name: 'discord',
         'metadata.id': interaction.guildId,
       });
-      const stage1End = performance.now();
-      logger.info({ interaction_id: interaction.id }, `Platform fetch took ${stage1End - stage1Start} ms`);
+      const stage2End = performance.now();
+      logger.info({ interaction_id: interaction.id }, `Platform fetch took ${stage2Start - stage2End} ms`);
 
       // Hivemind check stage
-      const stage2Start = performance.now(); // Start time for Hivemind check
+      const stage3Start = performance.now(); // Start time for Hivemind check
       const hivemindDiscordPlatform = await moduleService.getModuleByFilter({
+        name: ModuleNames.Hivemind,
         'options.platforms': {
           $elemMatch: {
             name: 'discord',
@@ -42,32 +52,37 @@ export default {
           },
         },
       });
-      const stage2End = performance.now();
-      logger.info({ interaction_id: interaction.id }, `Hivemind check took ${stage2End - stage2Start} ms`);
+      const stage3End = performance.now();
+      logger.info({ interaction_id: interaction.id }, `Hivemind check took ${stage3End - stage3Start} ms`);
 
+      console.log(hivemindDiscordPlatform, platform);
       // Hivemind not found, return response
       if (!hivemindDiscordPlatform) {
-        const stage3Start = performance.now(); // Start time for interaction response
-        await interactionService.createInteractionResponse(interaction, {
-          type: 4,
-          data: {
-            content:
-              'The **/question** command uses TogetherCrew Hivemind AI to help answer questions about your community.\nTo enable this feature, ask your community manager to configure the Hivemind module on [togethercrew app](https://app.togethercrew.com).\n**Note**: once configured, it can take up to 24 hours for Hivemind to start working.',
-            flags: 64,
-          },
+        const stage4Start = performance.now(); // Start time for interaction response
+        // await interactionService.createInteractionResponse(interaction, {
+        //   type: 4,
+        //   data: {
+        //     content:
+        //       'The **/question** command uses TogetherCrew Hivemind AI to help answer questions about your community.\nTo enable this feature, ask your community manager to configure the Hivemind module on [togethercrew app](https://app.togethercrew.com).\n**Note**: once configured, it can take up to 24 hours for Hivemind to start working.',
+        //     flags: 64,
+        //   },
+        // });
+        await interactionService.editOriginalInteractionResponse(interaction, {
+          content:
+            'The **/question** command uses TogetherCrew Hivemind AI to help answer questions about your community.\nTo enable this feature, ask your community manager to configure the Hivemind module on [togethercrew app](https://app.togethercrew.com).\n**Note**: once configured, it can take up to 24 hours for Hivemind to start working.',
         });
         const stage4End = performance.now();
-        logger.info({ interaction_id: interaction.id }, `Response creation took ${stage4End - stage3Start} ms`);
+        logger.info({ interaction_id: interaction.id }, `Response creation took ${stage4End - stage4Start} ms`);
         return;
       }
 
-      const stage4Start = performance.now(); // Start time for deferred interaction response
-      await interactionService.createInteractionResponse(interaction, {
-        type: 5,
-        data: { flags: 64 },
-      });
-      const stage4End = performance.now();
-      logger.info({ interaction_id: interaction.id }, `Deferred response took ${stage4End - stage4Start} ms`);
+      // const stage4Start = performance.now(); // Start time for deferred interaction response
+      // await interactionService.createInteractionResponse(interaction, {
+      //   type: 5,
+      //   data: { flags: 64 },
+      // });
+      // const stage4End = performance.now();
+      // logger.info({ interaction_id: interaction.id }, `Deferred response took ${stage4End - stage4Start} ms`);
 
       // Interaction processing stage
       const stage5Start = performance.now(); // Start time for interaction processing
