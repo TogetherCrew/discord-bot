@@ -1,0 +1,50 @@
+# .github/workflows/bot-ci.yml
+
+name: Bot CI Pipeline
+
+on:
+  push:
+    paths:
+      - "bot/**"
+  pull_request:
+    paths:
+      - "bot/**"
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: super-linter/super-linter@v5.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TYPESCRIPT_DEFAULT_STYLE: prettier
+          VALIDATE_DOCKERFILE_HADOLINT: false
+          VALIDATE_JSCPD: false
+          VALIDATE_PYTHON_FLAKE8: false
+          VALIDATE_PYTHON_MYPY: false
+
+    test:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v4
+        - uses: actions/setup-node@v3
+          with:
+            node-version: 20
+            cache: "npm"
+        - run: npm install --force
+        - run: npm run test
+        - uses: paambaati/codeclimate-action@v5.0.0
+          env:
+            CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+          with:
+            coverageCommand: npm run test:cov
+
+  build-push:
+    needs: [lint, test]
+    uses: ./.github/workflows/build-push.yml@main
+    with:
+      app_name: "bot"
+      context: "./bot"
+      dockerfile: "./bot/Dockerfile"

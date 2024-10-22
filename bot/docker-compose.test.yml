@@ -1,0 +1,50 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+      target: test
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=test
+      - PORT=3000
+      - DB_HOST=mongo
+      - DB_PORT=27017
+      - DB_USER=root
+      - DB_PASSWORD=pass
+      - DB_NAME=RnDAO
+      - DISCORD_CLIENT_ID=1
+      - DISCORD_CLIENT_SECRET=1
+      - SENTRY_DSN=1
+      - SENTRY_ENV=test
+      - DISCORD_BOT_TOKEN=1
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=
+      - RABBIT_HOST=localhost
+      - RABBIT_PORT=5672
+      - RABBIT_USER=root
+      - RABBIT_PASSWORD=pass
+      - LOG_LEVEL=info
+      - PYROSCOPE_SERVER_ADDRESS=http://pyroscope:4040
+      - AIRFLOW_BASE_URL=l
+      - AIRFLOW_USERNAME=l
+      - AIRFLOW_PASSWORD=l
+    volumes:
+      - ./coverage:/project/coverage
+    depends_on:
+      mongo:
+        condition: service_healthy
+  mongo:
+    image: "mongo:5.0.10"
+    environment:
+      - MONGO_INITDB_DATABASE=RnDAO
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=pass
+    healthcheck:
+      test: echo 'db.stats().ok' | mongosh localhost:27017/test --quiet
+      interval: 60s
+      timeout: 10s
+      retries: 2
+      start_period: 40s
