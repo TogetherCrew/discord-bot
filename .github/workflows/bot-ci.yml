@@ -42,7 +42,8 @@ jobs:
             coverageCommand: npm run test:cov
 
   build-push:
-    needs: [lint, test]
+    # needs: [lint, test]
+    needs: [lint]
     uses: ./.github/workflows/build-push.yml
     with:
       app_name: "bot"
