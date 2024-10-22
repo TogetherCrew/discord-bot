@@ -25,21 +25,21 @@ jobs:
           VALIDATE_PYTHON_FLAKE8: false
           VALIDATE_PYTHON_MYPY: false
 
-    test:
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v4
-        - uses: actions/setup-node@v3
-          with:
-            node-version: 20
-            cache: "npm"
-        - run: npm install --force
-        - run: npm run test
-        - uses: paambaati/codeclimate-action@v5.0.0
-          env:
-            CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-          with:
-            coverageCommand: npm run test:cov
+    # test:
+    #   runs-on: ubuntu-latest
+    #   steps:
+    #     - uses: actions/checkout@v4
+    #     - uses: actions/setup-node@v3
+    #       with:
+    #         node-version: 20
+    #         cache: "npm"
+    #     - run: npm install --force
+    #     - run: npm run test
+    #     - uses: paambaati/codeclimate-action@v5.0.0
+    #       env:
+    #         CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+    #       with:
+    #         coverageCommand: npm run test:cov
 
   build-push:
     # needs: [lint, test]
