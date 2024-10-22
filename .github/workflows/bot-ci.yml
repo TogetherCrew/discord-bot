@@ -43,7 +43,7 @@ jobs:
 
   build-push:
     needs: [lint, test]
-    uses: ./.github/workflows/build-push.yml@main
+    uses: ./.github/workflows/build-push.yml
     with:
       app_name: "bot"
       context: "./bot"
