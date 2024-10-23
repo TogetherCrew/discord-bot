@@ -1,32 +1,31 @@
-# .github/workflows/bot-ci.yml
+# .github/workflows/lint.yml
 
-name: Bot CI Pipeline
+name: Lint Workflow
 
 on:
-  push:
-    paths:
-      - "bot/**"
-  pull_request:
-    paths:
-      - "bot/**"
+  workflow_call:
+    inputs:
+      app_path:
+        description: 'Path to the application directory'
+        required: true
+        type: string
+      linter_configs:
+        description: 'Additional linter configurations'
+        required: false
+        type: mapping
 
 jobs:
   lint:
-    uses: ./.github/workflows/lint.yml
-    with:
-      app_path: "./bot"
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-  test:
-    uses: ./.github/workflows/test.yml
-    with:
-      app_path: "./bot"
-      node_version: "20"
-      cache_dependency_path: "./bot/package-lock.json"
-
-  build-push:
-    needs: [lint, test]
-    uses: ./.github/workflows/build-push.yml
-    with:
-      app_name: "bot"
-      context: "./bot"
-      dockerfile: "./bot/Dockerfile"
+      - name: Run Linter
+        uses: super-linter/super-linter@v5.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_WORKSPACE: ${{ github.workspace }}/${{ inputs.app_path }}
+          TYPESCRIPT_DEFAULT_STYLE: prettier
+          ${{ toJson(inputs.linter_configs) }}
