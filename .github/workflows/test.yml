@@ -1,0 +1,51 @@
+# .github/workflows/test.yml
+
+name: Test Workflow
+
+on:
+  workflow_call:
+    inputs:
+      app_path:
+        description: "Path to the application directory"
+        required: true
+        type: string
+      node_version:
+        description: "Node.js version to use"
+        required: true
+        type: string
+      cache_dependency_path:
+        description: "Path to the package-lock.json file"
+        required: true
+        type: string
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ inputs.node_version }}
+          cache: "npm"
+          cache-dependency-path: ${{ inputs.cache_dependency_path }}
+
+      - name: Install Dependencies
+        run: npm install --force
+        working-directory: ${{ inputs.app_path }}
+
+      - name: Run Tests
+        run: npm run test
+        working-directory: ${{ inputs.app_path }}
+
+      - name: Upload Code Coverage
+        if: ${{ secrets.CC_TEST_REPORTER_ID != '' }}
+        uses: paambaati/codeclimate-action@v5.0.0
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+        with:
+          coverageCommand: npm run test:cov
+          working-directory: ${{ inputs.app_path }}

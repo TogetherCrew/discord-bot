@@ -1,0 +1,32 @@
+# .github/workflows/bot-ci.yml
+
+name: Bot CI Pipeline
+
+on:
+  push:
+    paths:
+      - "bot/**"
+  pull_request:
+    paths:
+      - "bot/**"
+
+jobs:
+  lint:
+    uses: ./.github/workflows/lint.yml
+    with:
+      app_path: "./bot"
+
+  test:
+    uses: ./.github/workflows/test.yml
+    with:
+      app_path: "./bot"
+      node_version: "20"
+      cache_dependency_path: "./bot/package-lock.json"
+
+  build-push:
+    needs: [lint, test]
+    uses: ./.github/workflows/build-push.yml
+    with:
+      app_name: "bot"
+      context: "./bot"
+      dockerfile: "./bot/Dockerfile"
