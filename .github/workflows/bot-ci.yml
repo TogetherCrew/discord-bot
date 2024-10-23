@@ -33,8 +33,13 @@ jobs:
         with:
           node-version: 20
           cache: "npm"
-      - run: npm install --force
-      - run: npm run test
+          cache-dependency-path: bot/package-lock.json
+      - name: Install Dependencies
+        run: npm install --force
+        working-directory: ./bot
+      - name: Run Tests
+        run: npm run test
+        working-directory: ./bot
       - uses: paambaati/codeclimate-action@v5.0.0
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
