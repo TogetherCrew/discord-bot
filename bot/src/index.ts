@@ -34,5 +34,5 @@ async function app(): Promise<void> {
 }
 
 app().catch((error) => {
-  logger.fatal(error, 'Failed To start the application!');
+  logger.fatal(error, 'Failed To start the application!!');
 });
