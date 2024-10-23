@@ -4,6 +4,11 @@ name: Lint Workflow
 
 on:
   workflow_call:
+    inputs:
+      app_path:
+        description: "Path to the application directory"
+        required: true
+        type: string
 
 jobs:
   lint:
@@ -14,7 +19,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run Linter
-        uses: super-linter/super-linter@v5.0.0
+        uses: github/super-linter@v5.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TYPESCRIPT_DEFAULT_STYLE: prettier
@@ -22,3 +27,4 @@ jobs:
           VALIDATE_JSCPD: false
           VALIDATE_PYTHON_FLAKE8: false
           VALIDATE_PYTHON_MYPY: false
+          FILTER_REGEX_INCLUDE: "^${{ inputs.app_path }}/"

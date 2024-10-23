@@ -12,34 +12,16 @@ on:
 
 jobs:
   lint:
-    name: Lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: super-linter/super-linter@v5.0.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TYPESCRIPT_DEFAULT_STYLE: prettier
-          VALIDATE_DOCKERFILE_HADOLINT: false
-          VALIDATE_JSCPD: false
-          VALIDATE_PYTHON_FLAKE8: false
-          VALIDATE_PYTHON_MYPY: false
+    uses: ./.github/workflows/lint.yml
+    with:
+      app_path: "hivemind-adapter"
 
-    # test:
-    #   runs-on: ubuntu-latest
-    #   steps:
-    #     - uses: actions/checkout@v4
-    #     - uses: actions/setup-node@v3
-    #       with:
-    #         node-version: 20
-    #         cache: "npm"
-    #     - run: npm install --force
-    #     - run: npm run test
-    #     - uses: paambaati/codeclimate-action@v5.0.0
-    #       env:
-    #         CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-    #       with:
-    #         coverageCommand: npm run test:cov
+  # test:
+  #   uses: ./.github/workflows/test.yml
+  #   with:
+  #     app_path: "./bot"
+  #     node_version: "20"
+  #     cache_dependency_path: "./bot/package-lock.json"
 
   build-push:
     # needs: [lint, test]
