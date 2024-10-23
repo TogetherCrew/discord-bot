@@ -27,4 +27,4 @@ jobs:
           VALIDATE_JSCPD: false
           VALIDATE_PYTHON_FLAKE8: false
           VALIDATE_PYTHON_MYPY: false
-          FILTER_REGEX_INCLUDE: "^${{ inputs.app_path }}/"
+          FILTER_REGEX_INCLUDE: "(^|/)${{ inputs.app_path }}/"
