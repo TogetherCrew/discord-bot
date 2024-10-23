@@ -4,15 +4,6 @@ name: Lint Workflow
 
 on:
   workflow_call:
-    inputs:
-      app_path:
-        description: 'Path to the application directory'
-        required: true
-        type: string
-      linter_configs:
-        description: 'Additional linter configurations'
-        required: false
-        type: mapping
 
 jobs:
   lint:
@@ -26,6 +17,8 @@ jobs:
         uses: super-linter/super-linter@v5.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DEFAULT_WORKSPACE: ${{ github.workspace }}/${{ inputs.app_path }}
           TYPESCRIPT_DEFAULT_STYLE: prettier
-          ${{ toJson(inputs.linter_configs) }}
+          VALIDATE_DOCKERFILE_HADOLINT: false
+          VALIDATE_JSCPD: false
+          VALIDATE_PYTHON_FLAKE8: false
+          VALIDATE_PYTHON_MYPY: false

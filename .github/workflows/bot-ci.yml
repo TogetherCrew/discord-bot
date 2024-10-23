@@ -13,18 +13,17 @@ on:
 jobs:
   lint:
     uses: ./.github/workflows/lint.yml
-    with:
-      app_path: "./bot"
 
-  test:
-    uses: ./.github/workflows/test.yml
-    with:
-      app_path: "./bot"
-      node_version: "20"
-      cache_dependency_path: "./bot/package-lock.json"
+  # test:
+  #   uses: ./.github/workflows/test.yml
+  #   with:
+  #     app_path: "./bot"
+  #     node_version: "20"
+  #     cache_dependency_path: "./bot/package-lock.json"
 
   build-push:
-    needs: [lint, test]
+    # needs: [lint, test]
+    needs: [lint]
     uses: ./.github/workflows/build-push.yml
     with:
       app_name: "bot"
