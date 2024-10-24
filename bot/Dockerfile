@@ -1,32 +1,19 @@
-# Dockerfile
-# Stage 1: Build the application
-FROM node:20-alpine AS builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
+FROM node:18-alpine AS base
+
+# @pyroscope/nodejs issue: https://github.com/grafana/pyroscope-nodejs/issues/31
+RUN apk add g++ make py3-pip 
+
+WORKDIR /project/bot
 COPY . .
+RUN npm ci
+
+FROM base AS test
+CMD [ "npx", "jest", "--coverage" ]
+
+FROM base AS build
 RUN npm run build
 
-# Stage 2: Development
-FROM node:20-alpine AS development
-WORKDIR /app
-COPY --from=builder /app .
-RUN npm install --only=development
+FROM build AS prod
+RUN npm ci --omit=dev
+CMD ["npm", "run", "start"]
 EXPOSE 3000
-CMD ["npm", "run", "dev"]
-
-# Stage 3: Production
-FROM node:20-alpine AS production 
-WORKDIR /app
-COPY --from=builder /app .
-COPY . .
-RUN npm install --only=production --ignore-scripts
-EXPOSE 3000
-CMD ["node", "dist/main"]
-
-# Stage 4: Testing
-FROM node:20-alpine AS test
-WORKDIR /app
-COPY --from=builder /app .
-RUN npm install --only=development
-CMD [ "npx", "jest", "--coverage" ]
