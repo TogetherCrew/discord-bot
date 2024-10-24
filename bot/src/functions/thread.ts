@@ -1,4 +1,4 @@
-import { ChannelType, type TextChannel } from 'discord.js';
+import { ChannelType, type TextChannel } from 'discord.js'
 
 /**
  * create a private thread on specific channel and send a message to it
@@ -8,18 +8,18 @@ import { ChannelType, type TextChannel } from 'discord.js';
  */
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export async function createPrivateThreadAndSendMessage(
-  channel: TextChannel,
-  info: { threadName: string; message: string; threadReason?: string },
+    channel: TextChannel,
+    info: { threadName: string; message: string; threadReason?: string }
 ) {
-  const { threadName, message, threadReason } = info;
-  const thread = await channel.threads.create({
-    name: threadName,
-    reason: threadReason,
-    type: ChannelType.PrivateThread,
-    invitable: false,
-  });
+    const { threadName, message, threadReason } = info
+    const thread = await channel.threads.create({
+        name: threadName,
+        reason: threadReason,
+        type: ChannelType.PrivateThread,
+        invitable: false,
+    })
 
-  await thread.send(message);
+    await thread.send(message)
 
-  return thread;
+    return thread
 }

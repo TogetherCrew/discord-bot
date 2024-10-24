@@ -1,8 +1,8 @@
-import express from 'express';
-import bullMqUI from './queue/utils/ui.util';
+import express from 'express'
+import bullMqUI from './queue/utils/ui.util'
 
-const app = express();
+const app = express()
 
-app.use('/admin/queues', bullMqUI.getRouter());
+app.use('/admin/queues', bullMqUI.getRouter())
 
-export default app;
+export default app
