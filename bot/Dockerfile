@@ -1,7 +1,7 @@
 # Stage 1: Base Stage
 FROM node:18 AS base
 WORKDIR /bot
-COPY /bot/package.json .
+COPY /bot/package.json /bot
 RUN npm install
 COPY /bot .
 RUN npm run build
@@ -18,10 +18,16 @@ FROM base AS test
 ENV NODE_ENV=test
 CMD ["npm", "run", "test"]
 
-# Stage 5: Production Stage
-FROM base AS production
-ENV NODE_ENV=production
-COPY --from=build /bot/dist ./dist
-RUN npm ci --only=production
-EXPOSE 3000
-CMD ["npm", "run", "start"]
+# # Stage 4: Build Stage
+# FROM base AS build
+# ENV NODE_ENV=production
+# RUN npm run build
+
+# # Stage 5: Production Stage
+# FROM node:18-alpine AS production
+# WORKDIR /bot
+# ENV NODE_ENV=production
+# COPY --from=build /bot/dist ./dist
+# RUN npm ci --only=production
+# EXPOSE 3000
+# CMD ["npm", "run", "start"]
