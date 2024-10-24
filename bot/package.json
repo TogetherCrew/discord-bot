@@ -5,8 +5,8 @@
     "main": "index.js",
     "scripts": {
         "build": "tsc",
-        "start": "node ./lib/index.js",
-        "copy-files": "copyfiles -u 1 src/**/*.yml lib",
+        "start": "node ./dist/index.js",
+        "copy-files": "copyfiles -u 1 src/**/*.yml dist",
         "dev": "env-cmd -f ./src/config/dev.env nodemon ./src/index.ts",
         "test": "env-cmd -f ./src/config/test.env jest --detectOpenHandles",
         "test:ci": "jest --ci --detectOpenHandles",
@@ -17,11 +17,11 @@
         "dev-migrate:up": "migrate --migrations-dir=\"./src/migrations/db\" up --compiler=\"ts:./src/migrations/utils/ts-compiler.js\"",
         "dev-migrate:down": "migrate --migrations-dir=\"./src/migrations/db\" --compiler=\"ts:./src/migrations/utils/ts-compiler.js\" down",
         "migrate:create": "migrate create --template-file ./src/migrations/utils/template.ts --migrations-dir=\"./src/migrations/db\"",
-        "migrate:up": "migrate --migrations-dir=\"./lib/migrations/db\" up",
-        "migrate:down": "migrate --migrations-dir=\"./lib/migrations/db\" down",
-        "cleanupCompletedJobs": "node ./lib/scripts/cleanupCompletedJobs.js",
-        "deleteRnDAOGuildCommands": "node ./lib/scripts/deleteRnDAOGuildCommands.js",
-        "fetchInitialData": "node ./lib/scripts/fetchInitialData.js"
+        "migrate:up": "migrate --migrations-dir=\"./dist/migrations/db\" up",
+        "migrate:down": "migrate --migrations-dir=\"./dist/migrations/db\" down",
+        "cleanupCompletedJobs": "node ./dist/scripts/cleanupCompletedJobs.js",
+        "deleteRnDAOGuildCommands": "node ./dist/scripts/deleteRnDAOGuildCommands.js",
+        "fetchInitialData": "node ./dist/scripts/fetchInitialData.js"
     },
     "repository": {
         "type": "git",
@@ -81,6 +81,6 @@
         "typescript": "^5.0.4"
     },
     "files": [
-        "lib/**/*"
+        "dist/**/*"
     ]
 }
