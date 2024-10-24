@@ -160,9 +160,8 @@ async function deleteGuildMember(
     filter: object
 ): Promise<boolean> {
     try {
-        const deleteResult = await connection.models.GuildMember.deleteOne(
-            filter
-        )
+        const deleteResult =
+            await connection.models.GuildMember.deleteOne(filter)
         return deleteResult.deletedCount === 1
     } catch (error) {
         logger.error(
@@ -184,9 +183,8 @@ async function deleteGuildMembers(
     filter: object
 ): Promise<number> {
     try {
-        const deleteResult = await connection.models.GuildMember.deleteMany(
-            filter
-        )
+        const deleteResult =
+            await connection.models.GuildMember.deleteMany(filter)
         return deleteResult.deletedCount
     } catch (error) {
         logger.error(

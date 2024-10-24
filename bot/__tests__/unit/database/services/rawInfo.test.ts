@@ -9,9 +9,8 @@ setupTestDB()
 describe('rawInfo service', () => {
     let connection: Connection
     beforeAll(async () => {
-        connection = await DatabaseManager.getInstance().getGuildDb(
-            'connection-3'
-        )
+        connection =
+            await DatabaseManager.getInstance().getGuildDb('connection-3')
     })
     afterAll(async () => {
         await connection.close()

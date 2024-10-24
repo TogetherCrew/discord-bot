@@ -19,9 +19,8 @@ setupTestDB()
 describe('channel service', () => {
     let connection: Connection
     beforeAll(async () => {
-        connection = await DatabaseManager.getInstance().getGuildDb(
-            'connection-1'
-        )
+        connection =
+            await DatabaseManager.getInstance().getGuildDb('connection-1')
     })
     afterAll(async () => {
         await connection.close()
