@@ -19,9 +19,7 @@ jobs:
   test:
     uses: ./.github/workflows/test.yml
     with:
-      app_path: "./bot"
-      node_version: "20"
-      cache_dependency_path: "./bot/package-lock.json"
+      app_path: "bot"
 
   build-push:
     needs: [lint, test]
