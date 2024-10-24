@@ -5,10 +5,7 @@ import parentLogger from '../../config/logger'
 
 const logger = parentLogger.child({ event: 'ChannelUpdateHandler' })
 
-export default async function (
-    guildId: Snowflake,
-    dataToStore: IChannel
-): Promise<void> {
+export default async function (guildId: Snowflake, dataToStore: IChannel): Promise<void> {
     const logFields = { guild_id: guildId, channel_id: dataToStore.channelId }
     // logger.info(logFields, 'event is running');
     const connection = await DatabaseManager.getInstance().getGuildDb(guildId)

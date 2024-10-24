@@ -16,9 +16,7 @@ export default async function (dataToStore: IdataToStore): Promise<void> {
             disconnectedAt: null,
         })
         for (let i = 0; i < platforms.length; i++) {
-            const connection = await DatabaseManager.getInstance().getGuildDb(
-                platforms[i].metadata?.id
-            )
+            const connection = await DatabaseManager.getInstance().getGuildDb(platforms[i].metadata?.id)
 
             await guildMemberService.updateGuildMember(
                 connection,

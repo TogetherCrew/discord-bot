@@ -10,32 +10,17 @@ const logger = parentLogger.child({ module: 'GuildExtraction' })
  * @param {Snowflake} guildId - The identifier of the guild to extract information from.
  */
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export default async function guildExtraction(
-    platform: HydratedDocument<IPlatform>
-) {
-    const connection = await DatabaseManager.getInstance().getGuildDb(
-        platform.metadata?.id
-    )
-    logger.info(
-        { guild_id: platform.metadata?.id },
-        'Guild extraction for guild is running'
-    )
+export default async function guildExtraction(platform: HydratedDocument<IPlatform>) {
+    const connection = await DatabaseManager.getInstance().getGuildDb(platform.metadata?.id)
+    logger.info({ guild_id: platform.metadata?.id }, 'Guild extraction for guild is running')
     try {
-        const hasBotAccessToGuild = await platformService.checkBotAccessToGuild(
-            platform.metadata?.id
-        )
+        const hasBotAccessToGuild = await platformService.checkBotAccessToGuild(platform.metadata?.id)
         if (!hasBotAccessToGuild) {
             return
         }
         await fetchMessages(connection, platform)
     } catch (err) {
-        logger.error(
-            { guild_id: platform.metadata?.id, err },
-            'Guild extraction CronJob failed for guild'
-        )
+        logger.error({ guild_id: platform.metadata?.id, err }, 'Guild extraction CronJob failed for guild')
     }
-    logger.info(
-        { guild_id: platform.metadata?.id },
-        'Guild extraction for guild is done'
-    )
+    logger.info({ guild_id: platform.metadata?.id }, 'Guild extraction for guild is done')
 }

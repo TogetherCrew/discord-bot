@@ -8,9 +8,6 @@ export const connectToRabbitMQ = async (): Promise<void> => {
         await RabbitMQ.connect(config.rabbitMQ.url, Queue.DISCORD_BOT)
         logger.info({ queue: Queue.DISCORD_BOT }, 'Connected to RabbitMQ!')
     } catch (error) {
-        logger.fatal(
-            { queue: Queue.DISCORD_BOT, error },
-            'Failed to connect to RabbitMQ!'
-        )
+        logger.fatal({ queue: Queue.DISCORD_BOT, error }, 'Failed to connect to RabbitMQ!')
     }
 }

@@ -6,7 +6,5 @@ export default registerAs('logger', () => ({
 }))
 
 export const loggerConfigSchema = {
-    LOG_LEVEL: Joi.string()
-        .valid('fatal', 'error', 'warn', 'info', 'debug', 'trace')
-        .default('info'),
+    LOG_LEVEL: Joi.string().valid('fatal', 'error', 'warn', 'info', 'debug', 'trace').default('info'),
 }

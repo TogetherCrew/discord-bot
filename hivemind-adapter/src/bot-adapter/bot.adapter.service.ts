@@ -34,11 +34,7 @@ export class BotAdapterService {
             'metadata.id': interaction.guildId,
         })
         const data = this.adaptDataToHivemind(interaction, platform.community)
-        this.rabbitMQService.publish(
-            Queue.HIVEMIND,
-            Event.HIVEMIND.QUESTION_RECEIVED,
-            { ...data }
-        )
+        this.rabbitMQService.publish(Queue.HIVEMIND, Event.HIVEMIND.QUESTION_RECEIVED, { ...data })
         this.logger.info(msg, `QUESTION_COMMAND_RECEIVED event is processed`)
     }
 
@@ -52,8 +48,7 @@ export class BotAdapterService {
                 source: PlatformNames.Discord,
                 destination: {
                     queue: Queue.DISCORD_HIVEMIND_ADAPTER,
-                    event: Event.DISCORD_HIVEMIND_ADAPTER
-                        .QUESTION_COMMAND_RECEIVED,
+                    event: Event.DISCORD_HIVEMIND_ADAPTER.QUESTION_COMMAND_RECEIVED,
                 },
             },
             question: {

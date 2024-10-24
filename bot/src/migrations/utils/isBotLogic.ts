@@ -12,10 +12,7 @@ const logger = parentLogger.child({ module: 'Migration-isBot' })
  * @param {GuildMember[]} guildMembersArray - An array of guild members from which data is to be extracted.
  * @returns {Promise<IGuildMember[]>} - A promise that resolves to the updated array containing the extracted data.
  */
-function pushMembersToArray(
-    arr: IGuildMember[],
-    guildMembersArray: GuildMember[]
-): IGuildMember[] {
+function pushMembersToArray(arr: IGuildMember[], guildMembersArray: GuildMember[]): IGuildMember[] {
     for (const guildMember of guildMembersArray) {
         arr.push(guildMemberService.getNeededDateFromGuildMember(guildMember))
     }
@@ -27,11 +24,7 @@ function pushMembersToArray(
  * @param {Connection} connection - Mongoose connection object for the database.
  * @param {Snowflake} guildId - The identifier of the guild to extract information from.
  */
-export default async function isBotLogic(
-    connection: Connection,
-    client: Client,
-    guildId: Snowflake
-) {
+export default async function isBotLogic(connection: Connection, client: Client, guildId: Snowflake) {
     // logger.info({ guild_id: guildId }, 'add-isBot-to-guilbMember-schema migration is running');
     try {
         const botGuildMembers = []
@@ -40,9 +33,7 @@ export default async function isBotLogic(
         const guild = await client.guilds.fetch(guildId)
         const membersToStore: IGuildMember[] = []
         const fetchedMembers = await guild.members.fetch()
-        const guildMembers = pushMembersToArray(membersToStore, [
-            ...fetchedMembers.values(),
-        ])
+        const guildMembers = pushMembersToArray(membersToStore, [...fetchedMembers.values()])
 
         if (guildMembers) {
             for (const guildMember of guildMembers) {
@@ -79,10 +70,7 @@ export default async function isBotLogic(
             )
         }
     } catch (err) {
-        logger.error(
-            { guild_id: guildId, err },
-            'add-isBot-to-guilbMember-schema migration is failed'
-        )
+        logger.error({ guild_id: guildId, err }, 'add-isBot-to-guilbMember-schema migration is failed')
     }
     // logger.info({ guild_id: guildId }, 'add-isBot-to-guilbMember-schema migration is done');
 }

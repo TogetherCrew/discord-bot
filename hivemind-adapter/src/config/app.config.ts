@@ -6,8 +6,5 @@ export default registerAs('app', () => ({
 }))
 
 export const appConfigSchema = {
-    NODE_ENV: Joi.string()
-        .valid('production', 'development', 'test')
-        .required()
-        .description('Application environment'),
+    NODE_ENV: Joi.string().valid('production', 'development', 'test').required().description('Application environment'),
 }

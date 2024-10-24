@@ -35,29 +35,22 @@ async function triggerDag(params: DagConfig): Promise<any> {
 
     try {
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-        const auth = Buffer.from(
-            `${config.airflow.username}:${config.airflow.password}`
-        ).toString('base64')
+        const auth = Buffer.from(`${config.airflow.username}:${config.airflow.password}`).toString('base64')
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-        const response = await fetch(
-            `${config.airflow.baseURL}/api/v1/dags/discord_guild_analyzer_etl/dagRuns`,
-            {
-                method: 'POST',
-                body: JSON.stringify(body),
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Basic ${auth}`,
-                },
-            }
-        )
+        const response = await fetch(`${config.airflow.baseURL}/api/v1/dags/discord_guild_analyzer_etl/dagRuns`, {
+            method: 'POST',
+            body: JSON.stringify(body),
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Basic ${auth}`,
+            },
+        })
 
         if (!response.ok) {
             const error = await response.json()
             logger.error({ error, body }, 'Failed to trigger DAG run')
             // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-            throw new Error(
-                `Airflow API call failed with status ${response.status}: ${error.message}`
-            )
+            throw new Error(`Airflow API call failed with status ${response.status}: ${error.message}`)
         } else {
             const data = await response.json()
             logger.info({ data }, 'Successfully triggered DAG run')

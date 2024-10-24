@@ -1,9 +1,5 @@
 import { type HydratedDocument } from 'mongoose'
-import {
-    Platform,
-    type IPlatform,
-    type IPlatformUpdateBody,
-} from '@togethercrew.dev/db'
+import { Platform, type IPlatform, type IPlatformUpdateBody } from '@togethercrew.dev/db'
 import { type Snowflake } from 'discord.js'
 import { coreService } from '../../services'
 import parentLogger from '../../config/logger'
@@ -15,9 +11,7 @@ const logger = parentLogger.child({ module: 'PlatformService' })
  * @param {Object} filter
  * @returns {Promise<IGuild | null>}
  */
-async function getPlatform(
-    filter: object
-): Promise<HydratedDocument<IPlatform> | null> {
+async function getPlatform(filter: object): Promise<HydratedDocument<IPlatform> | null> {
     return await Platform.findOne(filter)
 }
 
@@ -26,9 +20,7 @@ async function getPlatform(
  * @param {object} filter - Filter criteria to match the desired platform entries.
  * @returns {Promise<object[]>} - A promise that resolves to an array of matching platform entries.
  */
-async function getPlatforms(
-    filter: object
-): Promise<Array<HydratedDocument<IPlatform>>> {
+async function getPlatforms(filter: object): Promise<Array<HydratedDocument<IPlatform>>> {
     return await Platform.find(filter)
 }
 
@@ -60,10 +52,7 @@ async function updatePlatform(
         await platform.save()
         return platform
     } catch (error) {
-        logger.error(
-            { database: 'Core', filter, updateBody, error },
-            'Failed to update platform'
-        )
+        logger.error({ database: 'Core', filter, updateBody, error }, 'Failed to update platform')
         return null
     }
 }
@@ -74,19 +63,13 @@ async function updatePlatform(
  * @param {IPlatformUpdateBody} updateBody - Updated information for the platform entry.
  * @returns {Promise<number>} - A promise that resolves to the number of platform entries updated.
  */
-async function updateManyPlatforms(
-    filter: object,
-    updateBody: IPlatformUpdateBody
-): Promise<number> {
+async function updateManyPlatforms(filter: object, updateBody: IPlatformUpdateBody): Promise<number> {
     try {
         const updateResult = await Platform.updateMany(filter, updateBody)
         const modifiedCount = updateResult.modifiedCount
         return modifiedCount
     } catch (error) {
-        logger.error(
-            { database: 'Core', filter, updateBody, error },
-            'Failed to update platforms'
-        )
+        logger.error({ database: 'Core', filter, updateBody, error }, 'Failed to update platforms')
         return 0
     }
 }

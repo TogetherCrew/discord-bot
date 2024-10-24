@@ -36,11 +36,6 @@ export const channel3: IChannel = {
     type: 0,
 }
 
-export const insertChannels = async function <Type>(
-    channels: Array<Type>,
-    connection: Connection
-) {
-    await connection.models.Channel.insertMany(
-        channels.map((channel) => channel)
-    )
+export const insertChannels = async function <Type>(channels: Array<Type>, connection: Connection) {
+    await connection.models.Channel.insertMany(channels.map((channel) => channel))
 }

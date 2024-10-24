@@ -15,8 +15,7 @@ export class WorkerFactory {
         worker.on('completed', async (job: any) => {
             if (worker.name === 'guildExtractionQueue') {
                 try {
-                    const platform = job.data
-                        .platform as HydratedDocument<IPlatform>
+                    const platform = job.data.platform as HydratedDocument<IPlatform>
                     const recompute = job.data.recompute
                     const res = await airflowService.triggerDag({
                         platform_id: platform.id,
@@ -24,10 +23,7 @@ export class WorkerFactory {
                         period: platform.metadata?.period,
                         recompute,
                     })
-                    logger.info(
-                        { jobId: job.id, res, recompute, platform },
-                        'Guild extraction job completed'
-                    )
+                    logger.info({ jobId: job.id, res, recompute, platform }, 'Guild extraction job completed')
                 } catch (err) {
                     console.log(error)
                     logger.error({ job, err }, 'triggerDag failed')

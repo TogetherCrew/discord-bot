@@ -1,9 +1,6 @@
 import mongoose from 'mongoose'
 import config from '../../src/config'
-import RabbitMQ, {
-    MBConnection,
-    Queue,
-} from '@togethercrew.dev/tc-messagebroker'
+import RabbitMQ, { MBConnection, Queue } from '@togethercrew.dev/tc-messagebroker'
 
 const setupTestDB = () => {
     beforeAll(async () => {
@@ -13,9 +10,7 @@ const setupTestDB = () => {
 
     beforeEach(async () => {
         await Promise.all(
-            Object.values(mongoose.connection.collections).map(
-                async (collection) => collection.deleteMany({})
-            )
+            Object.values(mongoose.connection.collections).map(async (collection) => collection.deleteMany({}))
         )
     })
 

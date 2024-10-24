@@ -6,8 +6,7 @@ export default {
     name: Events.GuildMemberAdd,
     once: false,
     execute(member: GuildMember) {
-        const dataToStore =
-            guildMemberService.getNeededDateFromGuildMember(member)
+        const dataToStore = guildMemberService.getNeededDateFromGuildMember(member)
         addGuildEventQueue({
             type: Events.GuildMemberAdd,
             guildId: member.guild.id,

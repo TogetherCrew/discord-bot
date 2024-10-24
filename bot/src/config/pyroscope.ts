@@ -9,14 +9,8 @@ export default function pyroscope(): void {
             appName: 'discord',
         })
         Pyroscope.start()
-        logger.info(
-            { url: config.pyroscope.address },
-            'Connected to pyroscope.'
-        )
+        logger.info({ url: config.pyroscope.address }, 'Connected to pyroscope.')
     } catch (error) {
-        logger.fatal(
-            { url: config.pyroscope.address, error },
-            'Failed to connect to pyroscope.'
-        )
+        logger.fatal({ url: config.pyroscope.address, error }, 'Failed to connect to pyroscope.')
     }
 }

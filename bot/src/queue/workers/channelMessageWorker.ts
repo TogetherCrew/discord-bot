@@ -12,10 +12,7 @@ export const channelMessageWorker = new Worker(
                 sagaId: job.data.sagaId,
             })
 
-            const message = await channelService.sendChannelMessage(
-                job.data.discordId,
-                job.data.message
-            )
+            const message = await channelService.sendChannelMessage(job.data.discordId, job.data.message)
             if (saga.data.isSafetyMessage === true) {
                 saga.data = {
                     ...saga.data,

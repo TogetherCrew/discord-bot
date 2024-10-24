@@ -1,10 +1,4 @@
-import {
-    Events,
-    type Channel,
-    TextChannel,
-    VoiceChannel,
-    CategoryChannel,
-} from 'discord.js'
+import { Events, type Channel, TextChannel, VoiceChannel, CategoryChannel } from 'discord.js'
 import { addGuildEventQueue } from '../../queue/queues/guildEvent'
 import { channelService } from '../../database/services'
 
@@ -17,8 +11,7 @@ export default {
             newChannel instanceof VoiceChannel ||
             newChannel instanceof CategoryChannel
         ) {
-            const dataToStore =
-                channelService.getNeededDateFromChannel(newChannel)
+            const dataToStore = channelService.getNeededDateFromChannel(newChannel)
             addGuildEventQueue({
                 type: Events.ChannelUpdate,
                 guildId: newChannel.guildId,

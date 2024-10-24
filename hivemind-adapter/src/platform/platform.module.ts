@@ -5,11 +5,7 @@ import { platformSchema } from '@togethercrew.dev/db'
 import { PlatformService } from './platform.service'
 
 @Module({
-    imports: [
-        MongooseModule.forFeature([
-            { name: 'Platform', schema: platformSchema },
-        ]),
-    ],
+    imports: [MongooseModule.forFeature([{ name: 'Platform', schema: platformSchema }])],
     providers: [PlatformService],
     exports: [PlatformService],
 })

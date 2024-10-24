@@ -1,9 +1,4 @@
-import {
-    type Channel,
-    ChannelType,
-    type Snowflake,
-    type TextChannel,
-} from 'discord.js'
+import { type Channel, ChannelType, type Snowflake, type TextChannel } from 'discord.js'
 import {} from 'discord.js'
 import { createPrivateThreadAndSendMessage } from '../functions/thread'
 import coreService from './core.service'
@@ -21,10 +16,7 @@ interface IInfo {
  * @param {object} info - message string.
  * @returns {Promise<Message | undefined>} A promise that resolves with the sent message or undefined.
  */
-async function sendDirectMessage(
-    discordId: string,
-    info: IInfo
-): Promise<void> {
+async function sendDirectMessage(discordId: string, info: IInfo): Promise<void> {
     const client = await coreService.DiscordBotManager.getClient()
     const { guildId, message, useFallback, channelId } = info
     try {
@@ -45,9 +37,7 @@ async function sendDirectMessage(
                 const textChannels = arrayChannels.filter(
                     (channel) => channel.type === ChannelType.GuildText
                 ) as TextChannel[]
-                const rawPositionBasedSortedTextChannels = textChannels.sort(
-                    (a, b) => a.rawPosition - b.rawPosition
-                )
+                const rawPositionBasedSortedTextChannels = textChannels.sort((a, b) => a.rawPosition - b.rawPosition)
                 channel = rawPositionBasedSortedTextChannels[0]
                 threadName = 'TogetherCrew Status'
                 await createPrivateThreadAndSendMessage(channel, {
@@ -56,10 +46,7 @@ async function sendDirectMessage(
                 })
             } else if (info.announcement === true && channelId !== undefined) {
                 const guild = await client.guilds.fetch(guildId)
-                channel = await channelService.getChannelFromDiscordAPI(
-                    guild,
-                    channelId
-                )
+                channel = await channelService.getChannelFromDiscordAPI(guild, channelId)
                 const user = await guild.members.fetch(discordId)
                 threadName = `Private Message for ${user.user.username}`
                 if (channel !== null && channel.type === 0) {

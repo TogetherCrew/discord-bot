@@ -45,10 +45,7 @@ async function createInteractionResponse(
         }
     } catch (error) {
         logger.error(error, 'Failed to send interaction response')
-        logger.error(
-            { interaction_id: interaction.id, user: interaction.user },
-            'Failed to send interaction response'
-        )
+        logger.error({ interaction_id: interaction.id, user: interaction.user }, 'Failed to send interaction response')
     }
 }
 
@@ -58,9 +55,7 @@ async function createInteractionResponse(
    @param {string} redirect_uri
  * @returns {Promise<IDiscordOathBotCallback>}
  */
-async function getOriginalInteractionResponse(
-    interaction: ChatInputCommandInteraction_broker
-): Promise<any> {
+async function getOriginalInteractionResponse(interaction: ChatInputCommandInteraction_broker): Promise<any> {
     try {
         if (
             interaction.token === null ||
@@ -68,9 +63,7 @@ async function getOriginalInteractionResponse(
             interaction.applicationId === null ||
             interaction.applicationId === undefined
         ) {
-            throw new Error(
-                'InteractionToken or InteractionApplicationId is null or undefined'
-            )
+            throw new Error('InteractionToken or InteractionApplicationId is null or undefined')
         }
 
         const response = await fetch(
@@ -112,9 +105,7 @@ async function editOriginalInteractionResponse(
             interaction.applicationId === null ||
             interaction.applicationId === undefined
         ) {
-            throw new Error(
-                'InteractionToken or InteractionApplicationId is null or undefined'
-            )
+            throw new Error('InteractionToken or InteractionApplicationId is null or undefined')
         }
 
         const response = await fetch(
@@ -146,9 +137,7 @@ async function editOriginalInteractionResponse(
    @param {string} redirect_uri
  * @returns {Promise<IDiscordOathBotCallback>}
  */
-async function deleteOriginalInteractionResponse(
-    interaction: ChatInputCommandInteraction_broker
-): Promise<void> {
+async function deleteOriginalInteractionResponse(interaction: ChatInputCommandInteraction_broker): Promise<void> {
     try {
         if (
             interaction.token === null ||
@@ -156,9 +145,7 @@ async function deleteOriginalInteractionResponse(
             interaction.applicationId === null ||
             interaction.applicationId === undefined
         ) {
-            throw new Error(
-                'InteractionToken or InteractionApplicationId is null or undefined'
-            )
+            throw new Error('InteractionToken or InteractionApplicationId is null or undefined')
         }
 
         const response = await fetch(
@@ -187,10 +174,7 @@ async function deleteOriginalInteractionResponse(
    @param {string} redirect_uri
  * @returns {Promise<IDiscordOathBotCallback>}
  */
-async function createFollowUpMessage(
-    interaction: ChatInputCommandInteraction_broker,
-    data: object
-): Promise<any> {
+async function createFollowUpMessage(interaction: ChatInputCommandInteraction_broker, data: object): Promise<any> {
     try {
         if (
             interaction.token === null ||
@@ -198,9 +182,7 @@ async function createFollowUpMessage(
             interaction.applicationId === null ||
             interaction.applicationId === undefined
         ) {
-            throw new Error(
-                'InteractionToken or InteractionApplicationId is null or undefined'
-            )
+            throw new Error('InteractionToken or InteractionApplicationId is null or undefined')
         }
 
         const response = await fetch(
@@ -219,10 +201,7 @@ async function createFollowUpMessage(
         }
     } catch (error) {
         logger.error(error, 'Failed to create follow up message')
-        logger.error(
-            { interaction_id: interaction.id, user: interaction.user },
-            'Failed to create follow up message'
-        )
+        logger.error({ interaction_id: interaction.id, user: interaction.user }, 'Failed to create follow up message')
     }
 }
 

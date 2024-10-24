@@ -7,13 +7,9 @@ import { IPlatform } from '@togethercrew.dev/db'
 
 @Injectable()
 export class PlatformService {
-    constructor(
-        @InjectModel('Platform') private platformModel: Model<IPlatform>
-    ) {}
+    constructor(@InjectModel('Platform') private platformModel: Model<IPlatform>) {}
 
-    async getPlatform(
-        filter: FilterQuery<IPlatform>
-    ): Promise<HydratedDocument<IPlatform> | null> {
+    async getPlatform(filter: FilterQuery<IPlatform>): Promise<HydratedDocument<IPlatform> | null> {
         return this.platformModel.findOne(filter)
     }
 }

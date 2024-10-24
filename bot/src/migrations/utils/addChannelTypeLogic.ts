@@ -20,8 +20,7 @@ async function channelMigration(connection: Connection, guildId: Snowflake) {
         const updates: Array<{ channelId: string; type: number }> = []
         const guild = await client.guilds.fetch(guildId)
         const channels = [...guild.channels.cache.values()].filter(
-            (channel) =>
-                channel.type === 0 || channel.type === 2 || channel.type === 4
+            (channel) => channel.type === 0 || channel.type === 2 || channel.type === 4
         ) as Array<TextChannel | VoiceChannel>
 
         for (const channel of channels) {

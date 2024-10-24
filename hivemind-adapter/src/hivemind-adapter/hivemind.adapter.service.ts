@@ -4,10 +4,7 @@ import { PinoLogger, InjectPinoLogger } from 'nestjs-pino'
 import { RabbitMQService } from '../rabbitmq/rabbitmq.service'
 import { Question } from '../common/interfaces/hivemind.interface'
 import { Event, Queue } from '@togethercrew.dev/tc-messagebroker'
-import {
-    ChatInputCommandInteraction_broker,
-    InteractionEditResponse,
-} from '../common/interfaces/bot.interface'
+import { ChatInputCommandInteraction_broker, InteractionEditResponse } from '../common/interfaces/bot.interface'
 
 @Injectable()
 export class HivemindAdapterService {
@@ -31,11 +28,7 @@ export class HivemindAdapterService {
         this.logger.info(msg, `processing QUESTION_RESPONSE_RECEIVED event`)
         const question = msg?.content.question
         const data = this.adaptDataToBot(question)
-        this.rabbitMQService.publish(
-            Queue.DISCORD_BOT,
-            Event.DISCORD_BOT.INTERACTION_RESPONSE.EDIT,
-            { ...data }
-        )
+        this.rabbitMQService.publish(Queue.DISCORD_BOT, Event.DISCORD_BOT.INTERACTION_RESPONSE.EDIT, { ...data })
         this.logger.info(msg, `QUESTION_RESPONSE_RECEIVED event is processed`)
     }
 

@@ -8,10 +8,7 @@ const logger = parentLogger.child({
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function handleFollowUpMessageCreate(msg: any): Promise<void> {
     try {
-        logger.info(
-            { msg, event: Event.DISCORD_BOT.FOLLOWUP_MESSAGE.CREATE },
-            'is running'
-        )
+        logger.info({ msg, event: Event.DISCORD_BOT.FOLLOWUP_MESSAGE.CREATE }, 'is running')
         // const interaction: ChatInputCommandInteraction_broker = JSON.parse(msg?.content.interaction);
         // const data: FollowUpMessageData = JSON.parse(msg?.content.data);
 
@@ -19,14 +16,8 @@ export async function handleFollowUpMessageCreate(msg: any): Promise<void> {
         const data = msg?.content.data
 
         await interactionService.createFollowUpMessage(interaction, data)
-        logger.info(
-            { msg, event: Event.DISCORD_BOT.FOLLOWUP_MESSAGE.CREATE },
-            'is done'
-        )
+        logger.info({ msg, event: Event.DISCORD_BOT.FOLLOWUP_MESSAGE.CREATE }, 'is done')
     } catch (error) {
-        logger.error(
-            { msg, event: Event.DISCORD_BOT.FOLLOWUP_MESSAGE.CREATE, error },
-            'is failed'
-        )
+        logger.error({ msg, event: Event.DISCORD_BOT.FOLLOWUP_MESSAGE.CREATE, error }, 'is failed')
     }
 }

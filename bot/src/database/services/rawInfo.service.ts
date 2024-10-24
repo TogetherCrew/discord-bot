@@ -10,10 +10,7 @@ const logger = parentLogger.child({ module: 'rawInfoService' })
  * @param {IRawInfo} rawInfo - The rawInfo object to be created.
  * @returns {Promise<IRawInfo | null>} - A promise that resolves to the created rawInfo object.
  */
-async function createRawInfo(
-    connection: Connection,
-    rawInfo: IRawInfo
-): Promise<IRawInfo | null> {
+async function createRawInfo(connection: Connection, rawInfo: IRawInfo): Promise<IRawInfo | null> {
     try {
         return await connection.models.RawInfo.create(rawInfo)
     } catch (error) {
@@ -27,19 +24,13 @@ async function createRawInfo(
  * @param {IRawInfo[]} rawInfos - An array of rawInfo objects to be created.
  * @returns {Promise<IRawInfo[] | []>} - A promise that resolves to an array of the created rawInfo objects.
  */
-async function createRawInfos(
-    connection: Connection,
-    rawInfos: IRawInfo[]
-): Promise<IRawInfo[] | []> {
+async function createRawInfos(connection: Connection, rawInfos: IRawInfo[]): Promise<IRawInfo[] | []> {
     try {
         return await connection.models.RawInfo.insertMany(rawInfos, {
             ordered: false,
         })
     } catch (error) {
-        logger.error(
-            { database: connection.name, error },
-            'Failed to create rawInfos'
-        )
+        logger.error({ database: connection.name, error }, 'Failed to create rawInfos')
         return []
     }
 }
@@ -50,10 +41,7 @@ async function createRawInfos(
  * @param {object} filter - An object specifying the filter criteria to match the desired rawInfo entry.
  * @returns {Promise<IRawInfo | null>} - A promise that resolves to the matching rawInfo object or null if not found.
  */
-async function getRawInfo(
-    connection: Connection,
-    filter: object
-): Promise<IRawInfo | null> {
+async function getRawInfo(connection: Connection, filter: object): Promise<IRawInfo | null> {
     return await connection.models.RawInfo.findOne(filter)
 }
 
@@ -63,10 +51,7 @@ async function getRawInfo(
  * @param {object} filter - An object specifying the filter criteria to match the desired rawInfo entries.
  * @returns {Promise<IRawInfo[] | []>} - A promise that resolves to an array of the matching rawInfo objects.
  */
-async function getRawInfos(
-    connection: Connection,
-    filter: object
-): Promise<IRawInfo[] | []> {
+async function getRawInfos(connection: Connection, filter: object): Promise<IRawInfo[] | []> {
     return await connection.models.RawInfo.find(filter)
 }
 
@@ -91,10 +76,7 @@ async function updateRawInfo(
         await rawInfo.save()
         return rawInfo
     } catch (error) {
-        logger.error(
-            { database: connection.name, filter, updateBody, error },
-            'Failed to update rawInfo'
-        )
+        logger.error({ database: connection.name, filter, updateBody, error }, 'Failed to update rawInfo')
         return null
     }
 }
@@ -112,16 +94,10 @@ async function updateManyRawInfo(
     updateBody: IRawInfoUpdateBody
 ): Promise<number> {
     try {
-        const updateResult = await connection.models.RawInfo.updateMany(
-            filter,
-            updateBody
-        )
+        const updateResult = await connection.models.RawInfo.updateMany(filter, updateBody)
         return updateResult.modifiedCount || 0
     } catch (error) {
-        logger.error(
-            { database: connection.name, filter, updateBody, error },
-            'Failed to update rawInfos'
-        )
+        logger.error({ database: connection.name, filter, updateBody, error }, 'Failed to update rawInfos')
         return 0
     }
 }
@@ -132,18 +108,12 @@ async function updateManyRawInfo(
  * @param {object} filter - An object specifying the filter criteria to match the desired rawInfo entry for deletion.
  * @returns {Promise<boolean>} - A promise that resolves to true if the rawInfo entry was successfully deleted, or false otherwise.
  */
-async function deleteRawInfo(
-    connection: Connection,
-    filter: object
-): Promise<boolean> {
+async function deleteRawInfo(connection: Connection, filter: object): Promise<boolean> {
     try {
         const deleteResult = await connection.models.RawInfo.deleteOne(filter)
         return deleteResult.deletedCount === 1
     } catch (error) {
-        logger.error(
-            { database: connection.name, filter, error },
-            'Failed to delete rawInfo'
-        )
+        logger.error({ database: connection.name, filter, error }, 'Failed to delete rawInfo')
         return false
     }
 }
@@ -155,18 +125,12 @@ async function deleteRawInfo(
  * @returns {Promise<number>} - A promise that resolves to the number of deleted rawInfo entries.
  * @throws {Error} - If there is an error while deleting the rawInfo entries.
  */
-async function deleteManyRawInfo(
-    connection: Connection,
-    filter: object
-): Promise<number> {
+async function deleteManyRawInfo(connection: Connection, filter: object): Promise<number> {
     try {
         const deleteResult = await connection.models.RawInfo.deleteMany(filter)
         return deleteResult.deletedCount
     } catch (error) {
-        logger.error(
-            { database: connection.name, filter, error },
-            'Failed to delete rawInfos'
-        )
+        logger.error({ database: connection.name, filter, error }, 'Failed to delete rawInfos')
         return 0
     }
 }
@@ -177,10 +141,7 @@ async function deleteManyRawInfo(
  * @param {object} filter - An object specifying the filter criteria to match the desired rawInfo entry.
  * @returns {Promise<IRawInfo | null>} - A promise that resolves to the oldest rawInfo object for the channel, or null if not found.
  */
-async function getNewestRawInfo(
-    connection: Connection,
-    filter: object
-): Promise<IRawInfo | null> {
+async function getNewestRawInfo(connection: Connection, filter: object): Promise<IRawInfo | null> {
     return await connection.models.RawInfo.findOne(filter).sort({
         createdDate: -1,
     })
@@ -192,10 +153,7 @@ async function getNewestRawInfo(
  * @param {object} filter - An object specifying the filter criteria to match the desired rawInfo entry.
  * @returns {Promise<IRawInfo | null>} - A promise that resolves to the oldest rawInfo object for the channel, or null if not found.
  */
-async function getOldestRawInfo(
-    connection: Connection,
-    filter: object
-): Promise<IRawInfo | null> {
+async function getOldestRawInfo(connection: Connection, filter: object): Promise<IRawInfo | null> {
     return await connection.models.RawInfo.findOne(filter).sort({
         createdDate: 1,
     })

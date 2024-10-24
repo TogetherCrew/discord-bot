@@ -16,14 +16,10 @@ async function loadEvents(): Promise<void> {
             const event = (await import(filePath)).default
             if (event.once === true) {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                client.once(event.name, (...args: any[]) =>
-                    event.execute(...args)
-                )
+                client.once(event.name, (...args: any[]) => event.execute(...args))
             } else {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                client.on(event.name, (...args: any[]) =>
-                    event.execute(...args)
-                )
+                client.on(event.name, (...args: any[]) => event.execute(...args))
             }
         }
     }

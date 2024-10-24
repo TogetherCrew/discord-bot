@@ -11,15 +11,9 @@ export async function handleInteractionResponseEdit(msg: any): Promise<void> {
         // logger.info({ msg, event: Event.DISCORD_BOT.INTERACTION_RESPONSE.EDIT }, 'is running');
         const interaction = msg?.content.interaction
         const data = msg?.content.data
-        await interactionService.editOriginalInteractionResponse(
-            interaction,
-            data
-        )
+        await interactionService.editOriginalInteractionResponse(interaction, data)
         // logger.info({ msg, event: Event.DISCORD_BOT.INTERACTION_RESPONSE.EDIT }, 'is done');
     } catch (error) {
-        logger.error(
-            { msg, event: Event.DISCORD_BOT.INTERACTION_RESPONSE.EDIT, error },
-            'is failed'
-        )
+        logger.error({ msg, event: Event.DISCORD_BOT.INTERACTION_RESPONSE.EDIT, error }, 'is failed')
     }
 }

@@ -16,20 +16,11 @@ export default async function cronJob(): Promise<void> {
     })
     for (let i = 0; i < platforms.length; i++) {
         try {
-            logger.info(
-                { platform_Id: platforms[i].metadata?.id },
-                'is running cronJob for platform'
-            )
+            logger.info({ platform_Id: platforms[i].metadata?.id }, 'is running cronJob for platform')
             addGuildExtraction(platforms[i], false)
-            logger.info(
-                { platform_Id: platforms[i].metadata?.id },
-                'cronJob is done for platform'
-            )
+            logger.info({ platform_Id: platforms[i].metadata?.id }, 'cronJob is done for platform')
         } catch (err) {
-            logger.error(
-                { platform_Id: platforms[i].metadata?.id, err },
-                'CronJob Failed for platform'
-            )
+            logger.error({ platform_Id: platforms[i].metadata?.id, err }, 'CronJob Failed for platform')
         }
     }
     logger.info('event is done')

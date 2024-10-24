@@ -9,8 +9,7 @@ setupTestDB()
 describe('rawInfo service', () => {
     let connection: Connection
     beforeAll(async () => {
-        connection =
-            await DatabaseManager.getInstance().getGuildDb('connection-3')
+        connection = await DatabaseManager.getInstance().getGuildDb('connection-3')
     })
     afterAll(async () => {
         await connection.close()
@@ -23,10 +22,7 @@ describe('rawInfo service', () => {
             await connection.collection('rawinfos').deleteMany({})
         })
         test('should create a rawInfo', async () => {
-            const result = await rawInfoService.createRawInfo(
-                connection,
-                rawInfo1
-            )
+            const result = await rawInfoService.createRawInfo(connection, rawInfo1)
             expect(result).toBeDefined()
             expect(result?.messageId).toEqual(rawInfo1.messageId)
 
@@ -47,11 +43,7 @@ describe('rawInfo service', () => {
             await connection.collection('rawinfos').deleteMany({})
         })
         test('should create rawInfos (list of rawInfo)', async () => {
-            const result = await rawInfoService.createRawInfos(connection, [
-                rawInfo1,
-                rawInfo2,
-                rawInfo3,
-            ])
+            const result = await rawInfoService.createRawInfos(connection, [rawInfo1, rawInfo2, rawInfo3])
             expect(result).toMatchObject([rawInfo1, rawInfo2, rawInfo3])
 
             const rawInfoDoc1 = await rawInfoService.getRawInfo(connection, {
@@ -106,11 +98,7 @@ describe('rawInfo service', () => {
             await connection.collection('rawinfos').deleteMany({})
         })
         test('should retrieve rawInfo that matches the filter criteria', async () => {
-            await rawInfoService.createRawInfos(connection, [
-                rawInfo1,
-                rawInfo2,
-                rawInfo3,
-            ])
+            await rawInfoService.createRawInfos(connection, [rawInfo1, rawInfo2, rawInfo3])
             const result = await rawInfoService.getRawInfos(connection, {
                 role_mentions: rawInfo2.role_mentions,
             })
@@ -119,11 +107,7 @@ describe('rawInfo service', () => {
         })
 
         test('should return an empty array when no rawInfo matches the filter criteria', async () => {
-            await rawInfoService.createRawInfos(connection, [
-                rawInfo1,
-                rawInfo2,
-                rawInfo3,
-            ])
+            await rawInfoService.createRawInfos(connection, [rawInfo1, rawInfo2, rawInfo3])
             const result = await rawInfoService.getRawInfos(connection, {
                 role_mentions: ['role8'],
             })
@@ -143,20 +127,13 @@ describe('rawInfo service', () => {
         test('should update an existing rawInfo that matches the filter criteria', async () => {
             await rawInfoService.createRawInfo(connection, rawInfo1)
 
-            const result = await rawInfoService.updateRawInfo(
-                connection,
-                { messageId: rawInfo1.messageId },
-                updateBody
-            )
+            const result = await rawInfoService.updateRawInfo(connection, { messageId: rawInfo1.messageId }, updateBody)
 
             expect(result).toMatchObject(updateBody)
 
-            const updatedRawInfoDoc = await rawInfoService.getRawInfo(
-                connection,
-                {
-                    channelId: updateBody.channelId,
-                }
-            )
+            const updatedRawInfoDoc = await rawInfoService.getRawInfo(connection, {
+                channelId: updateBody.channelId,
+            })
 
             expect(updatedRawInfoDoc).toBeDefined()
             expect(updatedRawInfoDoc).toMatchObject({
@@ -166,11 +143,7 @@ describe('rawInfo service', () => {
         })
 
         test('should return null when no rawInfo matches the filter criteria', async () => {
-            const result = await rawInfoService.updateRawInfo(
-                connection,
-                { messageId: rawInfo1.messageId },
-                updateBody
-            )
+            const result = await rawInfoService.updateRawInfo(connection, { messageId: rawInfo1.messageId }, updateBody)
             expect(result).toBeNull()
         })
     })
@@ -185,10 +158,7 @@ describe('rawInfo service', () => {
         }
 
         test('should update rawInfos that match the filter criteria', async () => {
-            await rawInfoService.createRawInfos(connection, [
-                rawInfo1,
-                rawInfo2,
-            ])
+            await rawInfoService.createRawInfos(connection, [rawInfo1, rawInfo2])
             const result = await rawInfoService.updateManyRawInfo(
                 connection,
                 { role_mentions: rawInfo1.role_mentions },
@@ -196,14 +166,8 @@ describe('rawInfo service', () => {
             )
 
             expect(result).toEqual(2)
-            const rawInfo1Doc = await rawInfoService.getRawInfo(
-                connection,
-                updateBody
-            )
-            const rawInfo2Doc = await rawInfoService.getRawInfo(
-                connection,
-                updateBody
-            )
+            const rawInfo1Doc = await rawInfoService.getRawInfo(connection, updateBody)
+            const rawInfo2Doc = await rawInfoService.getRawInfo(connection, updateBody)
 
             expect(rawInfo1Doc).toMatchObject({
                 channelId: updateBody.channelId,
@@ -216,11 +180,7 @@ describe('rawInfo service', () => {
         })
 
         test('should return 0 when no rawInfos match the filter criteria', async () => {
-            const result = await rawInfoService.updateManyRawInfo(
-                connection,
-                { content: rawInfo3.content },
-                updateBody
-            )
+            const result = await rawInfoService.updateManyRawInfo(connection, { content: rawInfo3.content }, updateBody)
             expect(result).toEqual(0)
         })
     })
@@ -250,11 +210,7 @@ describe('rawInfo service', () => {
             await connection.collection('rawinfos').deleteMany({})
         })
         test('should delete rawInfo that matches the filter criteria', async () => {
-            await rawInfoService.createRawInfos(connection, [
-                rawInfo1,
-                rawInfo2,
-                rawInfo3,
-            ])
+            await rawInfoService.createRawInfos(connection, [rawInfo1, rawInfo2, rawInfo3])
             const result = await rawInfoService.deleteManyRawInfo(connection, {
                 content: rawInfo1.content,
             })

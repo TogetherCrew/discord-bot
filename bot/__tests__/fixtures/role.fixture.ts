@@ -19,9 +19,6 @@ export const role3: IRole = {
     color: 654321,
 }
 
-export const insertRoles = async function <Type>(
-    roles: Array<Type>,
-    connection: Connection
-) {
+export const insertRoles = async function <Type>(roles: Array<Type>, connection: Connection) {
     await connection.models.Role.insertMany(roles.map((role) => role))
 }

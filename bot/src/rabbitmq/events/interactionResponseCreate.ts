@@ -8,17 +8,11 @@ const logger = parentLogger.child({
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function handleInteractionResponseCreate(msg: any): Promise<void> {
     try {
-        logger.info(
-            { msg, event: Event.DISCORD_BOT.INTERACTION_RESPONSE.CREATE },
-            'is running'
-        )
+        logger.info({ msg, event: Event.DISCORD_BOT.INTERACTION_RESPONSE.CREATE }, 'is running')
         const interaction = msg?.content.interaction
         const data = msg?.content.data
         await interactionService.createInteractionResponse(interaction, data)
-        logger.info(
-            { msg, event: Event.DISCORD_BOT.INTERACTION_RESPONSE.CREATE },
-            'is done'
-        )
+        logger.info({ msg, event: Event.DISCORD_BOT.INTERACTION_RESPONSE.CREATE }, 'is done')
     } catch (error) {
         logger.error(
             {

@@ -7,10 +7,7 @@ export const directMessageWorker = new Worker(
     'directMessageQueue',
     async (job: Job<any, any, string> | undefined) => {
         if (job !== null && job !== undefined) {
-            await userService.sendDirectMessage(
-                job.data.discordId,
-                job.data.info
-            )
+            await userService.sendDirectMessage(job.data.discordId, job.data.info)
         }
     },
     {

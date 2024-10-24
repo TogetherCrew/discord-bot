@@ -5,10 +5,7 @@ import parentLogger from '../../config/logger'
 
 const logger = parentLogger.child({ event: 'GuildRoleUpdateHandler' })
 
-export default async function (
-    guildId: Snowflake,
-    dataToStore: IRole
-): Promise<void> {
+export default async function (guildId: Snowflake, dataToStore: IRole): Promise<void> {
     const logFields = { guild_id: guildId, role_id: dataToStore.roleId }
     // logger.info(logFields, 'event is running');
     const connection = await DatabaseManager.getInstance().getGuildDb(guildId)

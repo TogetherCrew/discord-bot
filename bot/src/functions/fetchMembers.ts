@@ -16,10 +16,7 @@ const CHUNK_SIZE = 1000
  * @param {Connection} connection - Mongoose connection object for the database.
  * @returns {Promise<void>} - A promise that resolves when all members are fetched and stored.
  */
-async function fetchMembersInChunks(
-    guild: Guild,
-    connection: Connection
-): Promise<void> {
+async function fetchMembersInChunks(guild: Guild, connection: Connection): Promise<void> {
     let lastMemberId: Snowflake | undefined
 
     // TODO: fetch after latest stored guild member
@@ -37,9 +34,7 @@ async function fetchMembersInChunks(
             break
         }
 
-        const membersToStore: IGuildMember[] = fetchedMembers.map(
-            guildMemberService.getNeededDateFromGuildMember
-        )
+        const membersToStore: IGuildMember[] = fetchedMembers.map(guildMemberService.getNeededDateFromGuildMember)
 
         await guildMemberService.createGuildMembers(connection, membersToStore)
 
@@ -62,27 +57,16 @@ export default async function fetchGuildMembers(
 ): Promise<void> {
     try {
         const client = await coreService.DiscordBotManager.getClient()
-        const hasBotAccessToGuild = await platformService.checkBotAccessToGuild(
-            platform.metadata?.id
-        )
+        const hasBotAccessToGuild = await platformService.checkBotAccessToGuild(platform.metadata?.id)
         if (!hasBotAccessToGuild) {
-            logger.info(
-                { guild_id: platform.metadata?.id },
-                'Bot access missing'
-            )
+            logger.info({ guild_id: platform.metadata?.id }, 'Bot access missing')
             return
         }
         const guild = await client.guilds.fetch(platform.metadata?.id)
         logger.info({ guild_id: platform.metadata?.id }, 'Fetching members')
         await fetchMembersInChunks(guild, connection)
-        logger.info(
-            { guild_id: platform.metadata?.id },
-            'Members stored successfully'
-        )
+        logger.info({ guild_id: platform.metadata?.id }, 'Members stored successfully')
     } catch (error) {
-        logger.error(
-            { guild_id: platform.metadata?.id, error },
-            'Failed to fetch guild members'
-        )
+        logger.error({ guild_id: platform.metadata?.id, error }, 'Failed to fetch guild members')
     }
 }

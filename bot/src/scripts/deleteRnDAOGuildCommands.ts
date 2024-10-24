@@ -12,19 +12,10 @@ async function deleteRnDAOGuildCommands(): Promise<void> {
         const rest = new REST().setToken(config.discord.botToken)
         const guildCommands: any = await rest.get(
             // RnDAO:915914985140531240
-            Routes.applicationGuildCommands(
-                config.discord.clientId,
-                '915914985140531240'
-            )
+            Routes.applicationGuildCommands(config.discord.clientId, '915914985140531240')
         )
         guildCommands.forEach(async (command: any) => {
-            await rest.delete(
-                Routes.applicationGuildCommand(
-                    config.discord.clientId,
-                    '915914985140531240',
-                    command.id
-                )
-            )
+            await rest.delete(Routes.applicationGuildCommand(config.discord.clientId, '915914985140531240', command.id))
         })
     } catch (error) {
         logger.error('Failed to delete RnDAO guild commands', error)

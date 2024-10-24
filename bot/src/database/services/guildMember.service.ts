@@ -1,9 +1,5 @@
 import { type Connection } from 'mongoose'
-import {
-    type IGuildMember,
-    type IGuildMemberMethods,
-    type IGuildMemberUpdateBody,
-} from '@togethercrew.dev/db'
+import { type IGuildMember, type IGuildMemberMethods, type IGuildMemberUpdateBody } from '@togethercrew.dev/db'
 import { type GuildMember } from 'discord.js'
 import parentLogger from '../../config/logger'
 
@@ -14,10 +10,7 @@ const logger = parentLogger.child({ module: 'GuildMemberService' })
  * @param {IGuildMember} guildMember - The guild member object to be created.
  * @returns {Promise<IGuildMember|null>} - A promise that resolves to the created guild member object.
  */
-async function createGuildMember(
-    connection: Connection,
-    guildMember: IGuildMember
-): Promise<IGuildMember | null> {
+async function createGuildMember(connection: Connection, guildMember: IGuildMember): Promise<IGuildMember | null> {
     try {
         return await connection.models.GuildMember.create(guildMember)
     } catch (error) {
@@ -31,10 +24,7 @@ async function createGuildMember(
  * @param {IGuildMember[]} guildMembers - An array of guild member objects to be created.
  * @returns {Promise<IGuildMember[] | []>} - A promise that resolves to an array of the created guild member objects.
  */
-async function createGuildMembers(
-    connection: Connection,
-    guildMembers: IGuildMember[]
-): Promise<IGuildMember[] | []> {
+async function createGuildMembers(connection: Connection, guildMembers: IGuildMember[]): Promise<IGuildMember[] | []> {
     try {
         return await connection.models.GuildMember.insertMany(guildMembers, {
             ordered: false,
@@ -64,10 +54,7 @@ async function getGuildMember(
  * @param {object} filter - An object specifying the filter criteria to match the desired guild member entries.
  * @returns {Promise<IGuildMember[] | []>} - A promise that resolves to an array of the matching guild member objects.
  */
-async function getGuildMembers(
-    connection: Connection,
-    filter: object
-): Promise<IGuildMember[] | []> {
+async function getGuildMembers(connection: Connection, filter: object): Promise<IGuildMember[] | []> {
     return await connection.models.GuildMember.find(filter)
 }
 
@@ -92,10 +79,7 @@ async function updateGuildMember(
         await guildMember.save()
         return guildMember
     } catch (error) {
-        logger.error(
-            { database: connection.name, filter, updateBody, error },
-            'Failed to update guild member'
-        )
+        logger.error({ database: connection.name, filter, updateBody, error }, 'Failed to update guild member')
         return null
     }
 }
@@ -113,17 +97,11 @@ async function updateGuildMembers(
     updateBody: IGuildMemberUpdateBody
 ): Promise<number> {
     try {
-        const updateResult = await connection.models.GuildMember.updateMany(
-            filter,
-            updateBody
-        )
+        const updateResult = await connection.models.GuildMember.updateMany(filter, updateBody)
         // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
         return updateResult.modifiedCount || 0
     } catch (error) {
-        logger.error(
-            { database: connection.name, filter, updateBody, error },
-            'Failed to update guild members'
-        )
+        logger.error({ database: connection.name, filter, updateBody, error }, 'Failed to update guild members')
         return 0
     }
 }
@@ -134,19 +112,12 @@ async function updateGuildMembers(
  * @param {object} filter - An object specifying the filter criteria to match the desired guild member entry for deletion.
  * @returns {Promise<boolean>} - A promise that resolves to true if the guild member was successfully deleted, or false otherwise.
  */
-async function deleteGuildMember(
-    connection: Connection,
-    filter: object
-): Promise<boolean> {
+async function deleteGuildMember(connection: Connection, filter: object): Promise<boolean> {
     try {
-        const deleteResult =
-            await connection.models.GuildMember.deleteOne(filter)
+        const deleteResult = await connection.models.GuildMember.deleteOne(filter)
         return deleteResult.deletedCount === 1
     } catch (error) {
-        logger.error(
-            { database: connection.name, filter, error },
-            'Failed to delete guild member'
-        )
+        logger.error({ database: connection.name, filter, error }, 'Failed to delete guild member')
         return false
     }
 }
@@ -157,19 +128,12 @@ async function deleteGuildMember(
  * @param {object} filter - An object specifying the filter criteria to match multiple guild member entries for deletion.
  * @returns {Promise<number>} - A promise that resolves to the number of deleted guild member entries.
  */
-async function deleteGuildMembers(
-    connection: Connection,
-    filter: object
-): Promise<number> {
+async function deleteGuildMembers(connection: Connection, filter: object): Promise<number> {
     try {
-        const deleteResult =
-            await connection.models.GuildMember.deleteMany(filter)
+        const deleteResult = await connection.models.GuildMember.deleteMany(filter)
         return deleteResult.deletedCount
     } catch (error) {
-        logger.error(
-            { database: connection.name, filter, error },
-            'Failed to delete guild members'
-        )
+        logger.error({ database: connection.name, filter, error }, 'Failed to delete guild members')
         return 0
     }
 }
@@ -181,17 +145,10 @@ async function deleteGuildMembers(
  * @returns {Promise<void>} - A promise that resolves when the create or update operation is complete.
  *
  */
-async function handelGuildMemberChanges(
-    connection: Connection,
-    guildMember: GuildMember
-): Promise<void> {
+async function handelGuildMemberChanges(connection: Connection, guildMember: GuildMember): Promise<void> {
     const commonFields = getNeededDateFromGuildMember(guildMember)
     try {
-        const guildMemberDoc = await updateGuildMember(
-            connection,
-            { discordId: guildMember.user.id },
-            commonFields
-        )
+        const guildMemberDoc = await updateGuildMember(connection, { discordId: guildMember.user.id }, commonFields)
         if (guildMemberDoc === null) {
             await createGuildMember(connection, {
                 ...commonFields,
@@ -236,10 +193,7 @@ function getNeededDateFromGuildMember(guildMember: GuildMember): IGuildMember {
  * @param {object} filter - An object specifying the filter criteria to match the desired rawInfo entry.
  * @returns {Promise<IRawInfo | null>} - A promise that resolves to the oldest rawInfo object for the channel, or null if not found.
  */
-async function getLatestGuildMember(
-    connection: Connection,
-    filter: object
-): Promise<IGuildMember | null> {
+async function getLatestGuildMember(connection: Connection, filter: object): Promise<IGuildMember | null> {
     return await connection.models.GuildMember.findOne(filter).sort({
         _id: -1,
     })

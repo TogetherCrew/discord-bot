@@ -13,15 +13,10 @@ const logger = parentLogger.child({ module: 'FetchChannels' })
  * @param {Snowflake} guildId - The identifier of the guild to extract text and voice channels from.
  */
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export default async function fetchGuildChannels(
-    connection: Connection,
-    platform: HydratedDocument<IPlatform>
-) {
+export default async function fetchGuildChannels(connection: Connection, platform: HydratedDocument<IPlatform>) {
     try {
         const client = await coreService.DiscordBotManager.getClient()
-        const hasBotAccessToGuild = await platformService.checkBotAccessToGuild(
-            platform.metadata?.id
-        )
+        const hasBotAccessToGuild = await platformService.checkBotAccessToGuild(platform.metadata?.id)
         if (!hasBotAccessToGuild) {
             return
         }
@@ -30,23 +25,12 @@ export default async function fetchGuildChannels(
         logger.info({ guild_id: platform.metadata?.id }, 'Fetching channels')
         const fetchedChannels = await guild.channels.fetch()
         const filterNeededChannels = [...fetchedChannels.values()].filter(
-            (channel) =>
-                channel?.type === 0 ||
-                channel?.type === 2 ||
-                channel?.type === 4
+            (channel) => channel?.type === 0 || channel?.type === 2 || channel?.type === 4
         ) as Array<TextChannel | VoiceChannel>
-        channelsToStore = filterNeededChannels.map(
-            channelService.getNeededDateFromChannel
-        )
+        channelsToStore = filterNeededChannels.map(channelService.getNeededDateFromChannel)
         await channelService.createChannels(connection, channelsToStore)
-        logger.info(
-            { guild_id: platform.metadata?.id },
-            'Channels stored successfully'
-        )
+        logger.info({ guild_id: platform.metadata?.id }, 'Channels stored successfully')
     } catch (error) {
-        logger.error(
-            { guild_id: platform.metadata?.id, error },
-            'Failed to fetch channels'
-        )
+        logger.error({ guild_id: platform.metadata?.id, error }, 'Failed to fetch channels')
     }
 }

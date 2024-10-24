@@ -6,9 +6,7 @@ import { Module, type IModule } from '@togethercrew.dev/db'
  * @param {Object} filter - Mongo filter
  * @returns {Promise<HydratedDocument<IModule> | null>}
  */
-const getModuleByFilter = async (
-    filter: object
-): Promise<HydratedDocument<IModule> | null> => {
+const getModuleByFilter = async (filter: object): Promise<HydratedDocument<IModule> | null> => {
     return Module.findOne(filter)
 }
 

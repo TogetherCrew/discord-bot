@@ -35,9 +35,7 @@ async function registerCommand(): Promise<void> {
     try {
         const client = await coreService.DiscordBotManager.getClient()
         const rest = new REST().setToken(config.discord.botToken)
-        const commandData = [...client.commands.values()].map((command) =>
-            command.data.toJSON()
-        )
+        const commandData = [...client.commands.values()].map((command) => command.data.toJSON())
         await rest.put(Routes.applicationCommands(config.discord.clientId), {
             body: commandData,
         })

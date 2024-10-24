@@ -6,9 +6,7 @@ import { Platform, type IPlatform } from '@togethercrew.dev/db'
  * @param {Object} filter - Mongo filter
  * @returns {Promise<HydratedDocument<IPlatform> | null>}
  */
-const getPlatformByFilter = async (
-    filter: object
-): Promise<HydratedDocument<IPlatform> | null> => {
+const getPlatformByFilter = async (filter: object): Promise<HydratedDocument<IPlatform> | null> => {
     return await Platform.findOne(filter)
 }
 

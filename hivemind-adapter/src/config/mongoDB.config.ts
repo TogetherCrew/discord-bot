@@ -14,7 +14,5 @@ export const mongoDBConfigSchema = {
     MONGODB_PORT: Joi.string().required().description('MongoDB port'),
     MONGODB_USER: Joi.string().required().description('MongoDB user'),
     MONGODB_PASSWORD: Joi.string().required().description('MongoDB password'),
-    MONGODB_DB_NAME: Joi.string()
-        .required()
-        .description('MongoDB db name password'),
+    MONGODB_DB_NAME: Joi.string().required().description('MongoDB db name password'),
 }

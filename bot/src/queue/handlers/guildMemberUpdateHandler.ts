@@ -5,10 +5,7 @@ import parentLogger from '../../config/logger'
 
 const logger = parentLogger.child({ event: 'GuildMemberUpdateHandler' })
 
-export default async function (
-    guildId: Snowflake,
-    dataToStore: IGuildMember
-): Promise<void> {
+export default async function (guildId: Snowflake, dataToStore: IGuildMember): Promise<void> {
     const logFields = {
         guild_id: guildId,
         guild_member_id: dataToStore.discordId,
@@ -26,9 +23,6 @@ export default async function (
         }
         // logger.info(logFields, 'event is done');
     } catch (err) {
-        logger.error(
-            { ...logFields, err },
-            'Failed to handle guild member changes'
-        )
+        logger.error({ ...logFields, err }, 'Failed to handle guild member changes')
     }
 }

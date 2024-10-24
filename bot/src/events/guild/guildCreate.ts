@@ -7,8 +7,7 @@ export default {
     once: false,
     async execute(guild: Guild) {
         const botMember = await guild.members.fetch(config.discord.clientId)
-        const dataToStore =
-            guildMemberService.getNeededDateFromGuildMember(botMember)
+        const dataToStore = guildMemberService.getNeededDateFromGuildMember(botMember)
         addGuildEventQueue({
             type: Events.GuildMemberUpdate,
             guildId: botMember.guild.id,

@@ -1,11 +1,6 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import {
-    type TextChannel,
-    type Message,
-    type ThreadChannel,
-    type Snowflake,
-} from 'discord.js'
+import { type TextChannel, type Message, type ThreadChannel, type Snowflake } from 'discord.js'
 import { type IRawInfo } from '@togethercrew.dev/db'
 import { type Connection } from 'mongoose'
 import parentLogger from '../../config/logger'
@@ -28,17 +23,12 @@ async function fetchMessagesBetweenOldestAndNewest(
 ) {
     try {
         let allMessages: Message[] = []
-        logger.info(
-            { guild_id: connection.name, channel_id: channel.id },
-            'Fetching channel messages is running'
-        )
+        logger.info({ guild_id: connection.name, channel_id: channel.id }, 'Fetching channel messages is running')
         const options: FetchOptions = { limit: 100 }
         options.after = oldestRawInfo.messageId
         let fetchedMessages = await channel.messages.fetch(options)
         while (fetchedMessages.size > 0) {
-            allMessages = allMessages.concat(
-                Array.from(fetchedMessages.values())
-            )
+            allMessages = allMessages.concat(Array.from(fetchedMessages.values()))
             if (fetchedMessages.has(newestRawInfo.messageId)) {
                 break
             }
@@ -47,21 +37,12 @@ async function fetchMessagesBetweenOldestAndNewest(
         }
         return allMessages
     } catch (err) {
-        logger.error(
-            { guild_id: connection.name, channel_id: channel.id, err },
-            'Fetching channel messages failed'
-        )
+        logger.error({ guild_id: connection.name, channel_id: channel.id, err }, 'Fetching channel messages failed')
     }
-    logger.info(
-        { guild_id: connection.name, channel_id: channel.id },
-        'Fetching channel messages is done'
-    )
+    logger.info({ guild_id: connection.name, channel_id: channel.id }, 'Fetching channel messages is done')
 }
 
-async function migrateIsGeneratedByWebhook(
-    connection: Connection,
-    channel: TextChannel
-) {
+async function migrateIsGeneratedByWebhook(connection: Connection, channel: TextChannel) {
     try {
         logger.info(
             { guild_id: connection.name, channel_id: channel.id },
@@ -69,22 +50,16 @@ async function migrateIsGeneratedByWebhook(
         )
 
         // Fetch oldest rawInfo from DB
-        const oldestChannelRawInfo = await rawInfoService.getOldestRawInfo(
-            connection,
-            {
-                channelId: channel?.id,
-                threadId: null,
-            }
-        )
+        const oldestChannelRawInfo = await rawInfoService.getOldestRawInfo(connection, {
+            channelId: channel?.id,
+            threadId: null,
+        })
 
         // Fetch newest rawInfo from DB
-        const newestChannelRawInfo = await rawInfoService.getNewestRawInfo(
-            connection,
-            {
-                channelId: channel?.id,
-                threadId: null,
-            }
-        )
+        const newestChannelRawInfo = await rawInfoService.getNewestRawInfo(connection, {
+            channelId: channel?.id,
+            threadId: null,
+        })
 
         if (!oldestChannelRawInfo || !newestChannelRawInfo) {
             logger.info(
@@ -103,12 +78,8 @@ async function migrateIsGeneratedByWebhook(
         const messagesToUpdateTrue = []
         const messagesToUpdateFalse = []
 
-        const oldestMessage = await channel.messages.fetch(
-            oldestChannelRawInfo.messageId
-        )
-        const newestMessage = await channel.messages.fetch(
-            newestChannelRawInfo.messageId
-        )
+        const oldestMessage = await channel.messages.fetch(oldestChannelRawInfo.messageId)
+        const newestMessage = await channel.messages.fetch(newestChannelRawInfo.messageId)
 
         if (oldestMessage.webhookId) messagesToUpdateTrue.push(oldestMessage.id)
         else messagesToUpdateFalse.push(oldestMessage.id)
@@ -146,50 +117,37 @@ async function migrateIsGeneratedByWebhook(
 
         // Handle threads of the channel
         for (const thread of threads) {
-            const oldestThreadRawInfo = await rawInfoService.getOldestRawInfo(
-                connection,
-                {
-                    channelId: channel?.id,
-                    threadId: thread.id,
-                }
-            )
+            const oldestThreadRawInfo = await rawInfoService.getOldestRawInfo(connection, {
+                channelId: channel?.id,
+                threadId: thread.id,
+            })
 
-            const newestThreadRawInfo = await rawInfoService.getNewestRawInfo(
-                connection,
-                {
-                    channelId: channel?.id,
-                    threadId: thread.id,
-                }
-            )
+            const newestThreadRawInfo = await rawInfoService.getNewestRawInfo(connection, {
+                channelId: channel?.id,
+                threadId: thread.id,
+            })
 
             if (!oldestThreadRawInfo || !newestThreadRawInfo) {
                 continue // No data to migrate for this thread
             }
 
-            const fetchedThreadMessages =
-                await fetchMessagesBetweenOldestAndNewest(
-                    connection,
-                    thread,
-                    oldestThreadRawInfo,
-                    newestThreadRawInfo
-                )
+            const fetchedThreadMessages = await fetchMessagesBetweenOldestAndNewest(
+                connection,
+                thread,
+                oldestThreadRawInfo,
+                newestThreadRawInfo
+            )
 
             const threadMessagesToUpdateTrue = []
             const threadMessagesToUpdateFalse = []
 
-            const oldestThreadMessage = await thread.messages.fetch(
-                oldestThreadRawInfo.messageId
-            )
-            const newestThreadMessage = await thread.messages.fetch(
-                newestThreadRawInfo.messageId
-            )
+            const oldestThreadMessage = await thread.messages.fetch(oldestThreadRawInfo.messageId)
+            const newestThreadMessage = await thread.messages.fetch(newestThreadRawInfo.messageId)
 
-            if (oldestThreadMessage.webhookId)
-                threadMessagesToUpdateTrue.push(oldestThreadMessage.id)
+            if (oldestThreadMessage.webhookId) threadMessagesToUpdateTrue.push(oldestThreadMessage.id)
             else threadMessagesToUpdateFalse.push(oldestThreadMessage.id)
 
-            if (newestThreadMessage.webhookId)
-                threadMessagesToUpdateTrue.push(newestThreadMessage.id)
+            if (newestThreadMessage.webhookId) threadMessagesToUpdateTrue.push(newestThreadMessage.id)
             else threadMessagesToUpdateFalse.push(newestThreadMessage.id)
 
             if (fetchedThreadMessages) {
@@ -219,10 +177,7 @@ async function migrateIsGeneratedByWebhook(
             }
         }
 
-        logger.info(
-            { guild_id: connection.name, channel_id: channel.id },
-            'Migration for isGeneratedByWebhook is done'
-        )
+        logger.info({ guild_id: connection.name, channel_id: channel.id }, 'Migration for isGeneratedByWebhook is done')
     } catch (err) {
         logger.error(
             { guild_id: connection.name, channel_id: channel.id, err },

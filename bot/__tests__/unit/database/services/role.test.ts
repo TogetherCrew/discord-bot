@@ -1,20 +1,14 @@
 import { Connection } from 'mongoose'
 import { IRoleUpdateBody, DatabaseManager } from '@togethercrew.dev/db'
 import setupTestDB from '../../../utils/setupTestDB'
-import {
-    role1,
-    role2,
-    role3,
-    insertRoles,
-} from '../../../fixtures/role.fixture'
+import { role1, role2, role3, insertRoles } from '../../../fixtures/role.fixture'
 import { roleService } from '../../../../src/database/services'
 setupTestDB()
 
 describe('role service', () => {
     let connection: Connection
     beforeAll(async () => {
-        connection =
-            await DatabaseManager.getInstance().getGuildDb('connection-4')
+        connection = await DatabaseManager.getInstance().getGuildDb('connection-4')
     })
     afterAll(async () => {
         await connection.close()
@@ -49,10 +43,7 @@ describe('role service', () => {
             await connection.collection('roles').deleteMany({})
         })
         test('should create roles', async () => {
-            const result = await roleService.createRoles(connection, [
-                role1,
-                role2,
-            ])
+            const result = await roleService.createRoles(connection, [role1, role2])
             expect(result).toMatchObject([role1, role2])
 
             const roleDoc1 = await roleService.getRole(connection, {
@@ -129,11 +120,7 @@ describe('role service', () => {
         }
         test('should update an existing role that match the filter criteria', async () => {
             await insertRoles([role1], connection)
-            const result = await roleService.updateRole(
-                connection,
-                { roleId: role1.roleId },
-                updateBody
-            )
+            const result = await roleService.updateRole(connection, { roleId: role1.roleId }, updateBody)
             expect(result).toMatchObject(updateBody)
 
             const roleDoc1 = await roleService.getRole(connection, {
@@ -148,11 +135,7 @@ describe('role service', () => {
         })
 
         test('should return null when no role match the filter criteria', async () => {
-            const result = await roleService.updateRole(
-                connection,
-                { roleId: role1.roleId },
-                updateBody
-            )
+            const result = await roleService.updateRole(connection, { roleId: role1.roleId }, updateBody)
             expect(result).toEqual(null)
         })
     })
@@ -166,11 +149,7 @@ describe('role service', () => {
         }
         test('should update roles that match the filter criteria', async () => {
             await insertRoles([role1, role2, role3], connection)
-            const result = await roleService.updateRoles(
-                connection,
-                { color: role2.color },
-                updateBody
-            )
+            const result = await roleService.updateRoles(connection, { color: role2.color }, updateBody)
             expect(result).toEqual(2)
             const roleDoc1 = await roleService.getRole(connection, {
                 roleId: role2.roleId,
@@ -183,11 +162,7 @@ describe('role service', () => {
         })
 
         test('should return 0 when no roles match the filter criteria', async () => {
-            const result = await roleService.updateRoles(
-                connection,
-                { color: role2.color },
-                updateBody
-            )
+            const result = await roleService.updateRoles(connection, { color: role2.color }, updateBody)
             expect(result).toEqual(0)
         })
     })

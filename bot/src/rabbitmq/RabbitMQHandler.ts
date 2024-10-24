@@ -12,25 +12,10 @@ import { handleSendMessageToChannel } from './events/sendMessageToChannel'
 export function setupRabbitMQHandlers(): void {
     RabbitMQ.onEvent(Event.DISCORD_BOT.FETCH, handleFetchEvent)
     RabbitMQ.onEvent(Event.DISCORD_BOT.SEND_MESSAGE, handleSendMessageEvent)
-    RabbitMQ.onEvent(
-        Event.DISCORD_BOT.SEND_MESSAGE_TO_CHANNEL,
-        handleSendMessageToChannel
-    )
+    RabbitMQ.onEvent(Event.DISCORD_BOT.SEND_MESSAGE_TO_CHANNEL, handleSendMessageToChannel)
     RabbitMQ.onEvent(Event.DISCORD_BOT.FETCH_MEMBERS, handleFetchMembersEvent)
-    RabbitMQ.onEvent(
-        Event.DISCORD_BOT.INTERACTION_RESPONSE.CREATE,
-        handleInteractionResponseCreate
-    )
-    RabbitMQ.onEvent(
-        Event.DISCORD_BOT.INTERACTION_RESPONSE.EDIT,
-        handleInteractionResponseEdit
-    )
-    RabbitMQ.onEvent(
-        Event.DISCORD_BOT.INTERACTION_RESPONSE.DELETE,
-        handleInteractionResponseDelete
-    )
-    RabbitMQ.onEvent(
-        Event.DISCORD_BOT.FOLLOWUP_MESSAGE.CREATE,
-        handleFollowUpMessageCreate
-    )
+    RabbitMQ.onEvent(Event.DISCORD_BOT.INTERACTION_RESPONSE.CREATE, handleInteractionResponseCreate)
+    RabbitMQ.onEvent(Event.DISCORD_BOT.INTERACTION_RESPONSE.EDIT, handleInteractionResponseEdit)
+    RabbitMQ.onEvent(Event.DISCORD_BOT.INTERACTION_RESPONSE.DELETE, handleInteractionResponseDelete)
+    RabbitMQ.onEvent(Event.DISCORD_BOT.FOLLOWUP_MESSAGE.CREATE, handleFollowUpMessageCreate)
 }

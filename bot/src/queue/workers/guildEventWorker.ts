@@ -21,59 +21,35 @@ export const discordEventWorker = new Worker(
         if (job !== null && job !== undefined) {
             switch (job.data.type) {
                 case Events.ChannelCreate: {
-                    await channelCreateHandler(
-                        job.data.guildId,
-                        job.data.dataToStore
-                    )
+                    await channelCreateHandler(job.data.guildId, job.data.dataToStore)
                     break
                 }
                 case Events.ChannelUpdate: {
-                    await channelUpdateHandler(
-                        job.data.guildId,
-                        job.data.dataToStore
-                    )
+                    await channelUpdateHandler(job.data.guildId, job.data.dataToStore)
                     break
                 }
                 case Events.ChannelDelete: {
-                    await channelDeleteHandler(
-                        job.data.guildId,
-                        job.data.channelId
-                    )
+                    await channelDeleteHandler(job.data.guildId, job.data.channelId)
                     break
                 }
                 case Events.GuildMemberAdd: {
-                    await guildMemberAddHandler(
-                        job.data.guildId,
-                        job.data.dataToStore
-                    )
+                    await guildMemberAddHandler(job.data.guildId, job.data.dataToStore)
                     break
                 }
                 case Events.GuildMemberUpdate: {
-                    await guildMemberUpdateHandler(
-                        job.data.guildId,
-                        job.data.dataToStore
-                    )
+                    await guildMemberUpdateHandler(job.data.guildId, job.data.dataToStore)
                     break
                 }
                 case Events.GuildMemberRemove: {
-                    await guildMemberRemoveHandler(
-                        job.data.guildId,
-                        job.data.guildMemberId
-                    )
+                    await guildMemberRemoveHandler(job.data.guildId, job.data.guildMemberId)
                     break
                 }
                 case Events.GuildRoleCreate: {
-                    await roleCreateHandler(
-                        job.data.guildId,
-                        job.data.dataToStore
-                    )
+                    await roleCreateHandler(job.data.guildId, job.data.dataToStore)
                     break
                 }
                 case Events.GuildRoleUpdate: {
-                    await roleUpdateHandler(
-                        job.data.guildId,
-                        job.data.dataToStore
-                    )
+                    await roleUpdateHandler(job.data.guildId, job.data.dataToStore)
                     break
                 }
                 case Events.GuildRoleDelete: {

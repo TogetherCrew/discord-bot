@@ -21,23 +21,15 @@ const fetchMethod = async (msg: any): Promise<void> => {
 
     if (platform !== null) {
         const isPlatformCreated = saga.data.created
-        const connection = await DatabaseManager.getInstance().getGuildDb(
-            platform.metadata?.id
-        )
+        const connection = await DatabaseManager.getInstance().getGuildDb(platform.metadata?.id)
         if (isPlatformCreated === true) {
-            await platformService.updatePlatform(
-                { _id: platform.id },
-                { metadata: { isFetchingInitialData: true } }
-            )
+            await platformService.updatePlatform({ _id: platform.id }, { metadata: { isFetchingInitialData: true } })
             await Promise.all([
                 fetchMembers(connection, platform),
                 fetchChannels(connection, platform),
                 fetchRoles(connection, platform),
             ])
-            await platformService.updatePlatform(
-                { _id: platform.id },
-                { metadata: { isFetchingInitialData: false } }
-            )
+            await platformService.updatePlatform({ _id: platform.id }, { metadata: { isFetchingInitialData: false } })
         } else {
             addGuildExtraction(platform, true)
         }
@@ -47,10 +39,7 @@ const fetchMethod = async (msg: any): Promise<void> => {
 
 export async function handleFetchEvent(msg: any): Promise<void> {
     try {
-        logger.info(
-            { msg, event: Event.DISCORD_BOT.FETCH, sagaId: msg.content.uuid },
-            'is running'
-        )
+        logger.info({ msg, event: Event.DISCORD_BOT.FETCH, sagaId: msg.content.uuid }, 'is running')
         if (msg === undefined || msg === null) return
         const { content } = msg
         const saga = await MBConnection.models.Saga.findOne({
@@ -58,10 +47,7 @@ export async function handleFetchEvent(msg: any): Promise<void> {
         })
         // eslint-disable-next-line @typescript-eslint/return-await
         await saga.next(async () => fetchMethod(msg))
-        logger.info(
-            { msg, event: Event.DISCORD_BOT.FETCH, sagaId: msg.content.uuid },
-            'is done'
-        )
+        logger.info({ msg, event: Event.DISCORD_BOT.FETCH, sagaId: msg.content.uuid }, 'is done')
     } catch (error) {
         logger.error(
             {
