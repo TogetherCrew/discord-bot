@@ -14,10 +14,10 @@ ENV NODE_ENV=development
 EXPOSE 3000
 CMD ["npm", "run", "dev"]
 
-# # Stage 3: Test Stage
-# FROM base AS test
-# ENV NODE_ENV=test
-# CMD ["npm", "run", "test"]
+# Stage 3: Test Stage
+FROM base AS test
+ENV NODE_ENV=test
+CMD ["npm", "run", "test"]
 
 # # Stage 4: Build Stage
 # FROM base AS build
