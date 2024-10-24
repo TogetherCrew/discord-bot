@@ -8,7 +8,6 @@ import {
     insertRoles,
 } from '../../../fixtures/role.fixture'
 import { roleService } from '../../../../src/database/services'
-import config from '../../../../src/config'
 setupTestDB()
 
 describe('role service', () => {

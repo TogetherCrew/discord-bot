@@ -8,7 +8,6 @@ import {
     insertChannels,
 } from '../../../fixtures/channel.fixture'
 import { channelService } from '../../../../src/database/services'
-import config from '../../../../src/config'
 setupTestDB()
 
 describe('channel service', () => {

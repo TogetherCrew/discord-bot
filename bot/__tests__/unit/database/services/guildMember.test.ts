@@ -7,7 +7,6 @@ import {
     guildMember3,
 } from '../../../fixtures/guildMember.fixture'
 import { guildMemberService } from '../../../../src/database/services'
-import config from '../../../../src/config'
 setupTestDB()
 
 describe('guildMember service', () => {
