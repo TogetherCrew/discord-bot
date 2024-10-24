@@ -30,3 +30,5 @@ jobs:
           FILTER_REGEX_INCLUDE: "(^|/)${{ inputs.app_path }}/"
           VALIDATE_GIT_COMMITLINT: false
           VALIDATE_MARKDOWN: false
+          VALIDATE_JAVASCRIPT_PRETTIER: false
+          VALIDATE_JAVASCRIPT_STANDARD: false
