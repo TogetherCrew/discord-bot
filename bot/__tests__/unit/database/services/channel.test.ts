@@ -1,10 +1,5 @@
-import mongoose, { Connection } from 'mongoose'
-import {
-    IChannel,
-    channelSchema,
-    IChannelUpdateBody,
-    DatabaseManager,
-} from '@togethercrew.dev/db'
+import { Connection } from 'mongoose'
+import { IChannelUpdateBody, DatabaseManager } from '@togethercrew.dev/db'
 import setupTestDB from '../../../utils/setupTestDB'
 import {
     channel1,

@@ -1,10 +1,5 @@
-import mongoose, { Connection } from 'mongoose'
-import {
-    IRole,
-    roleSchema,
-    IRoleUpdateBody,
-    DatabaseManager,
-} from '@togethercrew.dev/db'
+import { Connection } from 'mongoose'
+import { IRoleUpdateBody, DatabaseManager } from '@togethercrew.dev/db'
 import setupTestDB from '../../../utils/setupTestDB'
 import {
     role1,

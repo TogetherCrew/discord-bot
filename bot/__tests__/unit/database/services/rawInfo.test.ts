@@ -1,4 +1,4 @@
-import mongoose, { Connection } from 'mongoose'
+import { Connection } from 'mongoose'
 import { IRawInfoUpdateBody, DatabaseManager } from '@togethercrew.dev/db'
 import setupTestDB from '../../../utils/setupTestDB'
 import { rawInfo1, rawInfo2, rawInfo3 } from '../../../fixtures/rawInfo.fixture'

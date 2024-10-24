@@ -6,9 +6,9 @@ on:
   push:
     paths:
       - "hivemind-adapter/**"
-  pull_request:
-    paths:
-      - "hivemind-adapter/**"
+  # pull_request:
+  #   paths:
+  #     - "hivemind-adapter/**"
 
 jobs:
   lint:

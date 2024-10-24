@@ -6,9 +6,9 @@ on:
   push:
     paths:
       - "bot/**"
-  pull_request:
-    paths:
-      - "bot/**"
+  # pull_request:
+  #   paths:
+  #     - "bot/**"
 
 jobs:
   lint:

@@ -1,11 +1,5 @@
-import mongoose, { Connection } from 'mongoose'
-import {
-    IGuildMember,
-    guildMemberSchema,
-    IGuildMemberUpdateBody,
-    DatabaseManager,
-    GuildMember,
-} from '@togethercrew.dev/db'
+import { Connection } from 'mongoose'
+import { IGuildMemberUpdateBody, DatabaseManager } from '@togethercrew.dev/db'
 import setupTestDB from '../../../utils/setupTestDB'
 import {
     guildMember1,
