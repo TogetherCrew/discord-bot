@@ -25,7 +25,7 @@ jobs:
 
   build-push:
     needs: [lint, test]
-    needs: [lint]
+    # needs: [lint]
     uses: ./.github/workflows/build-push.yml
     with:
       app_name: "bot"
