@@ -28,3 +28,5 @@ jobs:
           VALIDATE_PYTHON_FLAKE8: false
           VALIDATE_PYTHON_MYPY: false
           FILTER_REGEX_INCLUDE: "(^|/)${{ inputs.app_path }}/"
+          VALIDATE_GIT_COMMITLINT: false
+          VALIDATE_MARKDOWN: false
