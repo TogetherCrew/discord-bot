@@ -18,11 +18,10 @@ FROM base AS test
 ENV NODE_ENV=test
 CMD ["npm", "run", "test"]
 
-# # Stage 5: Production Stage
-# FROM node:18-alpine AS production
-# WORKDIR /bot
-# ENV NODE_ENV=production
-# COPY --from=build /bot/dist ./dist
-# RUN npm ci --only=production
-# EXPOSE 3000
-# CMD ["npm", "run", "start"]
+# Stage 5: Production Stage
+FROM base AS production
+ENV NODE_ENV=production
+COPY --from=build /bot/dist ./dist
+RUN npm ci --only=production
+EXPOSE 3000
+CMD ["npm", "run", "start"]
