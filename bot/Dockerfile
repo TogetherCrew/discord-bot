@@ -1,9 +1,10 @@
 # Stage 1: Base Stage
-FROM node:18 AS base
-WORKDIR /bot
-COPY /bot/package.json /bot
+FROM node:20-alpine AS base
+WORKDIR /app
+# COPY ./package-lock.json /app
+COPY ./package.json /app
 RUN npm install
-COPY /bot .
+COPY . .
 RUN npm run build
 
 
@@ -13,10 +14,10 @@ ENV NODE_ENV=development
 EXPOSE 3000
 CMD ["npm", "run", "dev"]
 
-# Stage 3: Test Stage
-FROM base AS test
-ENV NODE_ENV=test
-CMD ["npm", "run", "test"]
+# # Stage 3: Test Stage
+# FROM base AS test
+# ENV NODE_ENV=test
+# CMD ["npm", "run", "test"]
 
 # # Stage 4: Build Stage
 # FROM base AS build

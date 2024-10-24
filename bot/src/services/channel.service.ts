@@ -13,7 +13,7 @@ const logger = parentLogger.child({ module: 'ChannelService' })
 async function sendChannelMessage(discordId: Snowflake, message: string): Promise<Message | undefined> {
     const client = await coreService.DiscordBotManager.getClient()
     const channel = await client.channels.fetch(discordId)
-    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions, @typescript-eslint/prefer-optional-chain
+
     if (channel && (channel.isTextBased() || channel.isVoiceBased())) {
         return await channel.send(message)
     }
