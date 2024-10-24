@@ -1,0 +1,29 @@
+version: '3.9'
+
+services:
+    app:
+        build:
+            context: .
+            target: development
+            dockerfile: Dockerfile
+        environment:
+            - NODE_ENV=development
+            - PORT=3000
+            - DISCORD_CLIENT_ID=x
+            - DISCORD_CLIENT_SECRET=-x
+            - DISCORD_REDIRECT_URI=http://localhost:4000/api/v1/auth/discord/authenticate/callback
+            - GOOGLE_CLIENT_ID=x
+            - GOOGLE_CLIENT_SECRET=x
+            - GOOGLE_REDIRECT_URI=http://localhost:4000/api/v1/auth/google/authenticate/callback
+            - SESSION_SECRET=x
+            - JWT_SECRET=x
+            - WALLET_PRIVATE_KEY=x
+            - WALLET_PUBLIC_KEY=x
+            - LOG_LEVEL=info
+            - FRONTEND_URL=http://localhost:3000
+            - LIT_NETWORK=datil-dev
+
+        ports:
+            - '3000:3000'
+        volumes:
+            - ./coverage:/project/coverage
