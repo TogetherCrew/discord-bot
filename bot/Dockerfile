@@ -3,7 +3,7 @@ FROM node:18-alpine AS base
 # @pyroscope/nodejs issue: https://github.com/grafana/pyroscope-nodejs/issues/31
 RUN apk add g++ make py3-pip 
 
-WORKDIR /project/bot
+WORKDIR /app
 COPY . .
 RUN npm ci
 
