@@ -1,7 +1,8 @@
 # Stage 1: Base Stage
-FROM node:20-alpine AS  base
+FROM node:20-alpine AS base
 WORKDIR /app
-COPY package*.json ./
+# COPY ./package-lock.json /app
+COPY ./package.json /app
 RUN npm install
 COPY . .
 # RUN npm run build
@@ -9,15 +10,14 @@ COPY . .
 
 # Stage 2: Development Stage
 FROM base AS development
+ENV NODE_ENV=development
 EXPOSE 3000
 CMD ["npm", "run", "dev"]
 
-FROM node:20-alpine AS test
-WORKDIR /app
-COPY --from=base /app .
-RUN npm install --only=development
+# Stage 3: Test Stage
+FROM base AS test
+ENV NODE_ENV=test
 CMD [ "npx", "jest", "--coverage" ]
-
 
 # # Stage 4: Build Stage
 # FROM base AS build
