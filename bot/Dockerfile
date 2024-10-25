@@ -25,7 +25,7 @@ CMD ["npm", "run", "dev"]
 # Stage 4: Testing
 FROM node:20-alpine AS test
 WORKDIR /app
-COPY --from=builder /app .
+COPY --from=base /app .
 RUN npm install --only=development
 CMD [ "npx", "jest", "--coverage" ]
 
