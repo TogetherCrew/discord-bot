@@ -14,9 +14,19 @@ ENV NODE_ENV=development
 EXPOSE 3000
 CMD ["npm", "run", "dev"]
 
-# Stage 3: Test Stage
-FROM base AS test
-ENV NODE_ENV=test
+# # Stage 3: Test Stage
+# FROM base AS test
+# WORKDIR /app
+# COPY --from=builder /app .
+# RUN npm install --only=development
+# ENV NODE_ENV=test
+# CMD [ "npx", "jest", "--coverage" ]
+
+# Stage 4: Testing
+FROM node:20-alpine AS test
+WORKDIR /app
+COPY --from=builder /app .
+RUN npm install --only=development
 CMD [ "npx", "jest", "--coverage" ]
 
 # # Stage 4: Build Stage
@@ -25,7 +35,7 @@ CMD [ "npx", "jest", "--coverage" ]
 # RUN npm run build
 
 # # Stage 5: Production Stage
-# FROM node:18-alpine AS production
+# FROM node:20-alpine AS production
 # WORKDIR /bot
 # ENV NODE_ENV=production
 # COPY --from=build /bot/dist ./dist
