@@ -5,7 +5,7 @@ WORKDIR /app
 COPY ./package.json /app
 RUN npm install
 COPY . .
-# RUN npm run build
+RUN npm run build
 
 
 # Stage 2: Development Stage
@@ -15,12 +15,8 @@ EXPOSE 3000
 CMD ["npm", "run", "dev"]
 
 # Stage 3: Test Stage
-FROM node:20-alpine AS test
-WORKDIR /app
-# COPY ./package-lock.json /app
-COPY ./package.json /app
-RUN npm install
-COPY . .
+FROM base AS test
+ENV NODE_ENV=test
 CMD [ "npx", "jest", "--coverage" ]
 
 # # Stage 4: Build Stage
@@ -29,7 +25,7 @@ CMD [ "npx", "jest", "--coverage" ]
 # RUN npm run build
 
 # # Stage 5: Production Stage
-# FROM node:20-alpine AS production
+# FROM node:18-alpine AS production
 # WORKDIR /bot
 # ENV NODE_ENV=production
 # COPY --from=build /bot/dist ./dist

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 import Joi from 'joi'
 
 const envVarsSchema = Joi.object()

@@ -1,21 +1,25 @@
 {
     "compilerOptions": {
         "module": "commonjs",
-        "declaration": true,
-        "removeComments": true,
+        "declaration": false,
+        "removeComments": false,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
-        "allowSyntheticDefaultImports": true,
-        "target": "ES2021",
-        "sourceMap": true,
-        "outDir": "./dist",
+        "target": "ES2017",
+        "sourceMap": false,
+        "outDir": "./lib",
         "baseUrl": "./",
         "incremental": true,
+        "strict": true,
+        "noImplicitAny": true,
         "skipLibCheck": true,
-        "strictNullChecks": false,
-        "noImplicitAny": false,
-        "strictBindCallApply": false,
-        "forceConsistentCasingInFileNames": false,
-        "noFallthroughCasesInSwitch": false
-    }
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true
+    },
+    "include": ["src/**/*", "__tests__/**/*", "types/**/*"],
+    "ts-node": {
+        "transpileOnly": true,
+        "files": true
+    },
+    "exclude": ["./coverage", "./dist", "__tests__", "jest.config.js"]
 }
