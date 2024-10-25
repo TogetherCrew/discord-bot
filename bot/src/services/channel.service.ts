@@ -1,4 +1,12 @@
-import { type Snowflake, type Message, type Channel, type Guild } from 'discord.js'
+import {
+    type Snowflake,
+    type Message,
+    type Channel,
+    type Guild,
+    TextChannel,
+    NewsChannel,
+    VoiceChannel,
+} from 'discord.js'
 import coreService from './core.service'
 import parentLogger from '../config/logger'
 
@@ -14,9 +22,14 @@ async function sendChannelMessage(discordId: Snowflake, message: string): Promis
     const client = await coreService.DiscordBotManager.getClient()
     const channel = await client.channels.fetch(discordId)
 
-    if (channel && (channel.isTextBased() || channel.isVoiceBased())) {
+    if (
+        channel &&
+        (channel instanceof TextChannel || channel instanceof NewsChannel || channel instanceof VoiceChannel)
+    ) {
         return await channel.send(message)
     }
+
+    return undefined
 }
 
 async function getChannelFromDiscordAPI(guild: Guild, channelId: Snowflake): Promise<Channel | null> {
