@@ -17,7 +17,7 @@ CMD ["npm", "run", "dev"]
 # Stage 3: Test Stage
 FROM base AS test
 ENV NODE_ENV=test
-CMD ["npm", "run", "test"]
+CMD [ "npx", "jest", "--coverage" ]
 
 # # Stage 4: Build Stage
 # FROM base AS build
