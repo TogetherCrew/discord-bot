@@ -5,7 +5,7 @@ name: Lint Workflow
 on:
   workflow_call:
     inputs:
-      app_path:
+      app:
         description: "Path to the application directory"
         required: true
         type: string
@@ -27,7 +27,7 @@ jobs:
           VALIDATE_JSCPD: false
           VALIDATE_PYTHON_FLAKE8: false
           VALIDATE_PYTHON_MYPY: false
-          FILTER_REGEX_INCLUDE: "(^|/)${{ inputs.app_path }}/"
+          FILTER_REGEX_INCLUDE: "(^|/)${{ inputs.app }}/"
           VALIDATE_GIT_COMMITLINT: false
           VALIDATE_MARKDOWN: false
           VALIDATE_JAVASCRIPT_PRETTIER: false

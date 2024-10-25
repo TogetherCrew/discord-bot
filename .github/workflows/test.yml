@@ -4,7 +4,7 @@ name: Test Workflow
 on:
   workflow_call:
     inputs:
-      app_path:
+      app:
         description: "Path to the application directory"
         required: true
         type: string
@@ -15,4 +15,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: docker compose -f ${{ inputs.app_path }}/docker-compose.test.yml up --exit-code-from app
+      - run: docker compose -f ${{ inputs.app }}/docker-compose.test.yml up --exit-code-from app
