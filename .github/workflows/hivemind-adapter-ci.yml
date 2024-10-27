@@ -14,14 +14,12 @@ jobs:
   lint:
     uses: ./.github/workflows/lint.yml
     with:
-      app_path: "hivemind-adapter"
+      app: "hivemind-adapter"
 
   # test:
   #   uses: ./.github/workflows/test.yml
   #   with:
-  #     app_path: "./bot"
-  #     node_version: "20"
-  #     cache_dependency_path: "./bot/package-lock.json"
+  #     app: "./bot"
 
   build-push:
     # needs: [lint, test]
