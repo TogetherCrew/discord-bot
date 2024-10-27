@@ -1,0 +1,25 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "declaration": false,
+        "removeComments": false,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "target": "ES2017",
+        "sourceMap": false,
+        "outDir": "./dist",
+        "baseUrl": "./",
+        "incremental": true,
+        "strict": true,
+        "noImplicitAny": true,
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true
+    },
+    "include": ["src/**/*", "__tests__/**/*", "types/**/*"],
+    "ts-node": {
+        "transpileOnly": true,
+        "files": true
+    },
+    "exclude": ["./coverage", "./dist", "__tests__", "jest.config.js"]
+}

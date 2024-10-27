@@ -1,0 +1,34 @@
+# .github/workflows/lint.yml
+
+name: Lint Workflow
+
+on:
+  workflow_call:
+    inputs:
+      app:
+        description: "Path to the application directory"
+        required: true
+        type: string
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Linter
+        uses: github/super-linter@v5.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TYPESCRIPT_DEFAULT_STYLE: prettier
+          VALIDATE_DOCKERFILE_HADOLINT: false
+          VALIDATE_JSCPD: false
+          VALIDATE_PYTHON_FLAKE8: false
+          VALIDATE_PYTHON_MYPY: false
+          FILTER_REGEX_INCLUDE: "(^|/)${{ inputs.app }}/"
+          VALIDATE_GIT_COMMITLINT: false
+          VALIDATE_MARKDOWN: false
+          VALIDATE_JAVASCRIPT_PRETTIER: false
+          VALIDATE_JAVASCRIPT_STANDARD: false

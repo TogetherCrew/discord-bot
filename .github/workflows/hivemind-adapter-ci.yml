@@ -1,0 +1,31 @@
+# .github/workflows/hivemind-adapter-ci.yml
+
+name: Hivemind Adapter CI Pipeline
+
+on:
+  push:
+    paths:
+      - "hivemind-adapter/**"
+  # pull_request:
+  #   paths:
+  #     - "hivemind-adapter/**"
+
+jobs:
+  lint:
+    uses: ./.github/workflows/lint.yml
+    with:
+      app: "hivemind-adapter"
+
+  # test:
+  #   uses: ./.github/workflows/test.yml
+  #   with:
+  #     app: "./bot"
+
+  build-push:
+    # needs: [lint, test]
+    needs: [lint]
+    uses: ./.github/workflows/build-push.yml
+    with:
+      app: "hivemind-adapter"
+      context: "./hivemind-adapter"
+      dockerfile: "./hivemind-adapter/Dockerfile"
