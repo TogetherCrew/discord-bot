@@ -19,7 +19,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}/${{ inputs.app_name }}
+  IMAGE_NAME: ${{ github.repository }}-${{ inputs.app_name }}
 
 jobs:
   build-push:
