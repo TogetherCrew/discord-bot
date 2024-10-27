@@ -26,6 +26,6 @@ jobs:
     needs: [lint]
     uses: ./.github/workflows/build-push.yml
     with:
-      app_name: "hivemind-adapter"
+      app: "hivemind-adapter"
       context: "./hivemind-adapter"
       dockerfile: "./hivemind-adapter/Dockerfile"

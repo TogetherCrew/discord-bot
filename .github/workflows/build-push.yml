@@ -4,7 +4,7 @@ name: Build and Push Docker Image
 on:
   workflow_call:
     inputs:
-      app_name:
+      app:
         description: "Name of the application (bot or hivemind-adapter)"
         required: true
         type: string
@@ -19,7 +19,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}-${{ inputs.app_name }}
+  IMAGE_NAME: ${{ github.repository }}-${{ inputs.app }}
 
 jobs:
   build-push:

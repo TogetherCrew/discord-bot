@@ -25,6 +25,6 @@ jobs:
     needs: [lint, test]
     uses: ./.github/workflows/build-push.yml
     with:
-      app_name: "bot"
+      app: "bot"
       context: "./bot"
       dockerfile: "./bot/Dockerfile"
