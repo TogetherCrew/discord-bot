@@ -7,7 +7,7 @@
         "experimentalDecorators": true,
         "target": "ES2017",
         "sourceMap": false,
-        "outDir": "./lib",
+        "outDir": "./dist",
         "baseUrl": "./",
         "incremental": true,
         "strict": true,
