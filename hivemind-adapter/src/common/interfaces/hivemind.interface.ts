@@ -3,7 +3,7 @@ import { PlatformNames } from '@togethercrew.dev/db'
 import { Queue } from '@togethercrew.dev/tc-messagebroker'
 
 export interface Question {
-    communityId: Types.ObjectId
+    communityId: string
     route: {
         source: PlatformNames
         destination: {
