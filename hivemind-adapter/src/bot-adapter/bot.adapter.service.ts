@@ -7,7 +7,6 @@ import { Question } from '../common/interfaces/hivemind.interface'
 import { ChatInputCommandInteraction_broker } from '../common/interfaces/bot.interface'
 import { PlatformService } from '../platform/platform.service'
 import { PlatformNames } from '@togethercrew.dev/db'
-import { Types } from 'mongoose'
 
 @Injectable()
 export class BotAdapterService {
@@ -50,7 +49,7 @@ export class BotAdapterService {
                 source: PlatformNames.Discord,
                 destination: {
                     queue: Queue.DISCORD_HIVEMIND_ADAPTER,
-                    event: Event.DISCORD_HIVEMIND_ADAPTER.QUESTION_COMMAND_RECEIVED,
+                    event: Event.DISCORD_HIVEMIND_ADAPTER.QUESTION_RESPONSE_RECEIVED,
                 },
             },
             question: {
