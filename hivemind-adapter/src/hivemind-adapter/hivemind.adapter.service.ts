@@ -25,11 +25,16 @@ export class HivemindAdapterService {
         )
     }
     async handleQuestionResponseReceivedEvent(msg: Record<string, any>) {
-        this.logger.info(msg, `processing QUESTION_RESPONSE_RECEIVED event`)
-        const question = msg?.content.question
-        const data = this.adaptDataToBot(question)
-        this.rabbitMQService.publish(Queue.DISCORD_BOT, Event.DISCORD_BOT.INTERACTION_RESPONSE.EDIT, { ...data })
-        this.logger.info(msg, `QUESTION_RESPONSE_RECEIVED event is processed`)
+        try {
+            this.logger.info(msg, `processing QUESTION_RESPONSE_RECEIVED event`)
+            const question = msg?.content.question
+            const data = this.adaptDataToBot(question)
+            this.rabbitMQService.publish(Queue.DISCORD_BOT, Event.DISCORD_BOT.INTERACTION_RESPONSE.EDIT, { ...data })
+            this.logger.info(msg, `QUESTION_RESPONSE_RECEIVED event is processed`)
+        } catch (err) {
+            this.logger.error(msg, 'handleQuestionResponseReceivedEvent Failed')
+            this.logger.error(err, 'handleQuestionResponseReceivedEvent Failed')
+        }
     }
 
     private adaptDataToBot(question: Question): {

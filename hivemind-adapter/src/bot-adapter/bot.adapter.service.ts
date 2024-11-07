@@ -28,14 +28,19 @@ export class BotAdapterService {
         )
     }
     async handleQuestionCommandReceivedEvent(msg: Record<string, any>) {
-        this.logger.info(msg, `processing QUESTION_COMMAND_RECEIVED event`)
-        const interaction = msg?.content.interaction
-        const platform = await this.platformService.getPlatform({
-            'metadata.id': interaction.guildId,
-        })
-        const data = this.adaptDataToHivemind(interaction, platform.community.toString())
-        this.rabbitMQService.publish(Queue.HIVEMIND, Event.HIVEMIND.QUESTION_RECEIVED, { ...data })
-        this.logger.info(data, `QUESTION_COMMAND_RECEIVED event is processed`)
+        try {
+            this.logger.info(msg, `processing QUESTION_COMMAND_RECEIVED event`)
+            const interaction = msg?.content.interaction
+            const platform = await this.platformService.getPlatform({
+                'metadata.id': interaction.guildId,
+            })
+            const data = this.adaptDataToHivemind(interaction, platform.community.toString())
+            this.rabbitMQService.publish(Queue.HIVEMIND, Event.HIVEMIND.QUESTION_RECEIVED, { ...data })
+            this.logger.info(data, `QUESTION_COMMAND_RECEIVED event is processed`)
+        } catch (err) {
+            this.logger.error(msg, 'handleQuestionCommandReceivedEvent Failed')
+            this.logger.error(err, 'handleQuestionCommandReceivedEvent Failed')
+        }
     }
 
     private adaptDataToHivemind(interaction: ChatInputCommandInteraction_broker, communityId: string): Question {
