@@ -35,7 +35,7 @@ export class BotAdapterService {
         })
         const data = this.adaptDataToHivemind(interaction, platform.community)
         this.rabbitMQService.publish(Queue.HIVEMIND, Event.HIVEMIND.QUESTION_RECEIVED, { ...data })
-        this.logger.info(msg, `QUESTION_COMMAND_RECEIVED event is processed`)
+        this.logger.info(data, `QUESTION_COMMAND_RECEIVED event is processed`)
     }
 
     private adaptDataToHivemind(
