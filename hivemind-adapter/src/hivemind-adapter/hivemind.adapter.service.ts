@@ -27,7 +27,8 @@ export class HivemindAdapterService {
     async handleQuestionResponseReceivedEvent(msg: Record<string, any>) {
         try {
             this.logger.info(msg, `processing QUESTION_RESPONSE_RECEIVED event`)
-            const question = msg?.content.question
+            const question = msg?.content
+            this.logger.info(question, msg?.content)
             const data = this.adaptDataToBot(question)
             this.rabbitMQService.publish(Queue.DISCORD_BOT, Event.DISCORD_BOT.INTERACTION_RESPONSE.EDIT, { ...data })
             this.logger.info(msg, `QUESTION_RESPONSE_RECEIVED event is processed`)
