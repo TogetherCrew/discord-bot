@@ -40,11 +40,11 @@ export class HivemindAdapterService {
 
     private adaptDataToBot(question: Question): {
         interaction: ChatInputCommandInteraction_broker
-        interactionResponseEditData: InteractionEditResponse
+        data: InteractionEditResponse
     } {
         return {
             interaction: question.metadata.interaction,
-            interactionResponseEditData: {
+            data: {
                 content: question.response.message,
             },
         }
