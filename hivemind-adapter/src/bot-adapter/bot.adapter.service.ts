@@ -7,7 +7,6 @@ import { Question } from '../common/interfaces/hivemind.interface'
 import { ChatInputCommandInteraction_broker } from '../common/interfaces/bot.interface'
 import { PlatformService } from '../platform/platform.service'
 import { PlatformNames } from '@togethercrew.dev/db'
-import { Types } from 'mongoose'
 
 @Injectable()
 export class BotAdapterService {
