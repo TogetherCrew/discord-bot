@@ -31,7 +31,7 @@ export class HivemindAdapterService {
             this.logger.info(question, msg?.content)
             const data = this.adaptDataToBot(question)
             this.rabbitMQService.publish(Queue.DISCORD_BOT, Event.DISCORD_BOT.INTERACTION_RESPONSE.EDIT, { ...data })
-            this.logger.info(msg, `QUESTION_RESPONSE_RECEIVED event is processed`)
+            this.logger.info(data, `QUESTION_RESPONSE_RECEIVED event is processed`)
         } catch (err) {
             this.logger.error(msg, 'handleQuestionResponseReceivedEvent Failed')
             this.logger.error(err, 'handleQuestionResponseReceivedEvent Failed')
