@@ -11,11 +11,15 @@ export async function handleInteractionResponseEdit(msg: any): Promise<void> {
         // logger.info({ msg, event: Event.DISCORD_BOT.INTERACTION_RESPONSE.EDIT }, 'is running');
         const interaction = msg?.content.interaction
         const data = msg?.content.data
+        console.log('***************')
         console.log(msg)
         console.log('***************')
-        console.log(msg?.content.data)
+        console.log(interaction)
         console.log('***************')
-        console.log(msg?.content.interaction)
+        console.log(interaction.token)
+        console.log(interaction.applicationId)
+        console.log('***************')
+        console.log(data)
 
         await interactionService.editOriginalInteractionResponse(interaction, data)
         // logger.info({ msg, event: Event.DISCORD_BOT.INTERACTION_RESPONSE.EDIT }, 'is done');
