@@ -28,8 +28,15 @@ export class HivemindAdapterService {
         try {
             this.logger.info(msg, `processing QUESTION_RESPONSE_RECEIVED event`)
             const question = msg?.content
-            this.logger.info(question, msg?.content)
             const data = this.adaptDataToBot(question)
+
+            console.log('**************')
+
+            console.log(data)
+            console.log('**************')
+            console.log({ ...data })
+            console.log('**************')
+
             this.rabbitMQService.publish(Queue.DISCORD_BOT, Event.DISCORD_BOT.INTERACTION_RESPONSE.EDIT, { ...data })
             this.logger.info(data, `QUESTION_RESPONSE_RECEIVED event is processed`)
         } catch (err) {

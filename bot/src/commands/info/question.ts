@@ -15,8 +15,14 @@ export default {
 
     async execute(interaction: ChatInputCommandInteraction_broker) {
         logger.info({ interaction_id: interaction.id, user: interaction.user }, 'question command started')
-
+        console.log('**************')
         console.log(interaction)
+        console.log('**************')
+        console.log(interaction.token)
+        console.log('**************')
+        console.log(interaction.applicationId)
+        console.log('**************')
+
         try {
             await interactionService.createInteractionResponse(interaction, {
                 type: 5,
