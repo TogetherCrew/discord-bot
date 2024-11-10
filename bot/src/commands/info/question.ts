@@ -32,7 +32,10 @@ export default {
                 RabbitMQQueue.DISCORD_HIVEMIND_ADAPTER,
                 Event.DISCORD_HIVEMIND_ADAPTER.QUESTION_COMMAND_RECEIVED,
                 {
-                    interaction,
+                    interaction: {
+                        token: interaction.token,
+                        ...interaction,
+                    },
                 }
             )
         } catch (error) {
