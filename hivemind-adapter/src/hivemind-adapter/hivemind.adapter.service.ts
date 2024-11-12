@@ -44,7 +44,7 @@ export class HivemindAdapterService {
         return {
             interaction: question.metadata.interaction,
             data: {
-                content: `${question.question.message}: ${question.response.message}`,
+                content: `**${question.question.message}**\n${question.response.message}`,
             },
         }
     }
