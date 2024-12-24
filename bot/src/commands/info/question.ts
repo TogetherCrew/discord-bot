@@ -18,7 +18,7 @@ export default {
         try {
             await interactionService.createInteractionResponse(interaction, {
                 type: 5,
-                data: { flags: 64 },
+                // data: { flags: 64 },
             })
             RabbitMQ.publish(
                 RabbitMQQueue.DISCORD_HIVEMIND_ADAPTER,
@@ -37,7 +37,7 @@ export default {
                 data: {
                     content:
                         "Sorry, we couldn't process your request at the moment. Please report this issue to the TogetherCrew development team. Thank you for your patience!",
-                    flags: 64,
+                    // flags: 64,
                 },
             })
         }
