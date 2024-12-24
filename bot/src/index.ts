@@ -21,7 +21,7 @@ async function app(): Promise<void> {
     await eventService.loadEvents()
     await commandService.loadCommands()
     await commandService.registerCommand()
-    // await connectToMongoDB()
+    await connectToMongoDB()
     await connectToMB()
     await connectToRabbitMQ()
     server.listen(config.port, () => {
