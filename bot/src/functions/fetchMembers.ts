@@ -1,10 +1,12 @@
-import { type Snowflake, type Guild } from 'discord.js'
-import { type Connection, type HydratedDocument } from 'mongoose'
-import { type IPlatform, type IGuildMember } from '@togethercrew.dev/db'
-import { guildMemberService, platformService } from '../database/services'
-import { coreService } from '../services'
+import { Guild, Snowflake } from 'discord.js';
+import { Connection, HydratedDocument } from 'mongoose';
 
-import parentLogger from '../config/logger'
+import { IGuildMember, IPlatform } from '@togethercrew.dev/db';
+
+import parentLogger from '../config/logger';
+import { guildMemberService, platformService } from '../database/services';
+import { coreService } from '../services';
+import { removeIgnoredGuildMembers } from '../utils/guildIgnoredUsers';
 
 const logger = parentLogger.child({ module: 'FetchMembers' })
 
@@ -66,6 +68,7 @@ export default async function fetchGuildMembers(
         logger.info({ guild_id: platform.metadata?.id }, 'Fetching members')
         await fetchMembersInChunks(guild, connection)
         logger.info({ guild_id: platform.metadata?.id }, 'Members stored successfully')
+        removeIgnoredGuildMembers(guild.id)
     } catch (error) {
         logger.error({ guild_id: platform.metadata?.id, error }, 'Failed to fetch guild members')
     }

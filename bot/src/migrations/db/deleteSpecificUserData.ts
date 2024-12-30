@@ -5,7 +5,9 @@ import mongoose from 'mongoose';
 import { DatabaseManager, Platform } from '@togethercrew.dev/db';
 
 import config from '../../config';
-import logger from '../../config/logger';
+import parentLogger from '../../config/logger';
+
+const logger = parentLogger.child({ event: 'deleteSpecificUserData' })
 
 const connectToMongoDB = async () => {
     try {
@@ -18,6 +20,9 @@ const connectToMongoDB = async () => {
 
 export const up = async () => {
     try {
+        // const PLATFORM_ID = '675aea1f2b104f11ad1f5417'
+        // const SPECIFIC_DISCORD_ID = '641449673818898472'
+
         const PLATFORM_ID = '67728c686be658065fae38c2'
         const SPECIFIC_DISCORD_ID = '681946187490000900'
         await connectToMongoDB()
