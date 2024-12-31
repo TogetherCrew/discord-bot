@@ -47,7 +47,9 @@ export async function removeIgnoredGuildMembers(guildId: string): Promise<void> 
             return
         }
 
-        await DatabaseManager.getInstance().getGuildDb(guildId)
+        const guildConnection = await DatabaseManager.getInstance().getGuildDb(guildId)
+
+        await guildConnection.models.GuildMember.deleteMany({ discordId: { $in: ignoredUserIds } })
     } catch (error) {
         logger.error(error, `Failed to remove ignored GuildMembers for guild ${guildId}`)
     }

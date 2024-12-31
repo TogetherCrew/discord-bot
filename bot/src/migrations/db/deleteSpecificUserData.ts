@@ -33,7 +33,6 @@ export const up = async () => {
         logger.info(`platform info:${platform}`)
 
         const guildConnection = await DatabaseManager.getInstance().getGuildDb(GUILD_ID)
-
         const deleteGuildMemberResult = await guildConnection.models.GuildMember.deleteOne({
             discordId: SPECIFIC_DISCORD_ID,
         })
