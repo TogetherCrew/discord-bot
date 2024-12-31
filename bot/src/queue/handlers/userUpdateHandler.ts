@@ -1,8 +1,8 @@
-import { DatabaseManager } from '@togethercrew.dev/db';
+import { DatabaseManager } from '@togethercrew.dev/db'
 
-import parentLogger from '../../config/logger';
-import { guildMemberService, platformService } from '../../database/services';
-import { isUserIgnoredForGuild } from '../../utils/guildIgnoredUsers';
+import parentLogger from '../../config/logger'
+import { guildMemberService, platformService } from '../../database/services'
+import { isUserIgnoredForGuild } from '../../utils/guildIgnoredUsers'
 
 interface IdataToStore {
     username: string

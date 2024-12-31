@@ -1,10 +1,10 @@
-import { Snowflake } from 'discord.js';
+import { Snowflake } from 'discord.js'
 
-import { DatabaseManager, IGuildMember } from '@togethercrew.dev/db';
+import { DatabaseManager, IGuildMember } from '@togethercrew.dev/db'
 
-import parentLogger from '../../config/logger';
-import { guildMemberService } from '../../database/services';
-import { isUserIgnoredForGuild } from '../../utils/guildIgnoredUsers';
+import parentLogger from '../../config/logger'
+import { guildMemberService } from '../../database/services'
+import { isUserIgnoredForGuild } from '../../utils/guildIgnoredUsers'
 
 const logger = parentLogger.child({ event: 'GuildMemberAddHandler' })
 

@@ -1,10 +1,10 @@
 // services/ignoreUsers.service.ts
-import { Snowflake } from 'discord.js';
+import { Snowflake } from 'discord.js'
 
-import { DatabaseManager, Platform } from '@togethercrew.dev/db';
+import { DatabaseManager, Platform } from '@togethercrew.dev/db'
 
-import { Guild_IGNORED_USERS } from '../config/guildIgnoredUsers';
-import parentLogger from '../config/logger';
+import { Guild_IGNORED_USERS } from '../config/guildIgnoredUsers'
+import parentLogger from '../config/logger'
 
 const logger = parentLogger.child({ event: 'guildIgnoreUsers' })
 

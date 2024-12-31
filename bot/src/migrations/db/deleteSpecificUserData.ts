@@ -1,11 +1,11 @@
-import 'dotenv/config';
+import 'dotenv/config'
 
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
 
-import { DatabaseManager, Platform } from '@togethercrew.dev/db';
+import { DatabaseManager, Platform, PlatformNames } from '@togethercrew.dev/db'
 
-import config from '../../config';
-import parentLogger from '../../config/logger';
+import config from '../../config'
+import parentLogger from '../../config/logger'
 
 const logger = parentLogger.child({ event: 'deleteSpecificUserData' })
 
@@ -20,17 +20,19 @@ const connectToMongoDB = async () => {
 
 export const up = async () => {
     try {
-        // const PLATFORM_ID = '675aea1f2b104f11ad1f5417'
+        // const GUILD_ID = '675aea1f2b104f11ad1f5417'
         // const SPECIFIC_DISCORD_ID = '641449673818898472'
 
-        const PLATFORM_ID = '67728c686be658065fae38c2'
+        const GUILD_ID = '980858613587382322'
         const SPECIFIC_DISCORD_ID = '681946187490000900'
         await connectToMongoDB()
-
-        const platform = await Platform.findById(PLATFORM_ID)
+        const platform = await Platform.findOne({
+            name: PlatformNames.Discord,
+            'metadata.id': GUILD_ID,
+        })
         logger.info(`platform info:${platform}`)
 
-        const guildConnection = await DatabaseManager.getInstance().getGuildDb(platform?.metadata?.id)
+        const guildConnection = await DatabaseManager.getInstance().getGuildDb(GUILD_ID)
 
         const deleteGuildMemberResult = await guildConnection.models.GuildMember.deleteOne({
             discordId: SPECIFIC_DISCORD_ID,

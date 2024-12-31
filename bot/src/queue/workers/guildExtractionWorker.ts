@@ -1,8 +1,8 @@
-import { Job, Worker } from 'bullmq';
+import { Job, Worker } from 'bullmq'
 
-import { redisConfig } from '../../config/queue';
-import guildExtraction from '../../functions/guildExtraction';
-import { WorkerFactory } from './index';
+import { redisConfig } from '../../config/queue'
+import guildExtraction from '../../functions/guildExtraction'
+import { WorkerFactory } from './index'
 
 export const guildExtractionWorker = new Worker(
     'guildExtractionQueue',

@@ -1,8 +1,8 @@
-import { PlatformNames } from '@togethercrew.dev/db';
+import { PlatformNames } from '@togethercrew.dev/db'
 
-import parentLogger from '../config/logger';
-import { platformService } from '../database/services';
-import { addGuildExtraction } from '../queue/queues/guildExtraction';
+import parentLogger from '../config/logger'
+import { platformService } from '../database/services'
+import { addGuildExtraction } from '../queue/queues/guildExtraction'
 
 const logger = parentLogger.child({ event: 'CronJob' })
 
