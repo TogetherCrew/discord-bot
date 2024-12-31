@@ -1,11 +1,11 @@
-import 'dotenv/config';
+import 'dotenv/config'
 
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
 
-import { DatabaseManager, Platform, PlatformNames } from '@togethercrew.dev/db';
+import { DatabaseManager, Platform, PlatformNames } from '@togethercrew.dev/db'
 
-import config from '../../config';
-import parentLogger from '../../config/logger';
+import config from '../../config'
+import parentLogger from '../../config/logger'
 
 const logger = parentLogger.child({ event: 'deleteSpecificUserData' })
 
@@ -34,20 +34,17 @@ export const up = async () => {
 
         const guildConnection = await DatabaseManager.getInstance().getGuildDb(GUILD_ID)
 
-        const deleteGuildMemberResult = await guildConnection.models.GuildMember.deleteOne({
+        await guildConnection.models.GuildMember.deleteOne({
             discordId: USER_ID,
         })
 
-        const deleteRawInfoResult = await guildConnection.models.RawInfo.deleteMany({ author: USER_ID })
+        await guildConnection.models.RawInfo.deleteMany({ author: USER_ID })
 
-        const pullUserMentionsResult = await guildConnection.models.RawInfo.updateMany(
+        await guildConnection.models.RawInfo.updateMany(
             { user_mentions: USER_ID },
             { $pull: { user_mentions: USER_ID } }
         )
-        const updateRepliedUserResult = await guildConnection.models.RawInfo.updateMany(
-            { replied_user: USER_ID },
-            { $set: { replied_user: null } }
-        )
+        await guildConnection.models.RawInfo.updateMany({ replied_user: USER_ID }, { $set: { replied_user: null } })
         await mongoose.connection.close()
         logger.info('Migration completed and core MongoDB connection closed.')
     } catch (err) {
