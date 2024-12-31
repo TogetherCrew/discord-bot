@@ -1,14 +1,17 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable no-unneeded-ternary */
+import { Message, Role, Snowflake, TextChannel, ThreadChannel, User } from 'discord.js'
+import { Connection, HydratedDocument } from 'mongoose'
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import fetch from 'node-fetch'
-import { type Message, TextChannel, type User, type Role, ThreadChannel, type Snowflake } from 'discord.js'
-import { type IRawInfo, type IPlatform, type IDiscordUser } from '@togethercrew.dev/db'
-import { rawInfoService, platformService } from '../database/services'
-import { type Connection, type HydratedDocument } from 'mongoose'
-import { guildService, channelService } from '../services'
+
+import { IDiscordUser, IPlatform, IRawInfo } from '@togethercrew.dev/db'
+
 import config from '../config'
 import parentLogger from '../config/logger'
+import { platformService, rawInfoService } from '../database/services'
+import { channelService, guildService } from '../services'
+import { sanitizeRawInfoForIgnoredUsers } from '../utils/guildIgnoredUsers'
 
 const logger = parentLogger.child({ module: 'FetchMessages' })
 interface threadInfo {
@@ -352,6 +355,7 @@ export default async function handleFetchMessages(connection: Connection, platfo
                         await handleFetchChannelMessages(connection, channel, platform.metadata?.period)
                     }
                 }
+                sanitizeRawInfoForIgnoredUsers(guild.id)
             }
         }
     } catch (error) {

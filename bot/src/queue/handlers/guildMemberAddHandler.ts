@@ -1,7 +1,10 @@
-import { type Snowflake } from 'discord.js'
-import { guildMemberService } from '../../database/services'
-import { DatabaseManager, type IGuildMember } from '@togethercrew.dev/db'
+import { Snowflake } from 'discord.js'
+
+import { DatabaseManager, IGuildMember } from '@togethercrew.dev/db'
+
 import parentLogger from '../../config/logger'
+import { guildMemberService } from '../../database/services'
+import { isUserIgnoredForGuild } from '../../utils/guildIgnoredUsers'
 
 const logger = parentLogger.child({ event: 'GuildMemberAddHandler' })
 
@@ -11,6 +14,7 @@ export default async function (guildId: Snowflake, dataToStore: IGuildMember): P
         guild_member_id: dataToStore.discordId,
     }
     // logger.info(logFields, 'event is running');
+    if (isUserIgnoredForGuild(guildId, dataToStore.discordId)) return
     const connection = await DatabaseManager.getInstance().getGuildDb(guildId)
     try {
         const guildMemberDoc = await guildMemberService.updateGuildMember(

@@ -1,7 +1,8 @@
 # env vars
 src/config/*.env
 *.env
-
+../.DS_Store
+        
 # compiled output
 /dist
 /lib
