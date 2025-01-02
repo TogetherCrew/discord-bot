@@ -1,11 +1,11 @@
-import 'dotenv/config';
+import 'dotenv/config'
 
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
 
-import { DatabaseManager, Platform, PlatformNames } from '@togethercrew.dev/db';
+import { DatabaseManager, Platform, PlatformNames } from '@togethercrew.dev/db'
 
-import config from '../../config';
-import parentLogger from '../../config/logger';
+import config from '../../config'
+import parentLogger from '../../config/logger'
 
 const logger = parentLogger.child({ event: 'deleteSpecificUserData' })
 
