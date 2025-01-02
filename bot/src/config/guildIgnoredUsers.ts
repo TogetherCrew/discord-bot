@@ -1,4 +1,4 @@
-import { Snowflake } from 'discord.js'
+import { Snowflake } from 'discord.js';
 
 type GuildIgnoredUsers = Record<string, Snowflake[]>
 

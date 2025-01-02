@@ -1,10 +1,10 @@
 // services/ignoreUsers.service.ts
-import { Snowflake } from 'discord.js'
+import { Snowflake } from 'discord.js';
 
-import { DatabaseManager, Platform } from '@togethercrew.dev/db'
+import { DatabaseManager, Platform } from '@togethercrew.dev/db';
 
-import { Guild_IGNORED_USERS } from '../config/guildIgnoredUsers'
-import parentLogger from '../config/logger'
+import { Guild_IGNORED_USERS } from '../config/guildIgnoredUsers';
+import parentLogger from '../config/logger';
 
 const logger = parentLogger.child({ event: 'guildIgnoreUsers' })
 
@@ -92,18 +92,75 @@ export async function sanitizeRawInfoForIgnoredUsers(guildId: string): Promise<v
             { user_mentions: { $elemMatch: { $in: ignoredUserIds } } },
             { $pull: { user_mentions: { $in: ignoredUserIds } } }
         )
+        console.log(ignoredUserIds)
 
-        const pattern = `^(${ignoredUserIds.join('|')}),`
-        await guildConnection.models.RawInfo.updateMany(
-            {},
+        await guildConnection.models.RawInfo.updateMany({}, [
             {
-                $pull: {
+                $set: {
                     reactions: {
-                        $regex: pattern,
+                        $map: {
+                            input: '$reactions',
+                            as: 'reaction',
+                            in: {
+                                $let: {
+                                    vars: {
+                                        parts: { $split: ['$$reaction', ','] },
+                                    },
+                                    in: {
+                                        $reduce: {
+                                            input: {
+                                                $filter: {
+                                                    input: '$$parts',
+                                                    as: 'part',
+                                                    cond: {
+                                                        $not: [{ $in: ['$$part', ignoredUserIds] }],
+                                                    },
+                                                },
+                                            },
+                                            initialValue: '',
+                                            in: {
+                                                $cond: [
+                                                    { $eq: ['$$value', ''] },
+                                                    '$$this',
+                                                    { $concat: ['$$value', ',', '$$this'] },
+                                                ],
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
                     },
                 },
-            }
-        )
+            },
+            {
+                $set: {
+                    reactions: {
+                        $filter: {
+                            input: '$reactions',
+                            as: 'finalStr',
+                            cond: { $ne: ['$$finalStr', ''] },
+                        },
+                    },
+                },
+            },
+            {
+                $set: {
+                    reactions: {
+                        $filter: {
+                            input: '$reactions',
+                            as: 'finalStr',
+                            cond: {
+                                $regexMatch: {
+                                    input: '$$finalStr',
+                                    regex: /\d/,
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        ])
     } catch (error) {
         logger.error(error, `Failed to sanitize RawInfo for ignored users in guild ${guildId}`)
     }
