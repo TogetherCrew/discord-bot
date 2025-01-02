@@ -92,6 +92,18 @@ export async function sanitizeRawInfoForIgnoredUsers(guildId: string): Promise<v
             { user_mentions: { $elemMatch: { $in: ignoredUserIds } } },
             { $pull: { user_mentions: { $in: ignoredUserIds } } }
         )
+
+        const pattern = `^(${ignoredUserIds.join('|')}),`
+        await guildConnection.models.RawInfo.updateMany(
+            {},
+            {
+                $pull: {
+                    reactions: {
+                        $regex: pattern,
+                    },
+                },
+            }
+        )
     } catch (error) {
         logger.error(error, `Failed to sanitize RawInfo for ignored users in guild ${guildId}`)
     }
