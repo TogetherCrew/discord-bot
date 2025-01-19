@@ -1,14 +1,14 @@
-import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
+import { InjectPinoLogger, PinoLogger } from 'nestjs-pino'
 
 // src/bot-adapter/bot.adapter.service.ts
-import { Injectable } from '@nestjs/common';
-import { PlatformNames } from '@togethercrew.dev/db';
-import { Event, Queue } from '@togethercrew.dev/tc-messagebroker';
+import { Injectable } from '@nestjs/common'
+import { PlatformNames } from '@togethercrew.dev/db'
+import { Event, Queue } from '@togethercrew.dev/tc-messagebroker'
 
-import { ChatInputCommandInteraction_broker } from '../common/interfaces/bot.interface';
-import { Question } from '../common/interfaces/hivemind.interface';
-import { PlatformService } from '../platform/platform.service';
-import { RabbitMQService } from '../rabbitmq/rabbitmq.service';
+import { ChatInputCommandInteraction_broker } from '../common/interfaces/bot.interface'
+import { Question } from '../common/interfaces/hivemind.interface'
+import { PlatformService } from '../platform/platform.service'
+import { RabbitMQService } from '../rabbitmq/rabbitmq.service'
 
 @Injectable()
 export class BotAdapterService {
@@ -59,7 +59,7 @@ export class BotAdapterService {
             },
             metadata: {
                 interaction,
-                enableAnswerSkipping: false
+                enableAnswerSkipping: false,
             },
         }
     }
