@@ -26,7 +26,7 @@ export default {
             const handle = await client.workflow.start('DiscordQuestionWorkflow', {
                 taskQueue: 'TEMPORAL_QUEUE_HEAVY',
                 args: [{ interaction: { ...interaction, token: interaction.token } }],
-                workflowId: `discord:hivemind:${interaction.id}`,
+                workflowId: `discord:question:${interaction.id}`,
             })
 
             logger.info({ handle }, 'question command workflow started')
