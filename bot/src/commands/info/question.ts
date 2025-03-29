@@ -17,10 +17,7 @@ export default {
     async execute(interaction: ChatInputCommandInteraction_broker) {
         logger.info({ interaction_id: interaction.id, user: interaction.user }, 'question command started')
         try {
-            await interactionService.createInteractionResponse(interaction, {
-                type: 5,
-                // data: { flags: 64 },
-            })
+
 
             // Create temporal client
             // Start workflow DiscordQuestionWorkflow
@@ -30,11 +27,16 @@ export default {
             const client = await createTemporalClient()
             const handle = await client.workflow.start('DiscordQuestionWorkflow', {
                 taskQueue: 'TEMPORAL_QUEUE_HEAVY',
-                args: [interaction],
+                args: [{ interaction: { ...interaction, token: interaction.token } }],
                 workflowId: `discord:hivemind:${interaction.id}`,
             })
 
             logger.info({ handle }, 'question command workflow started')
+
+            await interactionService.createInteractionResponse(interaction, {
+                type: 5,
+                // data: { flags: 64 },
+            })
 
             // RabbitMQ.publish(
             //     RabbitMQQueue.DISCORD_HIVEMIND_ADAPTER,
