@@ -1,8 +1,9 @@
 import { SlashCommandBuilder } from 'discord.js'
 import { interactionService } from '../../services'
-import RabbitMQ, { Event, Queue as RabbitMQQueue } from '@togethercrew.dev/tc-messagebroker'
+// import RabbitMQ, { Event, Queue as RabbitMQQueue } from '@togethercrew.dev/tc-messagebroker'
 import { type ChatInputCommandInteraction_broker } from '../../interfaces/Hivemind.interface'
 import parentLogger from '../../config/logger'
+import { createTemporalClient } from '../../services/temporal.service'
 const logger = parentLogger.child({ command: 'question' })
 
 export default {
@@ -20,16 +21,31 @@ export default {
                 type: 5,
                 // data: { flags: 64 },
             })
-            RabbitMQ.publish(
-                RabbitMQQueue.DISCORD_HIVEMIND_ADAPTER,
-                Event.DISCORD_HIVEMIND_ADAPTER.QUESTION_COMMAND_RECEIVED,
-                {
-                    interaction: {
-                        token: interaction.token,
-                        ...interaction,
-                    },
-                }
-            )
+
+            // Create temporal client
+            // Start workflow DiscordQuestionWorkflow
+            // args:  interaction
+            // queue: TEMPORAL_QUEUE_HEAVY
+
+            const client = await createTemporalClient()
+            const handle = await client.workflow.start('DiscordQuestionWorkflow', {
+                taskQueue: 'TEMPORAL_QUEUE_HEAVY',
+                args: [interaction],
+                workflowId: `discord:hivemind:${interaction.id}`,
+            })
+
+            logger.info({ handle }, 'question command workflow started')
+
+            // RabbitMQ.publish(
+            //     RabbitMQQueue.DISCORD_HIVEMIND_ADAPTER,
+            //     Event.DISCORD_HIVEMIND_ADAPTER.QUESTION_COMMAND_RECEIVED,
+            //     {
+            //         interaction: {
+            //             token: interaction.token,
+            //             ...interaction,
+            //         },
+            //     }
+            // )
         } catch (error) {
             logger.error(error, 'question command failed')
             await interactionService.createInteractionResponse(interaction, {

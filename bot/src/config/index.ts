@@ -27,6 +27,7 @@ const envVarsSchema = Joi.object()
         AIRFLOW_BASE_URL: Joi.string().required().description('Airflow base URL'),
         AIRFLOW_USERNAME: Joi.string().required().description('Airflow username'),
         AIRFLOW_PASSWORD: Joi.string().required().description('Airflow password'),
+        TEMPORAL_URI: Joi.string().required().description('Temporal URI'),
     })
     .unknown()
 
@@ -69,5 +70,8 @@ export default {
         baseURL: envVars.AIRFLOW_BASE_URL,
         username: envVars.AIRFLOW_USERNAME,
         password: envVars.AIRFLOW_PASSWORD,
+    },
+    temporal: {
+        uri: envVars.TEMPORAL_URI,
     },
 }

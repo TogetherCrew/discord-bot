@@ -31,6 +31,7 @@ services:
       - AIRFLOW_BASE_URL=l
       - AIRFLOW_USERNAME=l
       - AIRFLOW_PASSWORD=l
+      - TEMPORAL_URI=http://temporal:7233
     volumes:
       - ./coverage:/project/coverage
     depends_on:
