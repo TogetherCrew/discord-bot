@@ -29,6 +29,7 @@
         "@nestjs/core": "^10.0.0",
         "@nestjs/mongoose": "^10.0.10",
         "@nestjs/platform-express": "^10.0.0",
+        "@temporalio/client": "^1.11.7",
         "@togethercrew.dev/db": "^3.0.70",
         "@togethercrew.dev/tc-messagebroker": "^0.0.48",
         "mongoose": "^8.7.1",
