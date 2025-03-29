@@ -17,8 +17,6 @@ export default {
     async execute(interaction: ChatInputCommandInteraction_broker) {
         logger.info({ interaction_id: interaction.id, user: interaction.user }, 'question command started')
         try {
-
-
             // Create temporal client
             // Start workflow DiscordQuestionWorkflow
             // args:  interaction
