@@ -23,18 +23,21 @@ export default {
             // queue: TEMPORAL_QUEUE_HEAVY
 
             const client = await createTemporalClient()
+            const workflowId = `discord:question:${interaction.id}`
             const handle = await client.workflow.start('DiscordQuestionWorkflow', {
                 taskQueue: 'TEMPORAL_QUEUE_HEAVY',
                 args: [{ interaction: { ...interaction, token: interaction.token } }],
-                workflowId: `discord:question:${interaction.id}`,
+                workflowId,
             })
 
-            logger.info({ handle }, 'question command workflow started')
+            logger.info({ workflowId }, 'question command workflow started')
 
             await interactionService.createInteractionResponse(interaction, {
                 type: 5,
                 // data: { flags: 64 },
             })
+
+            logger.info({ workflowId }, 'question command workflow created response')
 
             // RabbitMQ.publish(
             //     RabbitMQQueue.DISCORD_HIVEMIND_ADAPTER,
