@@ -4,6 +4,7 @@ import './queue/workers/directMessageWorker';
 import './queue/workers/guildEventWorker';
 import './queue/workers/guildExtractionWorker';
 import './queue/workers/userEventWorker';
+import './queue/workers/guildMessageEventWorker';
 
 import config from './config';
 import parentLogger from './config/logger';
@@ -20,7 +21,7 @@ async function app(): Promise<void> {
     await connectToMongoDB()
     await connectToMB()
     await connectToRabbitMQ()
-    const bot = coreService.DiscordBotManager.getInstance();
+    const bot = coreService.DiscordBotManager.getInstance()
     await bot.getClient()
     await eventService.loadEvents()
     await commandService.loadCommands()

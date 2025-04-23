@@ -1,5 +1,3 @@
-import '';
-
 import { GatewayIntentBits, Partials } from 'discord.js';
 import Joi from 'joi';
 
