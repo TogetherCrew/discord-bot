@@ -1,12 +1,12 @@
-import { Guild, Snowflake } from 'discord.js'
-import { Connection, HydratedDocument } from 'mongoose'
+import { Guild, Snowflake } from 'discord.js';
+import { Connection, HydratedDocument } from 'mongoose';
 
-import { IGuildMember, IPlatform } from '@togethercrew.dev/db'
+import { IGuildMember, IPlatform } from '@togethercrew.dev/db';
 
-import parentLogger from '../config/logger'
-import { guildMemberService, platformService } from '../database/services'
-import { coreService } from '../services'
-import { removeIgnoredGuildMembers } from '../utils/guildIgnoredUsers'
+import parentLogger from '../config/logger';
+import { guildMemberService, platformService } from '../database/services';
+import { coreService } from '../services';
+import { removeIgnoredGuildMembers } from '../utils/guildIgnoredUsers';
 
 const logger = parentLogger.child({ module: 'FetchMembers' })
 
@@ -58,7 +58,8 @@ export default async function fetchGuildMembers(
     platform: HydratedDocument<IPlatform>
 ): Promise<void> {
     try {
-        const client = await coreService.DiscordBotManager.getClient()
+        const bot = coreService.DiscordBotManager.getInstance()
+        const client = await bot.getClient()
         const hasBotAccessToGuild = await platformService.checkBotAccessToGuild(platform.metadata?.id)
         if (!hasBotAccessToGuild) {
             logger.info({ guild_id: platform.metadata?.id }, 'Bot access missing')

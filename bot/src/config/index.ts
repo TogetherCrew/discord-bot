@@ -1,5 +1,7 @@
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
-import Joi from 'joi'
+import '';
+
+import { GatewayIntentBits, Partials } from 'discord.js';
+import Joi from 'joi';
 
 const envVarsSchema = Joi.object()
     .keys({
@@ -55,6 +57,17 @@ export default {
         clientId: envVars.DISCORD_CLIENT_ID,
         clientSecret: envVars.DISCORD_CLIENT_SECRET,
         botToken: envVars.DISCORD_BOT_TOKEN,
+        intents: [
+            GatewayIntentBits.Guilds,
+            GatewayIntentBits.GuildMembers,
+            GatewayIntentBits.GuildMessages,
+            GatewayIntentBits.GuildMessageReactions,
+            GatewayIntentBits.GuildPresences,
+            GatewayIntentBits.DirectMessages,
+            GatewayIntentBits.DirectMessageReactions,
+            GatewayIntentBits.MessageContent,
+        ],
+        partials: [Partials.Channel, Partials.Message, Partials.GuildMember, Partials.Reaction],
     },
     sentry: {
         dsn: envVars.SENTRY_DSN,

@@ -1,8 +1,10 @@
-import { type Connection, type HydratedDocument } from 'mongoose'
-import { type IPlatform, type IRole } from '@togethercrew.dev/db'
-import { roleService, platformService } from '../database/services'
-import parentLogger from '../config/logger'
-import { coreService } from '../services'
+import { Connection, HydratedDocument } from 'mongoose';
+
+import { IPlatform, IRole } from '@togethercrew.dev/db';
+
+import parentLogger from '../config/logger';
+import { platformService, roleService } from '../database/services';
+import { coreService } from '../services';
 
 const logger = parentLogger.child({ module: 'FetchRoles' })
 
@@ -14,7 +16,8 @@ const logger = parentLogger.child({ module: 'FetchRoles' })
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default async function fetchGuildRoles(connection: Connection, platform: HydratedDocument<IPlatform>) {
     try {
-        const client = await coreService.DiscordBotManager.getClient()
+        const bot = coreService.DiscordBotManager.getInstance()
+        const client = await bot.getClient()
         const hasBotAccessToGuild = await platformService.checkBotAccessToGuild(platform.metadata?.id)
         let rolesToStore: IRole[] = []
         if (!hasBotAccessToGuild) {

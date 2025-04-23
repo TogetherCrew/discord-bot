@@ -1,5 +1,6 @@
-import { type Snowflake } from 'discord.js'
-import { coreService } from '../services'
+import { Snowflake } from 'discord.js';
+
+import { coreService } from '../services';
 
 /**
  *
@@ -8,8 +9,8 @@ import { coreService } from '../services'
  */
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default async function sendDirectMessage(info: { discordId: Snowflake; message: string }) {
-    const client = await coreService.DiscordBotManager.getClient()
-
+    const bot = coreService.DiscordBotManager.getInstance()
+    const client = await bot.getClient()
     const { discordId, message } = info
 
     // Fetch the user object

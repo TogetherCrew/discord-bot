@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import { type TextChannel, type Message, type ThreadChannel, type Snowflake } from 'discord.js'
-import { type IRawInfo } from '@togethercrew.dev/db'
-import { type Connection } from 'mongoose'
-import parentLogger from '../../config/logger'
-import { rawInfoService, channelService } from '../../database/services'
-import { coreService } from '../../services'
+import { Message, Snowflake, TextChannel, ThreadChannel } from 'discord.js';
+import { Connection } from 'mongoose';
+
+import { IRawInfo } from '@togethercrew.dev/db';
+
+import parentLogger from '../../config/logger';
+import { channelService, rawInfoService } from '../../database/services';
+import { coreService } from '../../services';
 
 const logger = parentLogger.child({ module: 'Migration' })
 
@@ -192,8 +194,8 @@ async function migrateIsGeneratedByWebhook(connection: Connection, channel: Text
  * @param {Snowflake} guildId - The identifier of the guild to extract information from.
  */
 async function runRawInfoMigration(connection: Connection, guildId: Snowflake) {
-    const client = await coreService.DiscordBotManager.getClient()
-
+    const bot = coreService.DiscordBotManager.getInstance()
+    const client = await bot.getClient()
     logger.info({ guild_id: guildId }, 'Migration is running')
     try {
         const guild = await client.guilds.fetch(guildId)

@@ -13,6 +13,14 @@ import {
     roleUpdateHandler,
     roleDeleteHandler,
     userUpdateHandler,
+    messageCreateHandler,
+    messageDeleteHandler,
+    messageDeleteBulkHandler,
+    messageReactionAddHandler,
+    messageReactionRemoveHandler,
+    messageReactionRemoveAllHandler,
+    messageReactionRemoveEmojiHandler,
+    messageUpdateHandler,
 } from '../handlers'
 
 export const discordEventWorker = new Worker(
@@ -58,6 +66,55 @@ export const discordEventWorker = new Worker(
                 }
                 case Events.UserUpdate: {
                     await userUpdateHandler(job.data.dataToStore)
+                    break
+                }
+                case Events.MessageCreate: {
+                    await messageCreateHandler(job.data.guildId, job.data.dataToStore)
+                    break
+                }
+                case Events.MessageDelete: {
+                    await messageDeleteHandler(job.data.guildId, job.data.messageId, job.data.channelId)
+                    break
+                }
+                case Events.MessageBulkDelete: {
+                    await messageDeleteBulkHandler(job.data.guildId, job.data.messageIds, job.data.channelId)
+                    break
+                }
+                case Events.MessageReactionAdd: {
+                    await messageReactionAddHandler(
+                        job.data.guildId,
+                        job.data.messageId,
+                        job.data.channelId,
+                        job.data.userId,
+                        job.data.emoji
+                    )
+                    break
+                }
+                case Events.MessageReactionRemove: {
+                    await messageReactionRemoveHandler(
+                        job.data.guildId,
+                        job.data.messageId,
+                        job.data.channelId,
+                        job.data.userId,
+                        job.data.emoji
+                    )
+                    break
+                }
+                case Events.MessageReactionRemoveAll: {
+                    await messageReactionRemoveAllHandler(job.data.guildId, job.data.messageId, job.data.channelId)
+                    break
+                }
+                case Events.MessageReactionRemoveEmoji: {
+                    await messageReactionRemoveEmojiHandler(
+                        job.data.guildId,
+                        job.data.messageId,
+                        job.data.channelId,
+                        job.data.emoji
+                    )
+                    break
+                }
+                case Events.MessageUpdate: {
+                    await messageUpdateHandler(job.data.guildId, job.data.dataToStore)
                     break
                 }
             }

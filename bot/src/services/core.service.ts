@@ -1,51 +1,34 @@
-import { Client, GatewayIntentBits, Partials } from 'discord.js'
-import config from '../config'
+import { Client } from 'discord.js';
 
-// eslint-disable-next-line @typescript-eslint/no-extraneous-class
+import config from '../config';
+
 class DiscordBotManager {
-    public static client: Client
-    public static async getClient(): Promise<Client> {
-        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-        if (!DiscordBotManager.client) {
-            DiscordBotManager.client = new Client({
-                intents: [
-                    GatewayIntentBits.Guilds,
-                    GatewayIntentBits.GuildMembers,
-                    GatewayIntentBits.GuildMessages,
-                    GatewayIntentBits.GuildPresences,
-                    GatewayIntentBits.DirectMessages,
-                    GatewayIntentBits.MessageContent,
-                    GatewayIntentBits.DirectMessageReactions,
-                    GatewayIntentBits.DirectMessages,
-                ],
-                partials: [Partials.Channel],
-            })
-            await DiscordBotManager.client.login(config.discord.botToken)
+    private static instance: DiscordBotManager
+    private client?: Client
+    private constructor() {}
+    public static getInstance(): DiscordBotManager {
+        if (!DiscordBotManager.instance) {
+            DiscordBotManager.instance = new DiscordBotManager()
         }
-        return DiscordBotManager.client
+        return DiscordBotManager.instance
+    }
+    public async getClient(): Promise<Client> {
+        if (!this.client) {
+            this.client = new Client({
+                intents: config.discord.intents, 
+                partials: config.discord.partials, 
+            })
+            await this.client.login(config.discord.botToken)
+        }
+        return this.client
     }
 
-    public static async initClient(): Promise<Client> {
-        DiscordBotManager.client = new Client({
-            intents: [
-                GatewayIntentBits.Guilds,
-                GatewayIntentBits.GuildMembers,
-                GatewayIntentBits.GuildMessages,
-                GatewayIntentBits.GuildPresences,
-                GatewayIntentBits.DirectMessages,
-                GatewayIntentBits.MessageContent,
-                GatewayIntentBits.DirectMessageReactions,
-                GatewayIntentBits.DirectMessages,
-            ],
-            partials: [Partials.Channel],
-        })
-
-        return DiscordBotManager.client
-    }
-
-    public static async LoginClient(): Promise<Client> {
-        await DiscordBotManager.client.login(config.discord.botToken)
-        return DiscordBotManager.client
+    public async login(): Promise<Client> {
+        const client = await this.getClient()
+        if (!client.isReady()) {
+            await client.login(config.discord.botToken)
+        }
+        return client
     }
 }
 

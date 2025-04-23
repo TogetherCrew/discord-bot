@@ -1,9 +1,11 @@
-import path from 'path'
-import { readdir } from 'node:fs/promises'
-import { coreService } from '../services'
+import { readdir } from 'node:fs/promises';
+import path from 'path';
+
+import { coreService } from '../services';
 
 async function loadEvents(): Promise<void> {
-    const client = await coreService.DiscordBotManager.getClient()
+    const bot = coreService.DiscordBotManager.getInstance()
+    const client = await bot.getClient()
     const foldersPath: string = path.join(__dirname, '../events')
     const eventFolders: string[] = await readdir(foldersPath)
     for (const folder of eventFolders) {

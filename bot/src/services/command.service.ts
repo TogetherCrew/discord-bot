@@ -1,13 +1,16 @@
-import { Collection, REST, Routes } from 'discord.js'
-import path from 'path'
-import { readdir } from 'node:fs/promises'
-import config from '../config'
-import { coreService } from '../services'
-import parentLogger from '../config/logger'
+import { Collection, REST, Routes } from 'discord.js';
+import { readdir } from 'node:fs/promises';
+import path from 'path';
+
+import config from '../config';
+import parentLogger from '../config/logger';
+import { coreService } from '../services';
+
 const logger = parentLogger.child({ module: 'CommandService' })
 
 async function loadCommands(): Promise<void> {
-    const client = await coreService.DiscordBotManager.getClient()
+    const bot = coreService.DiscordBotManager.getInstance()
+    const client = await bot.getClient()
     client.commands = new Collection()
     const foldersPath: string = path.join(__dirname, '../commands')
     const commandFolders: string[] = await readdir(foldersPath)
@@ -33,7 +36,8 @@ async function loadCommands(): Promise<void> {
 
 async function registerCommand(): Promise<void> {
     try {
-        const client = await coreService.DiscordBotManager.getClient()
+        const bot = coreService.DiscordBotManager.getInstance()
+        const client = await bot.getClient()
         const rest = new REST().setToken(config.discord.botToken)
         const commandData = [...client.commands.values()].map((command) => command.data.toJSON())
         await rest.put(Routes.applicationCommands(config.discord.clientId), {
