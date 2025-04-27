@@ -1,7 +1,7 @@
-import { Guild, Snowflake } from 'discord.js';
+import { Guild, Snowflake } from 'discord.js'
 
-import parentLogger from '../config/logger';
-import coreService from './core.service';
+import parentLogger from '../config/logger'
+import coreService from './core.service'
 
 const logger = parentLogger.child({ module: 'GuildService' })
 

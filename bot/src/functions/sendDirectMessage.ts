@@ -1,6 +1,6 @@
-import { Snowflake } from 'discord.js';
+import { Snowflake } from 'discord.js'
 
-import { coreService } from '../services';
+import { coreService } from '../services'
 
 /**
  *

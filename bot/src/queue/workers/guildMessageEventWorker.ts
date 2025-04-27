@@ -1,13 +1,18 @@
-import { Job, Worker } from 'bullmq';
-import { Events } from 'discord.js';
+import { Job, Worker } from 'bullmq'
+import { Events } from 'discord.js'
 
-import { redisConfig } from '../../config/queue';
+import { redisConfig } from '../../config/queue'
 import {
-    messageCreateHandler, messageDeleteBulkHandler, messageDeleteHandler, messageReactionAddHandler,
-    messageReactionRemoveAllHandler, messageReactionRemoveEmojiHandler,
-    messageReactionRemoveHandler, messageUpdateHandler
-} from '../handlers';
-import { WorkerFactory } from './index';
+    messageCreateHandler,
+    messageDeleteBulkHandler,
+    messageDeleteHandler,
+    messageReactionAddHandler,
+    messageReactionRemoveAllHandler,
+    messageReactionRemoveEmojiHandler,
+    messageReactionRemoveHandler,
+    messageUpdateHandler,
+} from '../handlers'
+import { WorkerFactory } from './index'
 
 export const discordEventWorker = new Worker(
     'guildMessageEventQueue',

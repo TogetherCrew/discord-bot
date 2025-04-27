@@ -1,14 +1,13 @@
-import { Message, Role, Snowflake, TextChannel, User } from 'discord.js';
-import { Connection } from 'mongoose';
-import fetch from 'node-fetch';
+import { Message, Role, Snowflake, TextChannel, User } from 'discord.js'
+import { Connection } from 'mongoose'
+import fetch from 'node-fetch'
 
-import { IDiscordUser, IRawInfo } from '@togethercrew.dev/db';
+import { IDiscordUser, IRawInfo } from '@togethercrew.dev/db'
 
-import config from '../config';
-import parentLogger from '../config/logger';
+import config from '../config'
+import parentLogger from '../config/logger'
 
 const logger = parentLogger.child({ module: 'discordMessageUtils' })
-
 
 export async function fetchAllUsersForReaction(
     channelId: string,

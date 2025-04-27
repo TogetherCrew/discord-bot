@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import { Message, Snowflake, TextChannel, ThreadChannel } from 'discord.js';
-import { Connection } from 'mongoose';
+import { Message, Snowflake, TextChannel, ThreadChannel } from 'discord.js'
+import { Connection } from 'mongoose'
 
-import { IRawInfo } from '@togethercrew.dev/db';
+import { IRawInfo } from '@togethercrew.dev/db'
 
-import parentLogger from '../../config/logger';
-import { channelService, rawInfoService } from '../../database/services';
-import { coreService } from '../../services';
+import parentLogger from '../../config/logger'
+import { channelService, rawInfoService } from '../../database/services'
+import { coreService } from '../../services'
 
 const logger = parentLogger.child({ module: 'Migration' })
 

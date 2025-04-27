@@ -25,7 +25,6 @@ export class WorkerFactory {
                     })
                     logger.info({ jobId: job.id, res, recompute, platform }, 'Guild extraction job completed')
                 } catch (err) {
-                    console.log(error)
                     logger.error({ job, err }, 'triggerDag failed')
                 }
             } else {

@@ -1,11 +1,11 @@
-import { TextChannel, VoiceChannel } from 'discord.js';
-import { Connection, HydratedDocument } from 'mongoose';
+import { TextChannel, VoiceChannel } from 'discord.js'
+import { Connection, HydratedDocument } from 'mongoose'
 
-import { IChannel, IPlatform } from '@togethercrew.dev/db';
+import { IChannel, IPlatform } from '@togethercrew.dev/db'
 
-import parentLogger from '../config/logger';
-import { channelService, platformService } from '../database/services';
-import { coreService } from '../services';
+import parentLogger from '../config/logger'
+import { channelService, platformService } from '../database/services'
+import { coreService } from '../services'
 
 const logger = parentLogger.child({ module: 'FetchChannels' })
 

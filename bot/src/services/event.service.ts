@@ -1,7 +1,9 @@
-import { readdir } from 'node:fs/promises';
-import path from 'path';
+import { readdir } from 'node:fs/promises'
+import path from 'path'
+import parentLogger from '../config/logger'
 
-import { coreService } from '../services';
+import { coreService } from '../services'
+const logger = parentLogger.child({ module: 'EventService' })
 
 async function loadEvents(): Promise<void> {
     const bot = coreService.DiscordBotManager.getInstance()
@@ -25,6 +27,7 @@ async function loadEvents(): Promise<void> {
             }
         }
     }
+    logger.info('Discord events Loaded!')
 }
 
 export default {

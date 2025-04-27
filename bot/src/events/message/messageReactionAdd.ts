@@ -1,7 +1,7 @@
 // src/events/message/messageReactionAdd.ts
-import { Events, MessageReaction, User } from 'discord.js';
+import { Events, MessageReaction, User } from 'discord.js'
 
-import { addGuildMessageEventQueue } from '../../queue/queues/guildMessageEventQueue';
+import { addGuildMessageEventQueue } from '../../queue/queues/guildMessageEventQueue'
 
 export default {
     name: Events.MessageReactionAdd,

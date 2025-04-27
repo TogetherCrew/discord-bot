@@ -1,10 +1,10 @@
-import { Connection, HydratedDocument } from 'mongoose';
+import { Connection, HydratedDocument } from 'mongoose'
 
-import { IPlatform, IRole } from '@togethercrew.dev/db';
+import { IPlatform, IRole } from '@togethercrew.dev/db'
 
-import parentLogger from '../config/logger';
-import { platformService, roleService } from '../database/services';
-import { coreService } from '../services';
+import parentLogger from '../config/logger'
+import { platformService, roleService } from '../database/services'
+import { coreService } from '../services'
 
 const logger = parentLogger.child({ module: 'FetchRoles' })
 

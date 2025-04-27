@@ -1,10 +1,10 @@
-import { Snowflake } from 'discord.js';
-import { HydratedDocument } from 'mongoose';
+import { Snowflake } from 'discord.js'
+import { HydratedDocument } from 'mongoose'
 
-import { IPlatform, IPlatformUpdateBody, Platform } from '@togethercrew.dev/db';
+import { IPlatform, IPlatformUpdateBody, Platform } from '@togethercrew.dev/db'
 
-import parentLogger from '../../config/logger';
-import { coreService } from '../../services';
+import parentLogger from '../../config/logger'
+import { coreService } from '../../services'
 
 const logger = parentLogger.child({ module: 'PlatformService' })
 

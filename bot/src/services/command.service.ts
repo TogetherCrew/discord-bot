@@ -1,10 +1,10 @@
-import { Collection, REST, Routes } from 'discord.js';
-import { readdir } from 'node:fs/promises';
-import path from 'path';
+import { Collection, REST, Routes } from 'discord.js'
+import { readdir } from 'node:fs/promises'
+import path from 'path'
 
-import config from '../config';
-import parentLogger from '../config/logger';
-import { coreService } from '../services';
+import config from '../config'
+import parentLogger from '../config/logger'
+import { coreService } from '../services'
 
 const logger = parentLogger.child({ module: 'CommandService' })
 
@@ -43,7 +43,7 @@ async function registerCommand(): Promise<void> {
         await rest.put(Routes.applicationCommands(config.discord.clientId), {
             body: commandData,
         })
-        logger.info('Commands Registerd')
+        logger.info('Discord commands Registerd')
     } catch (err) {
         logger.error({ err }, 'Failed to register the slash command')
     }

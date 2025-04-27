@@ -1,5 +1,5 @@
-import { GatewayIntentBits, Partials } from 'discord.js';
-import Joi from 'joi';
+import { GatewayIntentBits, Partials } from 'discord.js'
+import Joi from 'joi'
 
 const envVarsSchema = Joi.object()
     .keys({

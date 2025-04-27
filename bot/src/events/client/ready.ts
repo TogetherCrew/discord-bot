@@ -7,6 +7,6 @@ export default {
     name: Events.ClientReady,
     once: true,
     async execute(client: Client) {
-        logger.info('event is running')
+        logger.info('event is running!!!!!!!')
     },
 }

@@ -1,11 +1,11 @@
 // src/queue/handlers/messageCreateHandler.ts
-import { Snowflake } from 'discord.js';
+import { Snowflake } from 'discord.js'
 
-import { DatabaseManager, IRawInfo } from '@togethercrew.dev/db';
+import { DatabaseManager, IRawInfo } from '@togethercrew.dev/db'
 
-import parentLogger from '../../config/logger';
-import { rawInfoService } from '../../database/services';
-import { isUserIgnoredForGuild } from '../../utils/guildIgnoredUsers';
+import parentLogger from '../../config/logger'
+import { rawInfoService } from '../../database/services'
+import { isUserIgnoredForGuild } from '../../utils/guildIgnoredUsers'
 
 const logger = parentLogger.child({ event: 'MessageCreateHandler' })
 

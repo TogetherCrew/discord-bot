@@ -1,10 +1,10 @@
 // src/queue/handlers/messageReactionRemoveAllHandler.ts
-import { Snowflake } from 'discord.js';
+import { Snowflake } from 'discord.js'
 
-import { DatabaseManager, IRawInfoUpdateBody } from '@togethercrew.dev/db';
+import { DatabaseManager, IRawInfoUpdateBody } from '@togethercrew.dev/db'
 
-import parentLogger from '../../config/logger';
-import { rawInfoService } from '../../database/services';
+import parentLogger from '../../config/logger'
+import { rawInfoService } from '../../database/services'
 
 const logger = parentLogger.child({ event: 'MessageReactionRemoveAllHandler' })
 

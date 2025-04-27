@@ -1,9 +1,7 @@
-import {
-    Channel, Guild, Message, NewsChannel, Snowflake, TextChannel, VoiceChannel
-} from 'discord.js';
+import { Channel, Guild, Message, NewsChannel, Snowflake, TextChannel, VoiceChannel } from 'discord.js'
 
-import parentLogger from '../config/logger';
-import coreService from './core.service';
+import parentLogger from '../config/logger'
+import coreService from './core.service'
 
 const logger = parentLogger.child({ module: 'ChannelService' })
 

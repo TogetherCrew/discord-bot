@@ -1,7 +1,7 @@
-import { Events, Message, Snowflake } from 'discord.js';
+import { Events, Message, Snowflake } from 'discord.js'
 
-import { rawInfoService } from '../../database/services';
-import { addGuildMessageEventQueue } from '../../queue/queues/guildMessageEventQueue';
+import { rawInfoService } from '../../database/services'
+import { addGuildMessageEventQueue } from '../../queue/queues/guildMessageEventQueue'
 
 interface threadInfo {
     threadId: Snowflake
