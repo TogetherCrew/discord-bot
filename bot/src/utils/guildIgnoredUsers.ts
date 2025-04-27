@@ -92,7 +92,6 @@ export async function sanitizeRawInfoForIgnoredUsers(guildId: string): Promise<v
             { user_mentions: { $elemMatch: { $in: ignoredUserIds } } },
             { $pull: { user_mentions: { $in: ignoredUserIds } } }
         )
-        console.log(ignoredUserIds)
 
         await guildConnection.models.RawInfo.updateMany({}, [
             {

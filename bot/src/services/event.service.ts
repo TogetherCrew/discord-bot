@@ -1,9 +1,13 @@
-import path from 'path'
 import { readdir } from 'node:fs/promises'
+import path from 'path'
+import parentLogger from '../config/logger'
+
 import { coreService } from '../services'
+const logger = parentLogger.child({ module: 'EventService' })
 
 async function loadEvents(): Promise<void> {
-    const client = await coreService.DiscordBotManager.getClient()
+    const bot = coreService.DiscordBotManager.getInstance()
+    const client = await bot.getClient()
     const foldersPath: string = path.join(__dirname, '../events')
     const eventFolders: string[] = await readdir(foldersPath)
     for (const folder of eventFolders) {
@@ -23,6 +27,7 @@ async function loadEvents(): Promise<void> {
             }
         }
     }
+    logger.info('Discord events Loaded!')
 }
 
 export default {

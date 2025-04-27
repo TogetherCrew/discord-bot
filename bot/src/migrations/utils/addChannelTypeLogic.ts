@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import { type TextChannel, type Snowflake, type VoiceChannel } from 'discord.js'
-import { type Connection } from 'mongoose'
+import { Snowflake, TextChannel, VoiceChannel } from 'discord.js'
+import { Connection } from 'mongoose'
+
 import parentLogger from '../../config/logger'
 import { coreService } from '../../services'
 
@@ -13,8 +14,8 @@ const logger = parentLogger.child({ module: 'Migration' })
  * @param {Snowflake} guildId - The identifier of the guild to extract information from.
  */
 async function channelMigration(connection: Connection, guildId: Snowflake) {
-    const client = await coreService.DiscordBotManager.getClient()
-
+    const bot = coreService.DiscordBotManager.getInstance()
+    const client = await bot.getClient()
     logger.info({ guild_id: guildId }, 'Migration is running')
     try {
         const updates: Array<{ channelId: string; type: number }> = []

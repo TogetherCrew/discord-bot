@@ -1,8 +1,9 @@
-import { type Channel, ChannelType, type Snowflake, type TextChannel } from 'discord.js'
-import {} from 'discord.js'
+import { Channel, ChannelType, Snowflake, TextChannel } from 'discord.js'
+
 import { createPrivateThreadAndSendMessage } from '../functions/thread'
-import coreService from './core.service'
 import channelService from './channel.service'
+import coreService from './core.service'
+
 interface IInfo {
     guildId: Snowflake
     message: string
@@ -17,7 +18,8 @@ interface IInfo {
  * @returns {Promise<Message | undefined>} A promise that resolves with the sent message or undefined.
  */
 async function sendDirectMessage(discordId: string, info: IInfo): Promise<void> {
-    const client = await coreService.DiscordBotManager.getClient()
+    const bot = coreService.DiscordBotManager.getInstance()
+    const client = await bot.getClient()
     const { guildId, message, useFallback, channelId } = info
     try {
         const user = await client.users.fetch(discordId)

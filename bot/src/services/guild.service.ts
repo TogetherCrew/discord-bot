@@ -1,12 +1,14 @@
-import { type Guild, type Snowflake } from 'discord.js'
-import coreService from './core.service'
+import { Guild, Snowflake } from 'discord.js'
+
 import parentLogger from '../config/logger'
+import coreService from './core.service'
 
 const logger = parentLogger.child({ module: 'GuildService' })
 
 async function getGuildFromDiscordAPI(guildId: Snowflake): Promise<Guild | null> {
     try {
-        const client = await coreService.DiscordBotManager.getClient()
+        const bot = coreService.DiscordBotManager.getInstance()
+        const client = await bot.getClient()
         const guild = await client.guilds.fetch(guildId)
         return guild
     } catch (err) {

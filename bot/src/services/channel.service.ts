@@ -1,14 +1,7 @@
-import {
-    type Snowflake,
-    type Message,
-    type Channel,
-    type Guild,
-    TextChannel,
-    NewsChannel,
-    VoiceChannel,
-} from 'discord.js'
-import coreService from './core.service'
+import { Channel, Guild, Message, NewsChannel, Snowflake, TextChannel, VoiceChannel } from 'discord.js'
+
 import parentLogger from '../config/logger'
+import coreService from './core.service'
 
 const logger = parentLogger.child({ module: 'ChannelService' })
 
@@ -19,7 +12,8 @@ const logger = parentLogger.child({ module: 'ChannelService' })
  * @returns {Promise<Message | undefined>} - The sent message or undefined if unable to send.
  */
 async function sendChannelMessage(discordId: Snowflake, message: string): Promise<Message | undefined> {
-    const client = await coreService.DiscordBotManager.getClient()
+    const bot = coreService.DiscordBotManager.getInstance()
+    const client = await bot.getClient()
     const channel = await client.channels.fetch(discordId)
 
     if (

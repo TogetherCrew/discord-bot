@@ -1,8 +1,10 @@
-import { type HydratedDocument } from 'mongoose'
-import { Platform, type IPlatform, type IPlatformUpdateBody } from '@togethercrew.dev/db'
-import { type Snowflake } from 'discord.js'
-import { coreService } from '../../services'
+import { Snowflake } from 'discord.js'
+import { HydratedDocument } from 'mongoose'
+
+import { IPlatform, IPlatformUpdateBody, Platform } from '@togethercrew.dev/db'
+
 import parentLogger from '../../config/logger'
+import { coreService } from '../../services'
 
 const logger = parentLogger.child({ module: 'PlatformService' })
 
@@ -75,7 +77,8 @@ async function updateManyPlatforms(filter: object, updateBody: IPlatformUpdateBo
 }
 
 async function checkBotAccessToGuild(guildId: Snowflake): Promise<boolean> {
-    const client = await coreService.DiscordBotManager.getClient()
+    const bot = coreService.DiscordBotManager.getInstance()
+    const client = await bot.getClient()
     // TODO: Check the logic
     if (!client.guilds.cache.has(guildId)) {
         // await updatePlatform({ 'metadata.id': guildId }, { disconnectedAt: new Date() });

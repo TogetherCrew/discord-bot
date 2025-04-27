@@ -1,9 +1,11 @@
-import { type TextChannel, type VoiceChannel } from 'discord.js'
-import { type Connection, type HydratedDocument } from 'mongoose'
-import { type IPlatform, type IChannel } from '@togethercrew.dev/db'
+import { TextChannel, VoiceChannel } from 'discord.js'
+import { Connection, HydratedDocument } from 'mongoose'
+
+import { IChannel, IPlatform } from '@togethercrew.dev/db'
+
+import parentLogger from '../config/logger'
 import { channelService, platformService } from '../database/services'
 import { coreService } from '../services'
-import parentLogger from '../config/logger'
 
 const logger = parentLogger.child({ module: 'FetchChannels' })
 
@@ -15,7 +17,8 @@ const logger = parentLogger.child({ module: 'FetchChannels' })
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default async function fetchGuildChannels(connection: Connection, platform: HydratedDocument<IPlatform>) {
     try {
-        const client = await coreService.DiscordBotManager.getClient()
+        const bot = coreService.DiscordBotManager.getInstance()
+        const client = await bot.getClient()
         const hasBotAccessToGuild = await platformService.checkBotAccessToGuild(platform.metadata?.id)
         if (!hasBotAccessToGuild) {
             return

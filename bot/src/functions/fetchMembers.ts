@@ -58,7 +58,8 @@ export default async function fetchGuildMembers(
     platform: HydratedDocument<IPlatform>
 ): Promise<void> {
     try {
-        const client = await coreService.DiscordBotManager.getClient()
+        const bot = coreService.DiscordBotManager.getInstance()
+        const client = await bot.getClient()
         const hasBotAccessToGuild = await platformService.checkBotAccessToGuild(platform.metadata?.id)
         if (!hasBotAccessToGuild) {
             logger.info({ guild_id: platform.metadata?.id }, 'Bot access missing')
