@@ -5,7 +5,7 @@ import {
     type ChatInputCommandInteraction_broker,
     type InteractionResponse,
     type InteractionResponseEditData,
-} from '../interfaces/Hivemind.interface'
+} from '../gateway/types/hivemind.type'
 
 const logger = parentLogger.child({ module: 'InteractionResponses' })
 

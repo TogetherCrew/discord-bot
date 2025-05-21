@@ -5,6 +5,7 @@ import './queue/workers/guildEventWorker'
 import './queue/workers/guildExtractionWorker'
 import './queue/workers/userEventWorker'
 import './queue/workers/guildMessageEventWorker'
+import { ConsoleSink } from './gateway/sinks/console.sink'
 
 import config from './config'
 import parentLogger from './config/logger'
@@ -14,13 +15,14 @@ import { connectToRabbitMQ } from './rabbitmq/RabbitMQConnection'
 import { setupRabbitMQHandlers } from './rabbitmq/RabbitMQHandler'
 import server from './server'
 import { commandService, coreService, eventService } from './services'
-
+import { createGateway } from './gateway'
 const logger = parentLogger.child({ module: `app` })
 
 async function app(): Promise<void> {
     await connectToMongoDB()
     await connectToMB()
     await connectToRabbitMQ()
+    await createGateway(config.discord.botToken, new ConsoleSink())
     const bot = coreService.DiscordBotManager.getInstance()
     await bot.getClient()
     await eventService.loadEvents()

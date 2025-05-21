@@ -1,7 +1,7 @@
 import { SlashCommandBuilder } from 'discord.js'
 import { interactionService } from '../../services'
 // import RabbitMQ, { Event, Queue as RabbitMQQueue } from '@togethercrew.dev/tc-messagebroker'
-import { type ChatInputCommandInteraction_broker } from '../../interfaces/Hivemind.interface'
+import { type ChatInputCommandInteraction_broker } from '../../gateway/types/hivemind.type'
 import parentLogger from '../../config/logger'
 import { createTemporalClient } from '../../services/temporal.service'
 const logger = parentLogger.child({ command: 'question' })
