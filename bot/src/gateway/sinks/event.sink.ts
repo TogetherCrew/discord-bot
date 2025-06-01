@@ -1,5 +1,5 @@
-import { DiscordEventEnvelope, EventPayloadMap } from '../../types/gateway.type'
+import { GatewayDispatchPayload } from 'discord-api-types/v10';
 
 export interface EventSink {
-    dispatch<K extends keyof EventPayloadMap>(envelope: DiscordEventEnvelope<K>): Promise<void>
+    dispatch(payload: GatewayDispatchPayload): Promise<void>
 }

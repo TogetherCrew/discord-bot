@@ -1,9 +1,11 @@
 import { SlashCommandBuilder } from 'discord.js'
-import { interactionService } from '../../services'
-// import RabbitMQ, { Event, Queue as RabbitMQQueue } from '@togethercrew.dev/tc-messagebroker'
-import { type ChatInputCommandInteraction_broker } from '../../gateway/types/hivemind.type'
+
 import parentLogger from '../../config/logger'
-import { createTemporalClient } from '../../services/temporal.service'
+import { interactionService } from '../../services'
+import { TemporalClientManager } from '../../services/temporal.service'
+// import RabbitMQ, { Event, , TemporalClientManagerQueue as RabbitMQQueue } from '@togethercrew.dev/tc-messagebroker'
+import { ChatInputCommandInteraction_broker } from '../../types/hivemind.type'
+
 const logger = parentLogger.child({ command: 'question' })
 
 export default {
@@ -17,20 +19,15 @@ export default {
     async execute(interaction: ChatInputCommandInteraction_broker) {
         logger.info({ interaction_id: interaction.id, user: interaction.user }, 'question command started')
         try {
-            // Create temporal client
-            // Start workflow DiscordQuestionWorkflow
-            // args:  interaction
-            // queue: TEMPORAL_QUEUE_HEAVY
-
-            const client = await createTemporalClient()
+            const temporalClient = await TemporalClientManager.getInstance().getClient()
             const workflowId = `discord:question:${interaction.id}`
-            const handle = await client.workflow.start('DiscordQuestionWorkflow', {
+            await temporalClient.workflow.start('DiscordQuestionWorkflow', {
                 taskQueue: 'TEMPORAL_QUEUE_HEAVY',
                 args: [{ interaction: { ...interaction, token: interaction.token } }],
                 workflowId,
             })
 
-            logger.info({ workflowId }, 'question command workflow started')
+            logger.info({ workflowId }, 'question commandd workflow started')
 
             await interactionService.createInteractionResponse(interaction, {
                 type: 5,

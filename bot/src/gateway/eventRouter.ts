@@ -1,17 +1,13 @@
-import { EventSink } from './sinks/event.sink'
-import { DiscordEventEnvelope, EventPayloadMap } from '../types/gateway.type'
+import { GatewayDispatchPayload } from 'discord-api-types/v10'
 
+import parentLogger from '../config/logger'
+import { EventSink } from './sinks/event.sink'
+
+const logger = parentLogger.child({ module: `Gateway:EventRouter` })
 export class EventRouter {
     constructor(private readonly sink: EventSink) {}
 
-    onGatewayDispatch<K extends keyof EventPayloadMap>(type: K, data: EventPayloadMap[K], shardId: number) {
-        const envelope: DiscordEventEnvelope<K> = {
-            type,
-            data,
-            shardId,
-            ts: Date.now(),
-        }
-
-        this.sink.dispatch(envelope).catch((err) => console.error('[EventSink]', { err, envelopeType: type }))
+    onGatewayDispatch(payload: GatewayDispatchPayload) {
+        this.sink.dispatch(payload).catch((err) => logger.error('[EventSink]', { err }))
     }
 }
