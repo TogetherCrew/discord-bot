@@ -1,12 +1,12 @@
-import { GatewayDispatchPayload } from 'discord-api-types/v10';
+import { GatewayDispatchPayload } from 'discord-api-types/v10'
 
-import { WebSocketManager, WebSocketShardEvents } from '@discordjs/ws';
+import { WebSocketManager, WebSocketShardEvents } from '@discordjs/ws'
 
-import parentLogger from '../config/logger';
-import { isAllowedEvent } from './allowedEvents';
-import { EventRouter } from './eventRouter';
-import { createGatewayManager } from './manager';
-import { EventSink } from './sinks/event.sink';
+import parentLogger from '../config/logger'
+import { isAllowedEvent } from './allowedEvents'
+import { EventRouter } from './eventRouter'
+import { createGatewayManager } from './manager'
+import { EventSink } from './sinks/event.sink'
 
 const logger = parentLogger.child({ module: `Gateway` })
 export async function createGateway(token: string, sink: EventSink): Promise<WebSocketManager> {

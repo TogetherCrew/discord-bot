@@ -1,6 +1,6 @@
-import { Client as TemporalClient, Connection } from '@temporalio/client';
+import { Client as TemporalClient, Connection } from '@temporalio/client'
 
-import config from '../config';
+import config from '../config'
 
 export class TemporalClientManager {
     private static instance: TemporalClientManager

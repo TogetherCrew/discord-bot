@@ -1,8 +1,8 @@
-import { GatewayDispatchPayload } from 'discord-api-types/v10';
+import { GatewayDispatchPayload } from 'discord-api-types/v10'
 
-import parentLogger from '../../config/logger';
-import { TemporalClientManager } from '../../services/temporal.service';
-import { EventSink } from './event.sink';
+import parentLogger from '../../config/logger'
+import { TemporalClientManager } from '../../services/temporal.service'
+import { EventSink } from './event.sink'
 
 const logger = parentLogger.child({ component: 'Gateway:TemporalSink' })
 

@@ -1,9 +1,9 @@
-import { IntentsBitField } from 'discord.js';
+import { IntentsBitField } from 'discord.js'
 
-import { REST } from '@discordjs/rest';
-import { WebSocketManager } from '@discordjs/ws';
+import { REST } from '@discordjs/rest'
+import { WebSocketManager } from '@discordjs/ws'
 
-import config from '../config';
+import config from '../config'
 
 export function createGatewayManager(token: string) {
     const rest = new REST().setToken(token)
