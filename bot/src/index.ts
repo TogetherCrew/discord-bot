@@ -9,6 +9,8 @@ import './queue/workers/guildMessageEventWorker'
 import config from './config'
 import parentLogger from './config/logger'
 import { connectToMB, connectToMongoDB } from './database/connection'
+import { createGateway } from './gateway'
+import { TemporalSink } from './gateway/sinks/temporal.sink'
 import { addCronJob } from './queue/queues/cronJob'
 import { connectToRabbitMQ } from './rabbitmq/RabbitMQConnection'
 import { setupRabbitMQHandlers } from './rabbitmq/RabbitMQHandler'
@@ -21,6 +23,7 @@ async function app(): Promise<void> {
     await connectToMongoDB()
     await connectToMB()
     await connectToRabbitMQ()
+    await createGateway(config.discord.botToken, new TemporalSink())
     const bot = coreService.DiscordBotManager.getInstance()
     await bot.getClient()
     await eventService.loadEvents()

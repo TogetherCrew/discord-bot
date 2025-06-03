@@ -1,5 +1,6 @@
 import { Client, Events } from 'discord.js'
 import { once } from 'events'
+
 import config from '../config'
 
 export class DiscordBotManager {
