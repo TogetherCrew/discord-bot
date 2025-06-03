@@ -1,7 +1,9 @@
-import { WebSocketManager, CompressionMethod } from '@discordjs/ws'
-import { REST } from '@discordjs/rest'
-import config from '../config'
-import { IntentsBitField } from 'discord.js'
+import { IntentsBitField } from 'discord.js';
+
+import { REST } from '@discordjs/rest';
+import { WebSocketManager } from '@discordjs/ws';
+
+import config from '../config';
 
 export function createGatewayManager(token: string) {
     const rest = new REST().setToken(token)
@@ -9,6 +11,6 @@ export function createGatewayManager(token: string) {
         token,
         intents: IntentsBitField.resolve(config.discord.intents),
         rest,
-        compression: CompressionMethod.ZlibSync,
+        // compression: CompressionMethod.ZlibSync,
     })
 }
