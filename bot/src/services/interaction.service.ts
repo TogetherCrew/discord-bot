@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import fetch from 'node-fetch';
+import fetch from 'node-fetch'
 
-import parentLogger from '../config/logger';
+import parentLogger from '../config/logger'
 import {
-    ChatInputCommandInteraction_broker, InteractionResponse, InteractionResponseEditData
-} from '../types/hivemind.type';
+    ChatInputCommandInteraction_broker,
+    InteractionResponse,
+    InteractionResponseEditData,
+} from '../types/hivemind.type'
 
 const logger = parentLogger.child({ module: 'InteractionResponses' })
 

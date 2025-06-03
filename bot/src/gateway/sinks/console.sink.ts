@@ -1,6 +1,6 @@
-import parentLogger from '../../config/logger';
-import { DiscordEventEnvelope } from '../../types/gateway.type';
-import { EventSink } from './event.sink';
+import parentLogger from '../../config/logger'
+import { DiscordEventEnvelope } from '../../types/gateway.type'
+import { EventSink } from './event.sink'
 
 const logger = parentLogger.child({ component: 'Gateway:ConsoleSink' })
 

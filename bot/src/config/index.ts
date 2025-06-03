@@ -86,4 +86,3 @@ export default {
         uri: envVars.TEMPORAL_URI,
     },
 }
-

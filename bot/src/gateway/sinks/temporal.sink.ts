@@ -9,6 +9,8 @@ const logger = parentLogger.child({ component: 'Gateway:TemporalSink' })
 export class TemporalSink implements EventSink {
     async dispatch(payload: GatewayDispatchPayload): Promise<void> {
         try {
+            console.log('payload', payload)
+
             const client = await TemporalClientManager.getInstance().getClient()
             const workflowId = `discord:gateway:${payload.t}}`
             await client.workflow.start('DiscordGatewayEventWorkflow', {
