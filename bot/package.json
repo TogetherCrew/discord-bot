@@ -39,7 +39,7 @@
         "@discordjs/ws": "^2.0.2",
         "@sentry/node": "^7.51.2",
         "@temporalio/client": "^1.11.7",
-        "@togethercrew.dev/db": "^3.0.63",
+        "@togethercrew.dev/db": "^3.13.2",
         "@togethercrew.dev/tc-messagebroker": "^0.0.48",
         "babel-jest": "^29.5.0",
         "bullmq": "^3.14.0",

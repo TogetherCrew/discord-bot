@@ -1,11 +1,14 @@
-import { DatabaseManager, type IPlatform } from '@togethercrew.dev/db'
-import { type HydratedDocument } from 'mongoose'
-import fetchMembers from '../../functions/fetchMembers'
-import fetchChannels from '../../functions/fetchChannels'
-import fetchRoles from '../../functions/fetchRoles'
+import { HydratedDocument } from 'mongoose'
+
+import { DatabaseManager, IPlatform } from '@togethercrew.dev/db'
 import { Event, MBConnection } from '@togethercrew.dev/tc-messagebroker'
+
 import parentLogger from '../../config/logger'
 import { platformService } from '../../database/services'
+import fetchChannels from '../../functions/fetchChannels'
+import fetchMembers from '../../functions/fetchMembers'
+import fetchRoles from '../../functions/fetchRoles'
+import { getActiveThreads } from '../../functions/thread'
 
 const logger = parentLogger.child({
     module: `${Event.DISCORD_BOT.FETCH_MEMBERS}`,
@@ -19,6 +22,7 @@ const fetchInitialData = async (platform: HydratedDocument<IPlatform>): Promise<
             fetchMembers(connection, platform),
             fetchChannels(connection, platform),
             fetchRoles(connection, platform),
+            getActiveThreads(connection, platform),
         ])
         await platformService.updatePlatform({ _id: platform.id }, { metadata: { isFetchingInitialData: false } })
     } catch (error) {

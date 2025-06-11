@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-extraneous-class */
-import { type Worker } from 'bullmq'
+import { Worker } from 'bullmq'
+import { HydratedDocument } from 'mongoose'
+
+import { IPlatform } from '@togethercrew.dev/db'
+
 import parentLogger from '../../config/logger'
 import { airflowService } from '../../services'
-import { type HydratedDocument } from 'mongoose'
-import { type IPlatform } from '@togethercrew.dev/db'
-import { error } from 'console'
 
 const logger = parentLogger.child({ module: 'Queue' })
 

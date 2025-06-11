@@ -9,12 +9,6 @@ import { coreService } from '../services'
 
 const logger = parentLogger.child({ module: 'FetchChannels' })
 
-/**
- * Fetches and saves text and voice channel information from a given guild.
- * @param {Connection} connection - Mongoose connection object for the database.
- * @param {Snowflake} guildId - The identifier of the guild to extract text and voice channels from.
- */
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default async function fetchGuildChannels(connection: Connection, platform: HydratedDocument<IPlatform>) {
     try {
         const bot = coreService.DiscordBotManager.getInstance()
