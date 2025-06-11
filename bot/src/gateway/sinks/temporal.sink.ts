@@ -10,7 +10,7 @@ export class TemporalSink implements EventSink {
     async dispatch(payload: GatewayDispatchPayload): Promise<void> {
         try {
             const client = await TemporalClientManager.getInstance().getClient()
-            const workflowId = `discord:gateway:${payload.t}}`
+            const workflowId = `discord.${payload.t.toLowerCase()}.${crypto.randomUUID()}`
             await client.workflow.start('DiscordGatewayEventWorkflow', {
                 taskQueue: 'TEMPORAL_QUEUE_HEAVY',
                 args: [payload],

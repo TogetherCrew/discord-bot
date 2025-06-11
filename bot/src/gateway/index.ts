@@ -3,7 +3,6 @@ import { GatewayDispatchPayload } from 'discord-api-types/v10'
 import { WebSocketManager, WebSocketShardEvents } from '@discordjs/ws'
 
 import parentLogger from '../config/logger'
-import { isAllowedEvent } from './allowedEvents'
 import { EventRouter } from './eventRouter'
 import { createGatewayManager } from './manager'
 import { EventSink } from './sinks/event.sink'
@@ -14,9 +13,9 @@ export async function createGateway(token: string, sink: EventSink): Promise<Web
     const manager = createGatewayManager(token)
 
     manager.on(WebSocketShardEvents.Dispatch, (payload: GatewayDispatchPayload, shardId) => {
-        if (isAllowedEvent(payload.t)) {
-            router.onGatewayDispatch(payload)
-        }
+        // if (isAllowedEvent(payload.t)) {
+        router.onGatewayDispatch(payload)
+        // }
     })
 
     manager
