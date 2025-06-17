@@ -11,7 +11,6 @@ import parentLogger from './config/logger'
 import { connectToMB, connectToMongoDB } from './database/connection'
 import { createGateway } from './gateway'
 import { TemporalSink } from './gateway/sinks/temporal.sink'
-import { addCronJob } from './queue/queues/cronJob'
 import { connectToRabbitMQ } from './rabbitmq/RabbitMQConnection'
 import { setupRabbitMQHandlers } from './rabbitmq/RabbitMQHandler'
 import server from './server'
@@ -34,7 +33,7 @@ async function app(): Promise<void> {
         logger.info(`Listening on ${config.port as string}`)
     })
     setupRabbitMQHandlers()
-    addCronJob()
+    // addCronJob()
 }
 
 app().catch((error) => {
