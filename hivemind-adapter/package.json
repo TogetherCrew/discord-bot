@@ -31,7 +31,7 @@
         "@nestjs/platform-express": "^10.0.0",
         "@togethercrew.dev/db": "^3.0.70",
         "@togethercrew.dev/tc-messagebroker": "^0.0.48",
-        "mongoose": "^8.7.1",
+        "mongoose": "^8.15.1",
         "nestjs-pino": "^4.1.0",
         "pino-pretty": "^11.3.0",
         "reflect-metadata": "^0.2.0",
