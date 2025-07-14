@@ -22,7 +22,7 @@ async function app(): Promise<void> {
     await connectToMongoDB()
     await connectToMB()
     await connectToRabbitMQ()
-    await createGateway(config.discord.botToken, new TemporalSink())
+    createGateway(config.discord.botToken, new TemporalSink())
     const bot = coreService.DiscordBotManager.getInstance()
     await bot.getClient()
     await eventService.loadEvents()
